@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/static/css/style.css?v={{ asset_version }}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>Dados do Ativo</title>
+  </head>
+  <body>
+    <header class="header">
+      <div class="container">
+        <div class="logo">Money app</div>
+
+        <nav class="menu">
+          <a href="#">Investimentos</a>
+          <a href="#">Ações</a>
+          <a href="#">ETFs</a>
+          <a href="#">Portfólio</a>
+          <a href="#">Comunidade</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="ativo-page">
+      <section class="ativo-resumo">
+        <a href="/" class="voltar">← Voltar</a>
+
+        <h1 class="ticker">{{ dados.ticker }}</h1>
+
+        <h2 class="empresa">{{ dados.nome }}</h2>
+
+        <div class="preco">
+          <span class="valor">R$ {{ dados.preco }}</span>
+          <span class="variacao_dia">{{ dados.variacao_dia }}%</span>
+        </div>
+      </section>
+      <section class="cards">
+        <article class="card">
+          <h3>Abertura</h3>
+          <p>R$ {{ dados.abertura }}</p>
+        </article>
+
+        <article class="card">
+          <h3>Máxima</h3>
+          <p>R$ {{ dados.maxima }}</p>
+        </article>
+
+        <article class="card">
+          <h3>Mínima</h3>
+          <p>R$ {{ dados.minima}}</p>
+        </article>
+
+        <article class="card">
+          <h3>Volume</h3>
+          <p>{{ dados.volume }}</p>
+        </article>
+
+        <article class="card">
+          <h3>Market Cap</h3>
+          <p>R$ {{ dados.market_cap}}</p>
+        </article>
+
+        <article class="card">
+          <h3>Setor</h3>
+          <p>{{dados.setor}}</p>
+        </article>
+
+        <article class="card">
+          <h3>Dividend Yield</h3>
+          <p>{{ dados.dividend_yield}}</p>
+        </article>
+
+        <article class="card">
+          <h3>P/L</h3>
+          <p>{{ dados.pe }}</p>
+        </article>
+
+        <article class="card">
+          <h3>EPS</h3>
+          <p>{{ dados.eps }}</p>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>

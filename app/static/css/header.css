@@ -1,0 +1,39 @@
+.header {
+  border-bottom: 1px solid var(--border);
+}
+
+.header .container {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  height: 72px;
+}
+
+.logo {
+  font-size: 1.5rem;
+
+  font-weight: 700;
+}
+
+.menu {
+  display: flex;
+
+  gap: 32px;
+}
+
+.menu a {
+  text-decoration: none;
+
+  color: var(--text-secondary);
+
+  font-weight: 500;
+
+  transition: color 0.2s ease;
+}
+
+.menu a:hover {
+  color: var(--text-primary);
+}

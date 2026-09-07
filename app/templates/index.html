@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Busca de Ativos</title>
+    <link rel="stylesheet" href="/static/css/style.css?v={{ asset_version }}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="header">
+      <div class="container">
+        <div class="logo">Money app</div>
+
+        <nav class="menu">
+          <a href="#">Investimentos</a>
+          <a href="#">Ações</a>
+          <a href="#">ETFs</a>
+          <a href="#">Portfólio</a>
+          <a href="#">Comunidade</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <h1>
+          Pesquise <span style="color: rgb(29, 0, 252)">ativos</span> da Bolsa
+        </h1>
+        <p>Consulte ações, ETFs e FIIs de forma rápida e inteligente.</p>
+
+        <form id="formBusca">
+          <input
+            type="text"
+            id="tickerInput"
+            placeholder="Digite um ticker (Ex: PETR4)"
+            required
+          />
+        </form>
+
+        <section class="populares">
+          <p>Exemplos populares:</p>
+          <div class="tickers-populares">
+            <a href="/ativo/VALE3">VALE3</a>
+            <a href="/ativo/PETR4">PETR4</a>
+            <a href="/ativo/ITUB4">ITUB4</a>
+            <a href="/ativo/BBDC4">BBDC4</a>
+            <a href="/ativo/WEGE3">WEGE3</a>
+          </div>
+        </section>
+      </section>
+    </main>
+  </body>
+  <script src="/static/js/home.js?v={{ asset_version }}"></script>
+</html>

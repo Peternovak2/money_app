@@ -1,0 +1,105 @@
+@import url("components.css");
+@import url("header.css");
+@import url("home.css");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+}
+
+:root {
+  --background: #ffffff;
+
+  --text-primary: #202124;
+
+  --text-secondary: #5f6368;
+
+  --border: #dadce0;
+
+  --hover: #f8f9fa;
+}
+
+body {
+  min-height: 100vh;
+
+  background: var(--background);
+
+  color: var(--text-primary);
+
+  font-family: "Inter", sans-serif;
+}
+
+.ativo-page {
+  max-width: 1200px;
+
+  margin: 0 auto;
+
+  padding: 40px 24px 80px;
+}
+
+.ativo-resumo {
+  margin-bottom: 48px;
+}
+
+.preco {
+  display: flex;
+
+  align-items: center;
+
+  gap: 16px;
+}
+
+.cards {
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 24px;
+}
+
+/* Exemplos populares */
+
+.populares {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.populares p {
+  margin: 0;
+  font-size: 14px;
+  color: #777;
+}
+
+.tickers-populares {
+  display: flex;
+  gap: 8px;
+}
+
+.tickers-populares a {
+  padding: 6px 11px;
+  border-radius: 6px;
+
+  background-color: #f1f1f1;
+  color: #555;
+
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.tickers-populares a:hover {
+  background-color: #e4e4e4;
+  color: #222;
+}

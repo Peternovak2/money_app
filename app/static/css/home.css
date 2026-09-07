@@ -1,0 +1,63 @@
+.hero {
+  min-height: calc(120vh - 350px);
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: center;
+
+  align-items: center;
+
+  text-align: center;
+
+  padding: 24px;
+}
+
+.hero h1 {
+  font-size: 3.5rem;
+
+  font-weight: 700;
+
+  margin-bottom: 16px;
+}
+
+.hero p {
+  color: var(--text-secondary);
+
+  font-size: 1.1rem;
+
+  margin-bottom: 40px;
+}
+
+.hero form {
+  width: 100%;
+
+  display: flex;
+
+  justify-content: center;
+}
+
+.hero input {
+  width: 100%;
+
+  max-width: 650px;
+
+  height: 56px;
+
+  padding: 0 24px;
+
+  border: 2px solid var(--border);
+
+  border-radius: 999px;
+
+  font-size: 1rem;
+
+  outline: none;
+
+  transition: 0.2s ease;
+}
+
+.hero input:focus {
+  box-shadow: 0 2px 10px rgba(0, 192, 13, 0.345);
+}
