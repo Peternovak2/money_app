@@ -21,9 +21,10 @@ def ativo(request: Request, ticker: str):
             name='erro.html',
             context={
                 'ticker': ticker
-            }
+            },
+            status_code=404
         )
-    
+
     return templates.TemplateResponse(
         request=request,
         name='ativo.html',
