@@ -2,6 +2,7 @@ from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
+from app.services.auth import obter_usuario_logado
 from app.services.informacoes import buscar_ativo
 from app.services.utils.formatar import formatar_ticker
 
@@ -25,11 +26,14 @@ def ativo(request: Request, ticker: str):
             status_code=404
         )
 
+    usuario = obter_usuario_logado(request)
+
     return templates.TemplateResponse(
         request=request,
         name='ativo.html',
         context={
             'dados': dados,
-            'asset_version': 'dev'
+            'asset_version': 'dev',
+            'usuario': usuario,
         }
     )

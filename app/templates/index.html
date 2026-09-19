@@ -23,6 +23,15 @@
           <a href="#">ETFs</a>
           <a href="#">Portfólio</a>
           <a href="#">Comunidade</a>
+          {% if usuario %}
+            <span class="usuario-nome">{{ usuario.nome }}</span>
+            <form method="POST" action="/logout" class="form-logout">
+              <button type="submit" class="btn-logout">Sair</button>
+            </form>
+          {% else %}
+            <a href="/login">Entrar</a>
+            <a href="/cadastro">Criar conta</a>
+          {% endif %}
         </nav>
       </div>
     </header>

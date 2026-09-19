@@ -50,10 +50,16 @@ app.mount('/static', StaticFiles(directory='app/static'), name='static')
 
 templates = Jinja2Templates(directory='app/templates')
 
+from app.services.auth import obter_usuario_logado
+
 @app.get('/')
 def home(request: Request):
+    usuario = obter_usuario_logado(request)
     return templates.TemplateResponse(
         request=request,
         name='index.html',
-        context={'asset_version': app.state.asset_version}
+        context={
+            'asset_version': app.state.asset_version,
+            'usuario': usuario,
+        }
     )

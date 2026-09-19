@@ -21,6 +21,8 @@
 .menu {
   display: flex;
 
+  align-items: center;
+
   gap: 32px;
 }
 
@@ -35,5 +37,41 @@
 }
 
 .menu a:hover {
+  color: var(--text-primary);
+}
+
+.usuario-nome {
+  color: var(--text-primary);
+
+  font-weight: 600;
+}
+
+.form-logout {
+  display: inline-flex;
+
+  margin: 0;
+}
+
+.btn-logout {
+  background: none;
+
+  border: none;
+
+  padding: 0;
+
+  font-family: inherit;
+
+  font-size: inherit;
+
+  color: var(--text-secondary);
+
+  font-weight: 500;
+
+  cursor: pointer;
+
+  transition: color 0.2s ease;
+}
+
+.btn-logout:hover {
   color: var(--text-primary);
 }

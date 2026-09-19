@@ -1,6 +1,7 @@
 # pyrefly: ignore [missing-import]
 from pwdlib import PasswordHash
 import re
+from fastapi import Request
 # pyrefly: ignore [missing-import]
 from pwdlib.hashers.argon2 import Argon2Hasher
 from peewee import IntegrityError
@@ -23,6 +24,19 @@ def verificar_senha(senha: str, hash_armazenado: str) -> bool:
 def buscar_usuario_por_email(email: str) -> Usuario | None:
     """Retorna o usuário pelo e-mail normalizado, ou None se não encontrado."""
     return Usuario.get_or_none(Usuario.email == email)
+
+
+def buscar_usuario_por_id(user_id: int) -> Usuario | None:
+    """Retorna o usuário pelo ID, ou None se não encontrado."""
+    return Usuario.get_or_none(Usuario.id == user_id)
+
+
+def obter_usuario_logado(request: Request) -> Usuario | None:
+    """Obtém o usuário atual autenticado a partir da sessão, ou None."""
+    user_id = request.session.get('user_id')
+    if not user_id:
+        return None
+    return buscar_usuario_por_id(user_id)
 
 
 def criar_usuario(nome: str, email: str, senha: str, confirmar_senha: str) -> Usuario:
