@@ -26,9 +26,10 @@ def cadastro_post(
     nome: str = Form(...),
     email: str = Form(...),
     senha: str = Form(...),
+    confirmar_senha: str = Form(...),
 ):
     try:
-        criar_usuario(nome=nome, email=email, senha=senha)
+        criar_usuario(nome=nome, email=email, senha=senha, confirmar_senha=confirmar_senha)
     except ValueError as e:
         return templates.TemplateResponse(
             request=request,
@@ -74,7 +75,7 @@ def login_post(
 
 # ── Logout ────────────────────────────────────────────────────────────────────
 
-@router.get('/logout')
+@router.post('/logout')
 def logout(request: Request):
     request.session.clear()
     return RedirectResponse(url='/', status_code=303)

@@ -1,5 +1,9 @@
+# pyrefly: ignore [missing-import]
 from pwdlib import PasswordHash
+import re
+# pyrefly: ignore [missing-import]
 from pwdlib.hashers.argon2 import Argon2Hasher
+from peewee import IntegrityError
 
 from app.database import Usuario
 
@@ -21,21 +25,33 @@ def buscar_usuario_por_email(email: str) -> Usuario | None:
     return Usuario.get_or_none(Usuario.email == email)
 
 
-def criar_usuario(nome: str, email: str, senha: str) -> Usuario:
+def criar_usuario(nome: str, email: str, senha: str, confirmar_senha: str) -> Usuario:
     """
-    Normaliza o e-mail, valida unicidade e persiste o novo usuário.
-    Levanta ValueError se o e-mail já estiver cadastrado.
+    Normaliza e valida nome, e-mail, unicidade, senha e persiste o novo usuário.
+    Levanta ValueError se houver problema nos dados.
     """
+    nome = nome.strip()
+    if not nome:
+        raise ValueError('Nome não pode estar vazio.')
+
     email = email.strip().lower()
+    if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+        raise ValueError('E-mail inválido.')
 
-    if buscar_usuario_por_email(email):
+    if len(senha) < 8:
+        raise ValueError('A senha deve ter no mínimo 8 caracteres.')
+
+    if senha != confirmar_senha:
+        raise ValueError('As senhas não coincidem.')
+
+    try:
+        return Usuario.create(
+            nome=nome,
+            email=email,
+            senha_hash=hash_senha(senha),
+        )
+    except IntegrityError:
         raise ValueError('E-mail já cadastrado.')
-
-    return Usuario.create(
-        nome=nome.strip(),
-        email=email,
-        senha_hash=hash_senha(senha),
-    )
 
 
 def autenticar(email: str, senha: str) -> Usuario | None:

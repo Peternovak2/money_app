@@ -2,6 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
+import os
 
 from app.database import criar_tabelas
 
@@ -9,11 +10,15 @@ app = FastAPI(title='Money App')
 app.state.asset_version = 'dev'
 
 # Sessão autenticada via cookie assinado (itsdangerous)
-# Em produção, mova a chave secreta para uma variável de ambiente.
-app.add_middleware(SessionMiddleware, secret_key='dev-secret-change-in-production')
+SECRET_KEY = os.getenv('SECRET_KEY')
+if not SECRET_KEY:
+    raise ValueError("A variável de ambiente SECRET_KEY deve estar definida.")
+app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
 
-# Cria as tabelas do banco na inicialização, se ainda não existirem
-create_event = criar_tabelas()
+@app.on_event("startup")
+def startup_event():
+    # Cria as tabelas do banco na inicialização, se ainda não existirem
+    criar_tabelas()
 
 
 @app.middleware('http')

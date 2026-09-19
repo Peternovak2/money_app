@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 
 from peewee import (
@@ -6,9 +7,10 @@ from peewee import (
     Model,
     SqliteDatabase,
 )
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DB_PATH = os.path.join(BASE_DIR, 'money.db')
 
-db = SqliteDatabase('money.db')
-
+db = SqliteDatabase(DB_PATH)
 
 class BaseModel(Model):
     class Meta:
