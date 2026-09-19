@@ -1,0 +1,148 @@
+/* ── Página de autenticação ──────────────────────────────────────────────── */
+
+.auth-page {
+  min-height: calc(100vh - 73px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+}
+
+/* ── Cartão central ──────────────────────────────────────────────────────── */
+
+.auth-card {
+  width: 100%;
+  max-width: 440px;
+  padding: 48px 40px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--background);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+}
+
+/* ── Cabeçalho do cartão ─────────────────────────────────────────────────── */
+
+.auth-titulo {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.auth-subtitulo {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+}
+
+/* ── Mensagem de erro global (backend) ───────────────────────────────────── */
+
+.auth-erro {
+  background-color: #fff0f0;
+  border: 1px solid #fca5a5;
+  color: #b91c1c;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+/* ── Formulário ──────────────────────────────────────────────────────────── */
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ── Campo individual ────────────────────────────────────────────────────── */
+
+.auth-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.auth-campo label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.auth-campo input {
+  height: 48px;
+  padding: 0 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: 'Inter', sans-serif;
+  color: var(--text-primary);
+  background: var(--background);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.auth-campo input:focus {
+  border-color: #1d00fc;
+  box-shadow: 0 0 0 3px rgba(29, 0, 252, 0.08);
+}
+
+.auth-campo input.campo-invalido {
+  border-color: #ef4444;
+}
+
+/* ── Erro inline de campo (JS) ───────────────────────────────────────────── */
+
+.auth-campo-erro {
+  font-size: 0.8rem;
+  color: #b91c1c;
+  min-height: 1em;
+}
+
+/* ── Botão de envio ──────────────────────────────────────────────────────── */
+
+.auth-btn {
+  height: 50px;
+  width: 100%;
+  margin-top: 4px;
+  padding: 0 24px;
+  background-color: #1d00fc;
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.auth-btn:hover {
+  background-color: #1500d4;
+}
+
+.auth-btn:active {
+  transform: scale(0.98);
+}
+
+/* ── Link de alternância (Entrar / Criar conta) ───────────────────────────── */
+
+.auth-link {
+  margin-top: 24px;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.auth-link a {
+  color: #1d00fc;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.auth-link a:hover {
+  color: #1500d4;
+  text-decoration: underline;
+}

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cadastro — Money App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/css/style.css" />
+    <link rel="stylesheet" href="/static/css/auth.css" />
+  </head>
+  <body>
+    <header class="header">
+      <div class="container">
+        <a href="/" class="logo" style="text-decoration: none; color: inherit;">Money App</a>
+        <nav class="menu">
+          <a href="/login">Entrar</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="auth-page">
+      <div class="auth-card">
+        <h1 class="auth-titulo">Criar conta</h1>
+        <p class="auth-subtitulo">Acompanhe seus ativos favoritos da B3.</p>
+
+        {% if erro %}
+        <div class="auth-erro" role="alert">{{ erro }}</div>
+        {% endif %}
+
+        <form method="POST" action="/cadastro" class="auth-form" id="formCadastro" novalidate>
+          <div class="auth-campo">
+            <label for="nome">Nome</label>
+            <input
+              type="text"
+              id="nome"
+              name="nome"
+              placeholder="Seu nome completo"
+              required
+              autocomplete="name"
+            />
+          </div>
+
+          <div class="auth-campo">
+            <label for="email">E-mail</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="seu@email.com"
+              required
+              autocomplete="email"
+            />
+          </div>
+
+          <div class="auth-campo">
+            <label for="senha">Senha</label>
+            <input
+              type="password"
+              id="senha"
+              name="senha"
+              placeholder="Mínimo 8 caracteres"
+              required
+              minlength="8"
+              autocomplete="new-password"
+            />
+          </div>
+
+          <div class="auth-campo">
+            <label for="confirmar_senha">Confirmar senha</label>
+            <input
+              type="password"
+              id="confirmar_senha"
+              name="confirmar_senha"
+              placeholder="Repita a senha"
+              required
+              autocomplete="new-password"
+            />
+            <span class="auth-campo-erro" id="erroCadastro"></span>
+          </div>
+
+          <button type="submit" class="auth-btn">Criar conta</button>
+        </form>
+
+        <p class="auth-link">
+          Já tem uma conta? <a href="/login">Entrar</a>
+        </p>
+      </div>
+    </main>
+
+    <script src="/static/js/auth.js"></script>
+  </body>
+</html>
