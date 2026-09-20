@@ -2,6 +2,7 @@
 <html lang="pt-br">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Busca de Ativos</title>
     <link rel="stylesheet" href="/static/css/style.css?v={{ asset_version }}" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -15,22 +16,22 @@
   <body>
     <header class="header">
       <div class="container">
-        <div class="logo">Money app</div>
+        <a href="/" class="logo" aria-label="Money App - Página inicial">Money App</a>
 
-        <nav class="menu">
-          <a href="#">Investimentos</a>
-          <a href="#">Ações</a>
-          <a href="#">ETFs</a>
-          <a href="#">Portfólio</a>
-          <a href="#">Comunidade</a>
+        <nav class="menu" aria-label="Conta">
           {% if usuario %}
-            <span class="usuario-nome">{{ usuario.nome }}</span>
+            <div class="usuario-resumo" title="{{ usuario.nome }}">
+              <span class="usuario-avatar" aria-hidden="true">
+                {{ usuario.nome[:1] | upper }}
+              </span>
+              <span class="usuario-nome">{{ usuario.nome.split()[0] }}</span>
+            </div>
             <form method="POST" action="/logout" class="form-logout">
               <button type="submit" class="btn-logout">Sair</button>
             </form>
           {% else %}
-            <a href="/login">Entrar</a>
-            <a href="/cadastro">Criar conta</a>
+            <a href="/login" class="menu-link">Entrar</a>
+            <a href="/cadastro" class="menu-link menu-link--primary">Criar conta</a>
           {% endif %}
         </nav>
       </div>

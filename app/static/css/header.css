@@ -1,77 +1,203 @@
 .header {
-  border-bottom: 1px solid var(--border);
+  color: #e8eefc;
+  background: #0b1120;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+  box-shadow: 0 8px 24px rgba(2, 6, 23, 0.12);
 }
 
 .header .container {
   display: flex;
-
   align-items: center;
-
   justify-content: space-between;
-
-  height: 72px;
+  min-height: 72px;
+  gap: 24px;
 }
 
 .logo {
-  font-size: 1.5rem;
-
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  color: #f8fafc;
+  font-size: 1.25rem;
   font-weight: 700;
+  letter-spacing: -0.03em;
+  text-decoration: none;
+}
+
+.logo::before {
+  content: "M";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(96, 165, 250, 0.35);
+  border-radius: 10px;
+  color: #dbeafe;
+  background: rgba(37, 99, 235, 0.18);
+  font-size: 0.95rem;
+  letter-spacing: 0;
 }
 
 .menu {
   display: flex;
-
   align-items: center;
-
-  gap: 32px;
+  justify-content: flex-end;
+  min-width: 0;
+  margin-left: auto;
+  gap: 12px;
 }
 
 .menu a {
-  text-decoration: none;
-
-  color: var(--text-secondary);
-
+  color: #b8c3d9;
   font-weight: 500;
-
-  transition: color 0.2s ease;
+  text-decoration: none;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .menu a:hover {
-  color: var(--text-primary);
+  color: #f8fafc;
+}
+
+.menu-link {
+  padding: 9px 12px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+.menu-link:hover {
+  background: rgba(148, 163, 184, 0.08);
+}
+
+.menu .menu-link--primary {
+  border: 1px solid rgba(96, 165, 250, 0.38);
+  color: #eff6ff;
+  background: #2563eb;
+}
+
+.menu .menu-link--primary:hover {
+  border-color: #3b82f6;
+  background: #1d4ed8;
+}
+
+.usuario-resumo {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  max-width: 220px;
+  gap: 9px;
+  padding: 5px 10px 5px 5px;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.07);
+}
+
+.usuario-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  border: 1px solid rgba(96, 165, 250, 0.32);
+  border-radius: 50%;
+  color: #dbeafe;
+  background: rgba(37, 99, 235, 0.2);
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 
 .usuario-nome {
-  color: var(--text-primary);
-
+  min-width: 0;
+  overflow: hidden;
+  color: #e8eefc;
+  font-size: 0.9rem;
   font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .form-logout {
   display: inline-flex;
-
+  flex-shrink: 0;
   margin: 0;
 }
 
 .btn-logout {
-  background: none;
-
-  border: none;
-
-  padding: 0;
-
+  padding: 9px 12px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 8px;
+  color: #b8c3d9;
+  background: transparent;
   font-family: inherit;
-
-  font-size: inherit;
-
-  color: var(--text-secondary);
-
+  font-size: 0.9rem;
   font-weight: 500;
-
   cursor: pointer;
-
-  transition: color 0.2s ease;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .btn-logout:hover {
-  color: var(--text-primary);
+  border-color: rgba(148, 163, 184, 0.35);
+  color: #f8fafc;
+  background: rgba(148, 163, 184, 0.08);
+}
+
+.logo:focus-visible,
+.menu a:focus-visible,
+.btn-logout:focus-visible {
+  outline: 2px solid #60a5fa;
+  outline-offset: 3px;
+}
+
+@media (max-width: 640px) {
+  .header .container {
+    min-height: 64px;
+    gap: 12px;
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .logo {
+    gap: 8px;
+    font-size: 1.05rem;
+  }
+
+  .logo::before {
+    width: 30px;
+    height: 30px;
+    font-size: 0.82rem;
+  }
+
+  .menu {
+    gap: 8px;
+  }
+
+  .menu-link,
+  .btn-logout {
+    padding: 8px 10px;
+    font-size: 0.82rem;
+  }
+
+  .usuario-resumo {
+    max-width: 132px;
+    padding: 4px 8px 4px 4px;
+    gap: 7px;
+  }
+
+  .usuario-avatar {
+    width: 28px;
+    height: 28px;
+    flex-basis: 28px;
+  }
+
+  .usuario-nome {
+    font-size: 0.82rem;
+  }
 }
