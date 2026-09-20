@@ -49,6 +49,26 @@
           <span class="valor">R$ {{ dados.preco }}</span>
           <span class="variacao_dia">{{ dados.variacao_dia }}%</span>
         </div>
+
+        {% if favoritavel %}
+          {% if usuario %}
+            {% if favoritado %}
+              <form method="POST" action="/ativo/{{ ticker_canonico }}/desfavoritar" class="favorito-form">
+                <button type="submit" class="btn-favorito btn-favorito--remover">
+                  Remover dos favoritos
+                </button>
+              </form>
+            {% else %}
+              <form method="POST" action="/ativo/{{ ticker_canonico }}/favoritar" class="favorito-form">
+                <button type="submit" class="btn-favorito">Salvar ativo</button>
+              </form>
+            {% endif %}
+          {% else %}
+            <p class="favorito-login">
+              <a href="/login">Entre para salvar este ativo</a>
+            </p>
+          {% endif %}
+        {% endif %}
       </section>
       <section class="cards">
         <article class="card">
