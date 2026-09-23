@@ -46,12 +46,124 @@ body {
   margin-bottom: 48px;
 }
 
+.voltar {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 32px;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.voltar:hover {
+  color: var(--text-primary);
+}
+
+.ativo-header {
+  display: flex;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--border);
+}
+
+.ativo-conteudo {
+  min-width: 0;
+}
+
+.ativo-metadados {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-bottom: 10px;
+}
+
+.ticker {
+  color: #1d4ed8;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.ativo-classificacao {
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+}
+
+.ativo-classificacao + .ativo-classificacao {
+  padding-left: 12px;
+  border-left: 1px solid var(--border);
+}
+
+.empresa {
+  max-width: 760px;
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.preco-label {
+  margin-top: 28px;
+  margin-bottom: 4px;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
 .preco {
   display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 10px;
+}
 
-  align-items: center;
+.valor {
+  color: var(--text-primary);
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1;
+}
 
-  gap: 16px;
+.valor--indisponivel {
+  color: var(--text-secondary);
+}
+
+.moeda {
+  margin-right: 8px;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.variacao_dia {
+  font-size: 1rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.variacao_dia--positiva {
+  color: #087f5b;
+}
+
+.variacao_dia--negativa {
+  color: #c92a2a;
+}
+
+.variacao_dia--neutra {
+  color: var(--text-secondary);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .cards {
@@ -60,6 +172,47 @@ body {
   grid-template-columns: repeat(3, 1fr);
 
   gap: 24px;
+}
+
+@media (max-width: 900px) {
+  .cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .ativo-page {
+    padding: 28px 16px 64px;
+  }
+
+  .ativo-resumo {
+    margin-bottom: 36px;
+  }
+
+  .voltar {
+    margin-bottom: 24px;
+  }
+
+  .ativo-header {
+    padding-bottom: 24px;
+  }
+
+  .empresa {
+    font-size: 1.25rem;
+  }
+
+  .preco-label {
+    margin-top: 22px;
+  }
+
+  .valor {
+    font-size: 2.75rem;
+  }
+
+  .cards {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
 }
 
 /* Exemplos populares */

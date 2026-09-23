@@ -4,7 +4,6 @@ from datetime import datetime
 from peewee import (
     CharField,
     DateTimeField,
-    ForeignKeyField,
     Model,
     SqliteDatabase,
 )
@@ -28,18 +27,6 @@ class Usuario(BaseModel):
         table_name = 'usuarios'
 
 
-class Favorito(BaseModel):
-    usuario = ForeignKeyField(Usuario, backref='favoritos', on_delete='CASCADE')
-    ticker = CharField(max_length=20)
-    criado_em = DateTimeField(default=datetime.now)
-
-    class Meta:
-        table_name = 'favoritos'
-        indexes = (
-            (('usuario', 'ticker'), True),
-        )
-
-
 def criar_tabelas():
     with db:
-        db.create_tables([Usuario, Favorito], safe=True)
+        db.create_tables([Usuario], safe=True)

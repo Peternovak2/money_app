@@ -11,7 +11,7 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <title>Dados do Ativo</title>
+    <title>{{ ticker_exibicao }} | Money App</title>
   </head>
   <body>
     <header class="header">
@@ -38,37 +38,65 @@
     </header>
 
     <main class="ativo-page">
-      <section class="ativo-resumo">
-        <a href="/" class="voltar">← Voltar</a>
+      <section class="ativo-resumo" aria-labelledby="ativo-nome">
+        <a href="/" class="voltar">&larr; Voltar</a>
 
-        <h1 class="ticker">{{ dados.ticker }}</h1>
+        <div class="ativo-header">
+          <div class="ativo-conteudo">
+            <div class="ativo-metadados">
+              <span class="ticker">{{ ticker_exibicao }}</span>
 
-        <h2 class="empresa">{{ dados.nome }}</h2>
+              {% if dados.setor %}
+                <span class="ativo-classificacao">{{ dados.setor }}</span>
+              {% endif %}
 
-        <div class="preco">
-          <span class="valor">R$ {{ dados.preco }}</span>
-          <span class="variacao_dia">{{ dados.variacao_dia }}%</span>
+              {% if dados.industria and dados.industria != dados.setor %}
+                <span class="ativo-classificacao">{{ dados.industria }}</span>
+              {% endif %}
+            </div>
+
+            <h1 id="ativo-nome" class="empresa">
+              {{ dados.nome or ticker_exibicao }}
+            </h1>
+
+            <p class="preco-label">Preço atual</p>
+            <div class="preco">
+              {% if dados.preco is not none %}
+                <span class="valor">
+                  {{ "%.2f"|format(dados.preco)|replace(".", ",") }}
+                </span>
+                {% if dados.moeda %}
+                  <span class="moeda">{{ dados.moeda }}</span>
+                {% endif %}
+              {% else %}
+                <span class="valor valor--indisponivel">&mdash;</span>
+              {% endif %}
+
+              {% if dados.variacao_dia is not none %}
+                {% if dados.variacao_dia > 0 %}
+                  {% set variacao_classe = "variacao_dia--positiva" %}
+                  {% set variacao_sinal = "+" %}
+                {% elif dados.variacao_dia < 0 %}
+                  {% set variacao_classe = "variacao_dia--negativa" %}
+                  {% set variacao_sinal = "" %}
+                {% else %}
+                  {% set variacao_classe = "variacao_dia--neutra" %}
+                  {% set variacao_sinal = "" %}
+                {% endif %}
+
+                <span class="variacao_dia {{ variacao_classe }}">
+                  <span class="sr-only">Variação diária:</span>
+                  {{ variacao_sinal }}{{ "%.2f"|format(dados.variacao_dia)|replace(".", ",") }}%
+                </span>
+              {% else %}
+                <span class="variacao_dia variacao_dia--neutra">
+                  Variação indisponível
+                </span>
+              {% endif %}
+            </div>
+          </div>
+
         </div>
-
-        {% if favoritavel %}
-          {% if usuario %}
-            {% if favoritado %}
-              <form method="POST" action="/ativo/{{ ticker_canonico }}/desfavoritar" class="favorito-form">
-                <button type="submit" class="btn-favorito btn-favorito--remover">
-                  Remover dos favoritos
-                </button>
-              </form>
-            {% else %}
-              <form method="POST" action="/ativo/{{ ticker_canonico }}/favoritar" class="favorito-form">
-                <button type="submit" class="btn-favorito">Salvar ativo</button>
-              </form>
-            {% endif %}
-          {% else %}
-            <p class="favorito-login">
-              <a href="/login">Entre para salvar este ativo</a>
-            </p>
-          {% endif %}
-        {% endif %}
       </section>
       <section class="cards">
         <article class="card">
