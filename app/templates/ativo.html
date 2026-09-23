@@ -97,52 +97,83 @@
           </div>
 
         </div>
+
+        <nav class="ativo-nav" aria-label="Seções do ativo">
+          <ul class="ativo-nav-lista">
+            <li><a class="ativo-nav-link" href="#visao-geral">Visão geral</a></li>
+            <li><a class="ativo-nav-link" href="#grafico">Gráfico</a></li>
+            <li><a class="ativo-nav-link" href="#fundamentos">Fundamentos</a></li>
+            <li><a class="ativo-nav-link" href="#empresa">Empresa</a></li>
+            <li><a class="ativo-nav-link" href="#noticias">Notícias</a></li>
+          </ul>
+        </nav>
       </section>
-      <section class="cards">
-        <article class="card">
-          <h3>Abertura</h3>
-          <p>R$ {{ dados.abertura }}</p>
-        </article>
 
-        <article class="card">
-          <h3>Máxima</h3>
-          <p>R$ {{ dados.maxima }}</p>
-        </article>
+      <section id="visao-geral" class="ativo-secao" aria-labelledby="titulo-visao-geral">
+        <h2 id="titulo-visao-geral" class="ativo-secao-titulo">Visão geral</h2>
 
-        <article class="card">
-          <h3>Mínima</h3>
-          <p>R$ {{ dados.minima}}</p>
-        </article>
+        <div class="cards">
+          <article class="card">
+            <h3>Abertura</h3>
+            <p>R$ {{ dados.abertura }}</p>
+          </article>
 
-        <article class="card">
-          <h3>Volume</h3>
-          <p>{{ dados.volume }}</p>
-        </article>
+          <article class="card">
+            <h3>Máxima</h3>
+            <p>R$ {{ dados.maxima }}</p>
+          </article>
 
-        <article class="card">
-          <h3>Market Cap</h3>
-          <p>R$ {{ dados.market_cap}}</p>
-        </article>
+          <article class="card">
+            <h3>Mínima</h3>
+            <p>R$ {{ dados.minima}}</p>
+          </article>
 
-        <article class="card">
-          <h3>Setor</h3>
-          <p>{{dados.setor}}</p>
-        </article>
+          <article class="card">
+            <h3>Volume</h3>
+            <p>{{ dados.volume }}</p>
+          </article>
 
-        <article class="card">
-          <h3>Dividend Yield</h3>
-          <p>{{ dados.dividend_yield}}</p>
-        </article>
+          <article class="card">
+            <h3>Market Cap</h3>
+            <p>R$ {{ dados.market_cap}}</p>
+          </article>
 
-        <article class="card">
-          <h3>P/L</h3>
-          <p>{{ dados.pe }}</p>
-        </article>
+          <article class="card">
+            <h3>Setor</h3>
+            <p>{{dados.setor}}</p>
+          </article>
 
-        <article class="card">
-          <h3>EPS</h3>
-          <p>{{ dados.eps }}</p>
-        </article>
+          <article class="card">
+            <h3>Dividend Yield</h3>
+            <p>{{ dados.dividend_yield}}</p>
+          </article>
+
+          <article class="card">
+            <h3>P/L</h3>
+            <p>{{ dados.pe }}</p>
+          </article>
+
+          <article class="card">
+            <h3>EPS</h3>
+            <p>{{ dados.eps }}</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="grafico" class="ativo-secao" aria-labelledby="titulo-grafico">
+        <h2 id="titulo-grafico" class="ativo-secao-titulo">Gráfico</h2>
+      </section>
+
+      <section id="fundamentos" class="ativo-secao" aria-labelledby="titulo-fundamentos">
+        <h2 id="titulo-fundamentos" class="ativo-secao-titulo">Fundamentos</h2>
+      </section>
+
+      <section id="empresa" class="ativo-secao" aria-labelledby="titulo-empresa">
+        <h2 id="titulo-empresa" class="ativo-secao-titulo">Empresa</h2>
+      </section>
+
+      <section id="noticias" class="ativo-secao" aria-labelledby="titulo-noticias">
+        <h2 id="titulo-noticias" class="ativo-secao-titulo">Notícias</h2>
       </section>
     </main>
   </body>

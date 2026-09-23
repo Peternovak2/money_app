@@ -67,6 +67,42 @@ body {
   border-bottom: 1px solid var(--border);
 }
 
+.ativo-nav {
+  border-bottom: 1px solid var(--border);
+}
+
+.ativo-nav-lista {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  list-style: none;
+}
+
+.ativo-nav-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  border-bottom: 2px solid transparent;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.ativo-nav-link:hover {
+  border-bottom-color: #93c5fd;
+  color: var(--text-primary);
+}
+
+.ativo-nav-link:focus-visible {
+  border-bottom-color: #2563eb;
+  color: var(--text-primary);
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
 .ativo-conteudo {
   min-width: 0;
 }
@@ -166,6 +202,21 @@ body {
   border: 0;
 }
 
+.ativo-secao {
+  scroll-margin-top: 24px;
+}
+
+.ativo-secao + .ativo-secao {
+  margin-top: 56px;
+}
+
+.ativo-secao-titulo {
+  margin-bottom: 24px;
+  color: var(--text-primary);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
 .cards {
   display: grid;
 
@@ -195,6 +246,19 @@ body {
 
   .ativo-header {
     padding-bottom: 24px;
+  }
+
+  .ativo-nav {
+    margin-right: -16px;
+    margin-left: -16px;
+    padding-right: 16px;
+    padding-left: 16px;
+    overflow-x: auto;
+  }
+
+  .ativo-nav-lista {
+    width: max-content;
+    gap: 24px;
   }
 
   .empresa {
