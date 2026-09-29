@@ -225,6 +225,127 @@ body {
   gap: 24px;
 }
 
+.card {
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--background);
+}
+
+.card-rotulo {
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.card-valor {
+  color: var(--text-primary);
+  font-size: 1.125rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.grafico-cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.grafico-cabecalho .ativo-secao-titulo {
+  margin-bottom: 0;
+}
+
+.grafico-periodos {
+  display: inline-flex;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.grafico-periodo {
+  min-width: 48px;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 0;
+  border-left: 1px solid var(--border);
+  background: var(--background);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.grafico-periodo:first-child {
+  border-left: 0;
+}
+
+.grafico-periodo:hover {
+  background: var(--hover);
+  color: var(--text-primary);
+}
+
+.grafico-periodo--ativo {
+  background: var(--text-primary);
+  color: var(--background);
+}
+
+.grafico-periodo--ativo:hover {
+  background: var(--text-primary);
+  color: var(--background);
+}
+
+.grafico-periodo:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline: 2px solid #2563eb;
+  outline-offset: -2px;
+}
+
+.grafico-conteudo {
+  position: relative;
+  height: 480px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #0f172a;
+}
+
+.grafico-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.grafico-canvas[hidden] {
+  display: none;
+}
+
+.grafico-status {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  color: #cbd5e1;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.grafico-status[hidden] {
+  display: none;
+}
+
+.grafico-conteudo[data-estado="erro"] .grafico-status {
+  color: #ff8787;
+}
+
 @media (max-width: 900px) {
   .cards {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -276,6 +397,27 @@ body {
   .cards {
     grid-template-columns: 1fr;
     gap: 16px;
+  }
+
+  .grafico-cabecalho {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .grafico-periodos {
+    width: 100%;
+  }
+
+  .grafico-periodo {
+    flex: 1;
+  }
+
+  .grafico-conteudo {
+    height: 360px;
+  }
+
+  .grafico-status {
+    padding: 20px;
   }
 }
 

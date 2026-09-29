@@ -4,11 +4,17 @@ from fastapi.templating import Jinja2Templates
 
 from app.services.auth import obter_usuario_logado
 from app.services.informacoes import buscar_ativo
-from app.services.utils.formatar import formatar_ticker
+from app.services.utils.formatar import (
+    formatar_inteiro,
+    formatar_monetario,
+    formatar_ticker,
+)
 
 router = APIRouter()
 
 templates = Jinja2Templates(directory='app/templates')
+templates.env.filters['formatar_inteiro'] = formatar_inteiro
+templates.env.filters['formatar_monetario'] = formatar_monetario
 
 @router.get('/ativo/{ticker}', response_class=HTMLResponse)
 def ativo(request: Request, ticker: str):

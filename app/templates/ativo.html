@@ -11,6 +11,11 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <script
+      src="https://cdn.jsdelivr.net/npm/echarts@6.1.0/dist/echarts.min.js"
+      defer
+    ></script>
+    <script src="/static/js/ativo.js?v={{ asset_version }}" defer></script>
     <title>{{ ticker_exibicao }} | Money App</title>
   </head>
   <body>
@@ -110,58 +115,116 @@
       </section>
 
       <section id="visao-geral" class="ativo-secao" aria-labelledby="titulo-visao-geral">
-        <h2 id="titulo-visao-geral" class="ativo-secao-titulo">Visão geral</h2>
+        <h2 id="titulo-visao-geral" class="ativo-secao-titulo">Resumo do mercado</h2>
 
         <div class="cards">
           <article class="card">
-            <h3>Abertura</h3>
-            <p>R$ {{ dados.abertura }}</p>
+            <h3 class="card-rotulo">Abertura</h3>
+            <p class="card-valor">
+              {{ dados.abertura | formatar_monetario(dados.moeda) }}
+            </p>
           </article>
 
           <article class="card">
-            <h3>Máxima</h3>
-            <p>R$ {{ dados.maxima }}</p>
+            <h3 class="card-rotulo">Máxima</h3>
+            <p class="card-valor">
+              {{ dados.maxima | formatar_monetario(dados.moeda) }}
+            </p>
           </article>
 
           <article class="card">
-            <h3>Mínima</h3>
-            <p>R$ {{ dados.minima}}</p>
+            <h3 class="card-rotulo">Mínima</h3>
+            <p class="card-valor">
+              {{ dados.minima | formatar_monetario(dados.moeda) }}
+            </p>
           </article>
 
           <article class="card">
-            <h3>Volume</h3>
-            <p>{{ dados.volume }}</p>
+            <h3 class="card-rotulo">Volume</h3>
+            <p class="card-valor">{{ dados.volume | formatar_inteiro }}</p>
           </article>
 
           <article class="card">
-            <h3>Market Cap</h3>
-            <p>R$ {{ dados.market_cap}}</p>
-          </article>
-
-          <article class="card">
-            <h3>Setor</h3>
-            <p>{{dados.setor}}</p>
-          </article>
-
-          <article class="card">
-            <h3>Dividend Yield</h3>
-            <p>{{ dados.dividend_yield}}</p>
-          </article>
-
-          <article class="card">
-            <h3>P/L</h3>
-            <p>{{ dados.pe }}</p>
-          </article>
-
-          <article class="card">
-            <h3>EPS</h3>
-            <p>{{ dados.eps }}</p>
+            <h3 class="card-rotulo">Valor de mercado</h3>
+            <p class="card-valor">
+              {{ dados.market_cap | formatar_monetario(dados.moeda, 0) }}
+            </p>
           </article>
         </div>
       </section>
 
-      <section id="grafico" class="ativo-secao" aria-labelledby="titulo-grafico">
-        <h2 id="titulo-grafico" class="ativo-secao-titulo">Gráfico</h2>
+      <section
+        id="grafico"
+        class="ativo-secao"
+        aria-labelledby="titulo-grafico"
+        data-ticker="{{ ticker_exibicao }}"
+        data-periodo-inicial="6mo"
+      >
+        <div class="grafico-cabecalho">
+          <h2 id="titulo-grafico" class="ativo-secao-titulo">Gráfico</h2>
+
+          <div class="grafico-periodos" role="group" aria-label="Período do histórico">
+            <button
+              type="button"
+              class="grafico-periodo"
+              data-periodo="1mo"
+              aria-controls="grafico-conteudo"
+              aria-pressed="false"
+            >
+              1M
+            </button>
+            <button
+              type="button"
+              class="grafico-periodo"
+              data-periodo="3mo"
+              aria-controls="grafico-conteudo"
+              aria-pressed="false"
+            >
+              3M
+            </button>
+            <button
+              type="button"
+              class="grafico-periodo grafico-periodo--ativo"
+              data-periodo="6mo"
+              aria-controls="grafico-conteudo"
+              aria-pressed="true"
+            >
+              6M
+            </button>
+            <button
+              type="button"
+              class="grafico-periodo"
+              data-periodo="1y"
+              aria-controls="grafico-conteudo"
+              aria-pressed="false"
+            >
+              1A
+            </button>
+          </div>
+        </div>
+
+        <div
+          id="grafico-conteudo"
+          class="grafico-conteudo"
+          data-estado="carregando"
+          aria-busy="true"
+        >
+          <div
+            id="grafico-canvas"
+            class="grafico-canvas"
+            aria-label="Histórico de preço e volume de {{ ticker_exibicao }}"
+            hidden
+          ></div>
+          <p
+            id="grafico-status"
+            class="grafico-status"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            Carregando histórico...
+          </p>
+        </div>
       </section>
 
       <section id="fundamentos" class="ativo-secao" aria-labelledby="titulo-fundamentos">
