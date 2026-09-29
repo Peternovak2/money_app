@@ -28,6 +28,20 @@ if (secaoGrafico) {
     return `${dia}/${mes}/${ano}`;
   }
 
+  function formatarDataEixo(data, periodo) {
+    const [ano, mes, dia] = data.split("-");
+
+    if (periodo === "max") {
+      return ano;
+    }
+
+    if (periodo === "5y") {
+      return `${mes}/${ano}`;
+    }
+
+    return `${dia}/${mes}`;
+  }
+
   function atualizarPeriodoAtivo(periodo) {
     botoesPeriodo.forEach((botao) => {
       const estaAtivo = botao.dataset.periodo === periodo;
@@ -47,7 +61,7 @@ if (secaoGrafico) {
     statusGrafico.textContent = mensagem;
   }
 
-  function criarOpcoes(pontos) {
+  function criarOpcoes(pontos, periodo) {
     const datas = pontos.map((ponto) => ponto.time);
     const candles = pontos.map((ponto) => [
       ponto.open,
@@ -126,8 +140,7 @@ if (secaoGrafico) {
             color: "#94a3b8",
             hideOverlap: true,
             formatter(data) {
-              const [, mes, dia] = data.split("-");
-              return `${dia}/${mes}`;
+              return formatarDataEixo(data, periodo);
             },
           },
           splitLine: { show: false },
@@ -215,7 +228,7 @@ if (secaoGrafico) {
     };
   }
 
-  function renderizarGrafico(pontos) {
+  function renderizarGrafico(pontos, periodo) {
     if (!window.echarts) {
       throw new Error("Apache ECharts não foi carregado");
     }
@@ -228,7 +241,7 @@ if (secaoGrafico) {
       });
     }
 
-    grafico.setOption(criarOpcoes(pontos), true);
+    grafico.setOption(criarOpcoes(pontos, periodo), true);
     requestAnimationFrame(() => grafico.resize());
   }
 
@@ -281,7 +294,7 @@ if (secaoGrafico) {
         return;
       }
 
-      renderizarGrafico(dados.pontos);
+      renderizarGrafico(dados.pontos, periodo);
       periodoCarregado = periodo;
     } catch (erro) {
       if (erro.name === "AbortError") {

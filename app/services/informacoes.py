@@ -9,6 +9,8 @@ PERIODOS_HISTORICO = {
     '3mo': '1d',
     '6mo': '1d',
     '1y': '1d',
+    '5y': '1wk',
+    'max': '1mo',
 }
 
 
