@@ -7,6 +7,8 @@ from app.services.informacoes import buscar_ativo
 from app.services.utils.formatar import (
     formatar_inteiro,
     formatar_monetario,
+    formatar_numero,
+    formatar_percentual,
     formatar_ticker,
 )
 
@@ -15,6 +17,8 @@ router = APIRouter()
 templates = Jinja2Templates(directory='app/templates')
 templates.env.filters['formatar_inteiro'] = formatar_inteiro
 templates.env.filters['formatar_monetario'] = formatar_monetario
+templates.env.filters['formatar_numero'] = formatar_numero
+templates.env.filters['formatar_percentual'] = formatar_percentual
 
 @router.get('/ativo/{ticker}', response_class=HTMLResponse)
 def ativo(request: Request, ticker: str):

@@ -247,6 +247,23 @@
 
       <section id="fundamentos" class="ativo-secao" aria-labelledby="titulo-fundamentos">
         <h2 id="titulo-fundamentos" class="ativo-secao-titulo">Fundamentos</h2>
+
+        <div class="cards">
+          <article class="card">
+            <h3 class="card-rotulo">P/L</h3>
+            <p class="card-valor">{{ dados.pe | formatar_numero }}</p>
+          </article>
+
+          <article class="card">
+            <h3 class="card-rotulo">Lucro por ação</h3>
+            <p class="card-valor">{{ dados.eps | formatar_monetario(dados.moeda) }}</p>
+          </article>
+
+          <article class="card">
+            <h3 class="card-rotulo">Dividend Yield</h3>
+            <p class="card-valor">{{ dados.dividend_yield | formatar_percentual }}</p>
+          </article>
+        </div>
       </section>
 
       <section id="empresa" class="ativo-secao" aria-labelledby="titulo-empresa">

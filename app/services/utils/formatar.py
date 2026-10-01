@@ -33,3 +33,12 @@ def formatar_monetario(valor, moeda=None, casas_decimais=2):
         return valor_formatado
 
     return f'{valor_formatado} {moeda}'
+
+
+def formatar_percentual(valor, casas_decimais=2):
+    valor_formatado = formatar_numero(valor, casas_decimais)
+
+    if valor_formatado == VALOR_INDISPONIVEL:
+        return valor_formatado
+
+    return f'{valor_formatado}%'
