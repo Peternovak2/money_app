@@ -118,11 +118,14 @@ def buscar_ativo(ticker):
     if not info or info.get('quoteType') is None:
         raise ValueError('Ativo não encontrado')
     
+    roe_raw = _converter_float(info.get("returnOnEquity"))
+    margem_liquida_raw = _converter_float(info.get("profitMargins"))
+
     return {
         "ticker": ticker,
         "nome": info.get("longName"),
         "preco": info.get("currentPrice"),
-        "variacao_dia": info.get("regularMarketChangePercent"), 
+        "variacao_dia": info.get("regularMarketChangePercent"),
         "abertura": info.get("open"),
         "maxima": info.get("dayHigh"),
         "minima": info.get("dayLow"),
@@ -134,4 +137,7 @@ def buscar_ativo(ticker):
         "pe": info.get("trailingPE"),
         "eps": info.get("trailingEps"),
         "moeda": info.get("currency"),
+        "pvp": info.get("priceToBook"),
+        "roe": roe_raw * 100 if roe_raw is not None else None,
+        "margem_liquida": margem_liquida_raw * 100 if margem_liquida_raw is not None else None,
     }

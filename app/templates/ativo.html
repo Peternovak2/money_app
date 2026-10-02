@@ -263,6 +263,21 @@
             <h3 class="card-rotulo">Dividend Yield</h3>
             <p class="card-valor">{{ dados.dividend_yield | formatar_percentual }}</p>
           </article>
+
+          <article class="card">
+            <h3 class="card-rotulo">P/VP</h3>
+            <p class="card-valor">{{ dados.pvp | formatar_numero }}</p>
+          </article>
+
+          <article class="card">
+            <h3 class="card-rotulo">ROE</h3>
+            <p class="card-valor">{{ dados.roe | formatar_percentual }}</p>
+          </article>
+
+          <article class="card">
+            <h3 class="card-rotulo">Margem líquida</h3>
+            <p class="card-valor">{{ dados.margem_liquida | formatar_percentual }}</p>
+          </article>
         </div>
       </section>
 
