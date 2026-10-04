@@ -37,34 +37,51 @@
       </div>
     </header>
 
-    <main>
-      <section class="hero">
-        <h1>
-          Pesquise <span style="color: rgb(29, 0, 252)">ativos</span> da Bolsa
-        </h1>
-        <p>Consulte ações, ETFs e FIIs de forma rápida e inteligente.</p>
+    <main class="home-page">
+      <section class="home-hero" aria-labelledby="home-title">
+        <div class="home-hero__content">
+          <p class="home-eyebrow">Mercado brasileiro</p>
 
-        <form id="formBusca">
-          <input
-            type="text"
-            id="tickerInput"
-            placeholder="Digite um ticker (Ex: PETR4)"
-            required
-          />
-        </form>
+          <h1 id="home-title" class="home-title">
+            Pesquise e analise <span class="home-title__accent">ativos da B3</span>
+          </h1>
 
-        <section class="populares">
-          <p>Exemplos populares:</p>
-          <div class="tickers-populares">
-            <a href="/ativo/VALE3">VALE3</a>
-            <a href="/ativo/PETR4">PETR4</a>
-            <a href="/ativo/ITUB4">ITUB4</a>
-            <a href="/ativo/BBDC4">BBDC4</a>
-            <a href="/ativo/WEGE3">WEGE3</a>
-          </div>
-        </section>
+          <p class="home-subtitle">
+            Cotações, gráficos e fundamentos em um só lugar.
+          </p>
+
+          <form id="formBusca" class="home-search" role="search">
+            <label for="tickerInput" class="home-search__label">Buscar ativo</label>
+
+            <div class="home-search__controls">
+              <input
+                type="text"
+                id="tickerInput"
+                class="home-search__field"
+                placeholder="Digite um ticker, ex.: PETR4"
+                autocomplete="off"
+                autocapitalize="characters"
+                spellcheck="false"
+                required
+              />
+              <button type="submit" class="home-search__button">Buscar</button>
+            </div>
+          </form>
+
+          <nav class="home-examples" aria-label="Exemplos de busca">
+            <span class="home-examples__label">Exemplos de busca</span>
+            <div class="home-examples__list">
+              <a class="home-examples__link" href="/ativo/VALE3">VALE3</a>
+              <a class="home-examples__link" href="/ativo/PETR4">PETR4</a>
+              <a class="home-examples__link" href="/ativo/ITUB4">ITUB4</a>
+              <a class="home-examples__link" href="/ativo/BBDC4">BBDC4</a>
+              <a class="home-examples__link" href="/ativo/WEGE3">WEGE3</a>
+            </div>
+          </nav>
+        </div>
       </section>
     </main>
+
+    <script src="/static/js/home.js?v={{ asset_version }}"></script>
   </body>
-  <script src="/static/js/home.js?v={{ asset_version }}"></script>
 </html>
