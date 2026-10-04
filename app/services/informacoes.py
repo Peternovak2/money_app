@@ -120,6 +120,15 @@ def buscar_ativo(ticker):
     
     roe_raw = _converter_float(info.get("returnOnEquity"))
     margem_liquida_raw = _converter_float(info.get("profitMargins"))
+    ev_ebitda_raw = _converter_float(info.get("enterpriseToEbitda"))
+    divida_total_raw = _converter_float(info.get("totalDebt"))
+    ebitda_raw = _converter_float(info.get("ebitda"))
+    moeda_financeira = info.get("financialCurrency") or info.get("currency")
+
+    if divida_total_raw is not None and ebitda_raw is not None and ebitda_raw != 0:
+        divida_total_ebitda = divida_total_raw / ebitda_raw
+    else:
+        divida_total_ebitda = None
 
     return {
         "ticker": ticker,
@@ -140,4 +149,8 @@ def buscar_ativo(ticker):
         "pvp": info.get("priceToBook"),
         "roe": roe_raw * 100 if roe_raw is not None else None,
         "margem_liquida": margem_liquida_raw * 100 if margem_liquida_raw is not None else None,
+        "ev_ebitda": ev_ebitda_raw,
+        "divida_total": divida_total_raw,
+        "divida_total_ebitda": divida_total_ebitda,
+        "moeda_financeira": moeda_financeira,
     }

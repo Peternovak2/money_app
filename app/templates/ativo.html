@@ -278,6 +278,23 @@
             <h3 class="card-rotulo">Margem líquida</h3>
             <p class="card-valor">{{ dados.margem_liquida | formatar_percentual }}</p>
           </article>
+
+          <article class="card">
+            <h3 class="card-rotulo">EV/EBITDA</h3>
+            <p class="card-valor">{{ dados.ev_ebitda | formatar_numero }}</p>
+          </article>
+
+          <article class="card">
+            <h3 class="card-rotulo">Dívida total</h3>
+            <p class="card-valor">
+              {{ dados.divida_total | formatar_monetario(dados.moeda_financeira, 0) }}
+            </p>
+          </article>
+
+          <article class="card">
+            <h3 class="card-rotulo">Dívida total / EBITDA</h3>
+            <p class="card-valor">{{ dados.divida_total_ebitda | formatar_numero }}</p>
+          </article>
         </div>
       </section>
 
