@@ -117,39 +117,41 @@
       <section id="visao-geral" class="ativo-secao" aria-labelledby="titulo-visao-geral">
         <h2 id="titulo-visao-geral" class="ativo-secao-titulo">Resumo do mercado</h2>
 
-        <div class="cards">
-          <article class="card">
-            <h3 class="card-rotulo">Abertura</h3>
-            <p class="card-valor">
-              {{ dados.abertura | formatar_monetario(dados.moeda) }}
-            </p>
-          </article>
+        <div class="resumo-painel">
+          <div class="resumo-grid">
+            <article class="resumo-card">
+              <h3 class="resumo-card-rotulo">Abertura</h3>
+              <p class="resumo-card-valor">
+                {{ dados.abertura | formatar_monetario(dados.moeda) }}
+              </p>
+            </article>
 
-          <article class="card">
-            <h3 class="card-rotulo">Máxima</h3>
-            <p class="card-valor">
-              {{ dados.maxima | formatar_monetario(dados.moeda) }}
-            </p>
-          </article>
+            <article class="resumo-card">
+              <h3 class="resumo-card-rotulo">Máxima</h3>
+              <p class="resumo-card-valor">
+                {{ dados.maxima | formatar_monetario(dados.moeda) }}
+              </p>
+            </article>
 
-          <article class="card">
-            <h3 class="card-rotulo">Mínima</h3>
-            <p class="card-valor">
-              {{ dados.minima | formatar_monetario(dados.moeda) }}
-            </p>
-          </article>
+            <article class="resumo-card">
+              <h3 class="resumo-card-rotulo">Mínima</h3>
+              <p class="resumo-card-valor">
+                {{ dados.minima | formatar_monetario(dados.moeda) }}
+              </p>
+            </article>
 
-          <article class="card">
-            <h3 class="card-rotulo">Volume</h3>
-            <p class="card-valor">{{ dados.volume | formatar_inteiro }}</p>
-          </article>
+            <article class="resumo-card">
+              <h3 class="resumo-card-rotulo">Volume</h3>
+              <p class="resumo-card-valor">{{ dados.volume | formatar_inteiro }}</p>
+            </article>
 
-          <article class="card">
-            <h3 class="card-rotulo">Valor de mercado</h3>
-            <p class="card-valor">
-              {{ dados.market_cap | formatar_monetario(dados.moeda, 0) }}
-            </p>
-          </article>
+            <article class="resumo-card">
+              <h3 class="resumo-card-rotulo">Valor de mercado</h3>
+              <p class="resumo-card-valor">
+                {{ dados.market_cap | formatar_monetario_compacto(dados.moeda) }}
+              </p>
+            </article>
+          </div>
         </div>
       </section>
 
@@ -248,65 +250,103 @@
       <section id="fundamentos" class="ativo-secao" aria-labelledby="titulo-fundamentos">
         <h2 id="titulo-fundamentos" class="ativo-secao-titulo">Fundamentos</h2>
 
-        <div class="cards">
-          <article class="card">
-            <h3 class="card-rotulo">P/L</h3>
-            <p class="card-valor">{{ dados.pe | formatar_numero }}</p>
-          </article>
+        <div class="fundamentos-painel">
+          <section class="fundamentos-grupo" aria-labelledby="titulo-valuation">
+            <h3 id="titulo-valuation" class="fundamentos-grupo-titulo">Valuação</h3>
 
-          <article class="card">
-            <h3 class="card-rotulo">Lucro por ação</h3>
-            <p class="card-valor">{{ dados.eps | formatar_monetario(dados.moeda) }}</p>
-          </article>
+            <div class="fundamentos-grid">
+              <article class="fundamento-card">
+                <h4 class="fundamento-card-rotulo">P/L</h4>
+                <p class="fundamento-card-valor">{{ dados.pe | formatar_numero }}</p>
+              </article>
 
-          <article class="card">
-            <h3 class="card-rotulo">Dividend Yield</h3>
-            <p class="card-valor">{{ dados.dividend_yield | formatar_percentual }}</p>
-          </article>
+              <article class="fundamento-card">
+                <h4 class="fundamento-card-rotulo">P/VP</h4>
+                <p class="fundamento-card-valor">{{ dados.pvp | formatar_numero }}</p>
+              </article>
 
-          <article class="card">
-            <h3 class="card-rotulo">P/VP</h3>
-            <p class="card-valor">{{ dados.pvp | formatar_numero }}</p>
-          </article>
+              <article class="fundamento-card">
+                <h4 class="fundamento-card-rotulo">EV/EBITDA</h4>
+                <p class="fundamento-card-valor">{{ dados.ev_ebitda | formatar_numero }}</p>
+              </article>
+            </div>
+          </section>
 
-          <article class="card">
-            <h3 class="card-rotulo">ROE</h3>
-            <p class="card-valor">{{ dados.roe | formatar_percentual }}</p>
-          </article>
+          <section class="fundamentos-grupo" aria-labelledby="titulo-rentabilidade">
+            <h3 id="titulo-rentabilidade" class="fundamentos-grupo-titulo">
+              Rentabilidade
+            </h3>
 
-          <article class="card">
-            <h3 class="card-rotulo">Margem líquida</h3>
-            <p class="card-valor">{{ dados.margem_liquida | formatar_percentual }}</p>
-          </article>
+            <div class="fundamentos-grid">
+              <article class="fundamento-card">
+                <h4 class="fundamento-card-rotulo">Lucro por ação</h4>
+                <p class="fundamento-card-valor">
+                  {{ dados.eps | formatar_monetario(dados.moeda) }}
+                </p>
+              </article>
 
-          <article class="card">
-            <h3 class="card-rotulo">EV/EBITDA</h3>
-            <p class="card-valor">{{ dados.ev_ebitda | formatar_numero }}</p>
-          </article>
+              <article class="fundamento-card">
+                <h4 class="fundamento-card-rotulo">ROE</h4>
+                <p class="fundamento-card-valor">{{ dados.roe | formatar_percentual }}</p>
+              </article>
 
-          <article class="card">
-            <h3 class="card-rotulo">Dívida total</h3>
-            <p class="card-valor">
-              {{ dados.divida_total | formatar_monetario(dados.moeda_financeira, 0) }}
-            </p>
-          </article>
+              <article class="fundamento-card">
+                <h4 class="fundamento-card-rotulo">Margem líquida</h4>
+                <p class="fundamento-card-valor">
+                  {{ dados.margem_liquida | formatar_percentual }}
+                </p>
+              </article>
+            </div>
+          </section>
 
-          <article class="card">
-            <h3 class="card-rotulo">Dívida total / EBITDA</h3>
-            <p class="card-valor">{{ dados.divida_total_ebitda | formatar_numero }}</p>
-          </article>
+          <section class="fundamentos-grupo" aria-labelledby="titulo-dividendos">
+            <h3 id="titulo-dividendos" class="fundamentos-grupo-titulo">Dividendos</h3>
 
-          <article class="card">
-            <h3 class="card-rotulo">Liquidez corrente</h3>
-            <p class="card-valor">{{ dados.liquidez_corrente | formatar_numero }}</p>
-          </article>
+            <div class="fundamentos-grid">
+              <article class="fundamento-card">
+                <h4 class="fundamento-card-rotulo">Dividend Yield</h4>
+                <p class="fundamento-card-valor">
+                  {{ dados.dividend_yield | formatar_percentual }}
+                </p>
+              </article>
+            </div>
+          </section>
 
-          <article class="card">
-            <h3 class="card-rotulo">Caixa total</h3>
-            <p class="card-valor">
-              {{ dados.caixa_total | formatar_monetario(dados.moeda_financeira, 0) }}
-            </p>
-          </article>
+          <section class="fundamentos-grupo" aria-labelledby="titulo-estrutura-financeira">
+            <h3 id="titulo-estrutura-financeira" class="fundamentos-grupo-titulo">
+              Estrutura financeira
+            </h3>
+
+            <div class="fundamentos-grid fundamentos-grid--estrutura">
+              <article class="fundamento-card">
+                <h4 class="fundamento-card-rotulo">Caixa total</h4>
+                <p class="fundamento-card-valor">
+                  {{ dados.caixa_total | formatar_monetario_compacto(dados.moeda_financeira) }}
+                </p>
+              </article>
+
+              <article class="fundamento-card">
+                <h4 class="fundamento-card-rotulo">Dívida total</h4>
+                <p class="fundamento-card-valor">
+                  {{ dados.divida_total | formatar_monetario_compacto(dados.moeda_financeira) }}
+                </p>
+              </article>
+
+              <article class="fundamento-card">
+                <h4 class="fundamento-card-rotulo">Liquidez corrente</h4>
+                <p class="fundamento-card-valor">
+                  {{ dados.liquidez_corrente | formatar_numero }}
+                </p>
+              </article>
+
+              <article class="fundamento-card">
+                <h4 class="fundamento-card-rotulo">Dívida total / EBITDA</h4>
+                <p class="fundamento-card-valor">
+                  {{ dados.divida_total_ebitda | formatar_numero }}
+                </p>
+              </article>
+            </div>
+          </section>
         </div>
       </section>
 
