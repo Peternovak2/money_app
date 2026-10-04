@@ -123,6 +123,8 @@ def buscar_ativo(ticker):
     ev_ebitda_raw = _converter_float(info.get("enterpriseToEbitda"))
     divida_total_raw = _converter_float(info.get("totalDebt"))
     ebitda_raw = _converter_float(info.get("ebitda"))
+    liquidez_corrente_raw = _converter_float(info.get("currentRatio"))
+    caixa_total_raw = _converter_float(info.get("totalCash"))
     moeda_financeira = info.get("financialCurrency") or info.get("currency")
 
     if divida_total_raw is not None and ebitda_raw is not None and ebitda_raw != 0:
@@ -152,5 +154,7 @@ def buscar_ativo(ticker):
         "ev_ebitda": ev_ebitda_raw,
         "divida_total": divida_total_raw,
         "divida_total_ebitda": divida_total_ebitda,
+        "liquidez_corrente": liquidez_corrente_raw,
+        "caixa_total": caixa_total_raw,
         "moeda_financeira": moeda_financeira,
     }

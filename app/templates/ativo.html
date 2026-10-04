@@ -295,6 +295,18 @@
             <h3 class="card-rotulo">Dívida total / EBITDA</h3>
             <p class="card-valor">{{ dados.divida_total_ebitda | formatar_numero }}</p>
           </article>
+
+          <article class="card">
+            <h3 class="card-rotulo">Liquidez corrente</h3>
+            <p class="card-valor">{{ dados.liquidez_corrente | formatar_numero }}</p>
+          </article>
+
+          <article class="card">
+            <h3 class="card-rotulo">Caixa total</h3>
+            <p class="card-valor">
+              {{ dados.caixa_total | formatar_monetario(dados.moeda_financeira, 0) }}
+            </p>
+          </article>
         </div>
       </section>
 
