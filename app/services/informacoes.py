@@ -158,3 +158,54 @@ def buscar_ativo(ticker):
         "caixa_total": caixa_total_raw,
         "moeda_financeira": moeda_financeira,
     }
+
+
+def _buscar_item_mercado(ticker):
+    """Busca cotação de um único ticker para o resumo de mercado.
+
+    Retorna um dict com os campos normalizados ou None em caso de qualquer
+    falha — garantindo que um erro externo não quebre a home.
+
+    Nota: regularMarketChangePercent já vem em percentual (ex.: -0.268
+    representa -0,268%), portanto NÃO é multiplicado por 100.
+    """
+    try:
+        info = yf.Ticker(ticker).info
+
+        if not info or info.get('regularMarketPrice') is None:
+            return None
+
+        nome = info.get('longName') or info.get('shortName')
+        valor = _converter_float(info.get('regularMarketPrice'))
+        # regularMarketChangePercent já está em percentual — não multiplicar
+        variacao = _converter_float(info.get('regularMarketChangePercent'))
+        moeda = info.get('currency')
+        timestamp = info.get('regularMarketTime')
+
+        return {
+            'nome': nome,
+            'valor': valor,
+            'variacao': variacao,
+            'moeda': moeda,
+            'timestamp': timestamp,
+        }
+    except Exception:
+        return None
+
+
+def buscar_resumo_mercado():
+    """Retorna cotações de Ibovespa e Dólar para o resumo de mercado da home.
+
+    Cada ticker falha de forma independente: se um falhar, o outro ainda é
+    retornado. A home nunca deve gerar HTTP 500 por causa desta função.
+
+    Retorno:
+        {
+            'ibovespa': dict | None,
+            'dolar':    dict | None,
+        }
+    """
+    return {
+        'ibovespa': _buscar_item_mercado('^BVSP'),
+        'dolar': _buscar_item_mercado('USDBRL=X'),
+    }

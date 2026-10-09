@@ -81,3 +81,32 @@ def formatar_percentual(valor, casas_decimais=2):
         return valor_formatado
 
     return f'{valor_formatado}%'
+
+
+def formatar_variacao(valor, casas_decimais=2):
+    """Formata variação percentual com sinal explícito (+/-).
+
+    O valor já deve estar em percentual (ex.: -0.268 → -0,27%).
+    Não multiplica por 100.
+
+    Exemplos:
+        1.25  → +1,25%
+        -0.75 → -0,75%
+        0     → 0,00%
+        None  → —
+    """
+    if valor is None:
+        return VALOR_INDISPONIVEL
+
+    valor_formatado = formatar_numero(valor, casas_decimais)
+
+    if valor_formatado == VALOR_INDISPONIVEL:
+        return VALOR_INDISPONIVEL
+
+    try:
+        if float(valor) > 0:
+            return f'+{valor_formatado}%'
+    except (TypeError, ValueError):
+        return VALOR_INDISPONIVEL
+
+    return f'{valor_formatado}%'

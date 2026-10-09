@@ -50,16 +50,27 @@ app.mount('/static', StaticFiles(directory='app/static'), name='static')
 
 templates = Jinja2Templates(directory='app/templates')
 
+# Filtros Jinja necessários para index.html
+# (routes/ativos.py tem uma instância separada com os seus próprios filtros)
+from app.services.utils.formatar import formatar_numero, formatar_variacao
+templates.env.filters['formatar_numero'] = formatar_numero
+templates.env.filters['formatar_variacao'] = formatar_variacao
+
 from app.services.auth import obter_usuario_logado
+from app.services.informacoes import buscar_resumo_mercado
 
 @app.get('/')
 def home(request: Request):
     usuario = obter_usuario_logado(request)
+    # buscar_resumo_mercado() captura todas as falhas internamente;
+    # cada ticker falha de forma independente — nunca gera HTTP 500.
+    resumo_mercado = buscar_resumo_mercado()
     return templates.TemplateResponse(
         request=request,
         name='index.html',
         context={
             'asset_version': app.state.asset_version,
             'usuario': usuario,
+            'resumo_mercado': resumo_mercado,
         }
     )

@@ -80,6 +80,71 @@
           </nav>
         </div>
       </section>
+
+      {# ─── Resumo do mercado ────────────────────────────────────────────────── #}
+      {% set ibov = resumo_mercado.ibovespa %}
+      {% set dolar = resumo_mercado.dolar %}
+
+      <section class="home-mercado" aria-labelledby="mercado-titulo">
+        <div class="home-mercado__inner">
+          <h2 id="mercado-titulo" class="home-mercado__titulo">Resumo do mercado</h2>
+
+          <div class="mercado-grid">
+
+            {# ── Card Ibovespa ── #}
+            <article class="mercado-card" aria-label="Ibovespa">
+              <span class="mercado-card__nome">IBOVESPA</span>
+
+              {% if ibov and ibov.valor is not none %}
+                <span class="mercado-card__valor">
+                  {{ ibov.valor | formatar_numero(0) }} <span class="mercado-card__unidade">pts</span>
+                </span>
+              {% else %}
+                <span class="mercado-card__valor mercado-card__valor--vazio">—</span>
+              {% endif %}
+
+              {% if ibov and ibov.variacao is not none %}
+                {% set var_fmt = ibov.variacao | formatar_variacao %}
+                <span class="mercado-card__variacao {% if ibov.variacao > 0 %}mercado-card__variacao--positiva{% elif ibov.variacao < 0 %}mercado-card__variacao--negativa{% endif %}"
+                      aria-label="Variação {{ var_fmt }}">
+                  {{ var_fmt }}
+                </span>
+              {% else %}
+                <span class="mercado-card__variacao">—</span>
+              {% endif %}
+
+              <span class="mercado-card__rotulo">Variação</span>
+            </article>
+
+            {# ── Card Dólar ── #}
+            <article class="mercado-card" aria-label="Dólar">
+              <span class="mercado-card__nome">DÓLAR</span>
+
+              {% if dolar and dolar.valor is not none %}
+                <span class="mercado-card__valor">
+                  R$ {{ dolar.valor | formatar_numero(2) }}
+                </span>
+              {% else %}
+                <span class="mercado-card__valor mercado-card__valor--vazio">—</span>
+              {% endif %}
+
+              {% if dolar and dolar.variacao is not none %}
+                {% set var_fmt = dolar.variacao | formatar_variacao %}
+                <span class="mercado-card__variacao {% if dolar.variacao > 0 %}mercado-card__variacao--positiva{% elif dolar.variacao < 0 %}mercado-card__variacao--negativa{% endif %}"
+                      aria-label="Variação {{ var_fmt }}">
+                  {{ var_fmt }}
+                </span>
+              {% else %}
+                <span class="mercado-card__variacao">—</span>
+              {% endif %}
+
+              <span class="mercado-card__rotulo">Variação</span>
+            </article>
+
+          </div>
+        </div>
+      </section>
+
     </main>
 
     <script src="/static/js/home.js?v={{ asset_version }}"></script>

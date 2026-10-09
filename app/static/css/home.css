@@ -288,3 +288,140 @@
     transition: none;
   }
 }
+
+/* ─── Resumo do mercado ───────────────────────────────────────────────────── */
+
+.home-mercado {
+  padding: clamp(40px, 6vw, 72px) 24px;
+  background: #f8fbff;
+}
+
+.home-mercado__inner {
+  width: min(100%, 860px);
+  margin: 0 auto;
+}
+
+.home-mercado__titulo {
+  margin: 0 0 24px;
+  color: #344054;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.mercado-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.mercado-card {
+  display: grid;
+  grid-template-areas:
+    "nome  nome"
+    "valor valor"
+    "var   rotulo";
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  row-gap: 6px;
+  padding: 20px 22px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  background: #1a2236;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transition: box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+.mercado-card:hover {
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.26),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  transform: translateY(-2px);
+}
+
+.mercado-card__nome {
+  grid-area: nome;
+  color: #8fa3bf;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.mercado-card__valor {
+  grid-area: valor;
+  color: #f0f4fa;
+  font-size: clamp(1.55rem, 3.2vw, 2rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.mercado-card__valor--vazio {
+  color: #4a5a72;
+}
+
+.mercado-card__unidade {
+  color: #6b7f99;
+  font-size: 0.72em;
+  font-weight: 500;
+}
+
+.mercado-card__variacao {
+  grid-area: var;
+  align-self: end;
+  color: #8fa3bf;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.mercado-card__variacao--positiva {
+  color: #34d399;
+}
+
+.mercado-card__variacao--negativa {
+  color: #f87171;
+}
+
+.mercado-card__rotulo {
+  grid-area: rotulo;
+  align-self: end;
+  color: #4a5a72;
+  font-size: 0.72rem;
+  font-weight: 500;
+  text-align: right;
+}
+
+@media (max-width: 640px) {
+  .home-mercado {
+    padding: 32px 16px 40px;
+  }
+
+  .mercado-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mercado-card {
+    padding: 18px 18px 16px;
+  }
+
+  .mercado-card__valor {
+    font-size: clamp(1.45rem, 8vw, 1.85rem);
+  }
+}
+
+@media (max-width: 420px) {
+  .mercado-card__valor {
+    font-size: clamp(1.3rem, 7.5vw, 1.65rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mercado-card {
+    transition: none;
+  }
+}
