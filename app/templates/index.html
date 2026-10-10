@@ -40,8 +40,6 @@
     <main class="home-page">
       <section class="home-hero" aria-labelledby="home-title">
         <div class="home-hero__content">
-          <p class="home-eyebrow">Mercado brasileiro</p>
-
           <h1 id="home-title" class="home-title">
             Pesquise e analise <span class="home-title__accent">ativos da B3</span>
           </h1>
@@ -81,66 +79,149 @@
         </div>
       </section>
 
-      {# ─── Resumo do mercado ────────────────────────────────────────────────── #}
+      {# ─── Panorama do mercado ───────────────────────────────────────────────── #}
       {% set ibov = resumo_mercado.ibovespa %}
       {% set dolar = resumo_mercado.dolar %}
 
       <section class="home-mercado" aria-labelledby="mercado-titulo">
         <div class="home-mercado__inner">
-          <h2 id="mercado-titulo" class="home-mercado__titulo">Resumo do mercado</h2>
+          <header class="home-mercado__cabecalho">
+            <h2 id="mercado-titulo" class="home-mercado__titulo">Panorama do mercado</h2>
 
-          <div class="mercado-grid">
-
-            {# ── Card Ibovespa ── #}
-            <article class="mercado-card" aria-label="Ibovespa">
-              <span class="mercado-card__nome">IBOVESPA</span>
-
-              {% if ibov and ibov.valor is not none %}
-                <span class="mercado-card__valor">
-                  {{ ibov.valor | formatar_numero(0) }} <span class="mercado-card__unidade">pts</span>
-                </span>
+            <div class="mercado-status" aria-label="Status do mercado">
+              {% if ibov and ibov.status == 'aberto' %}
+                <div class="mercado-status__estado mercado-status__estado--aberto">
+                  <span class="mercado-status__indicador" aria-hidden="true"></span>
+                  <span>Mercado aberto</span>
+                </div>
+              {% elif ibov and ibov.status == 'fechado' %}
+                <div class="mercado-status__estado mercado-status__estado--fechado">
+                  <span class="mercado-status__indicador" aria-hidden="true"></span>
+                  <span>Mercado fechado</span>
+                </div>
               {% else %}
-                <span class="mercado-card__valor mercado-card__valor--vazio">—</span>
+                <div class="mercado-status__estado mercado-status__estado--indisponivel">
+                  <span class="mercado-status__indicador" aria-hidden="true"></span>
+                  <span>Status indisponível</span>
+                </div>
               {% endif %}
 
-              {% if ibov and ibov.variacao is not none %}
-                {% set var_fmt = ibov.variacao | formatar_variacao %}
-                <span class="mercado-card__variacao {% if ibov.variacao > 0 %}mercado-card__variacao--positiva{% elif ibov.variacao < 0 %}mercado-card__variacao--negativa{% endif %}"
-                      aria-label="Variação {{ var_fmt }}">
-                  {{ var_fmt }}
-                </span>
-              {% else %}
-                <span class="mercado-card__variacao">—</span>
+              {% if ibov and ibov.ultima_atualizacao %}
+                <time class="mercado-status__horario" datetime="{{ ibov.ultima_atualizacao.isoformat() }}">
+                  Atualizado às {{ ibov.ultima_atualizacao.strftime('%H:%M') }}
+                </time>
               {% endif %}
+            </div>
+          </header>
 
-              <span class="mercado-card__rotulo">Variação</span>
+          <div class="mercado-dashboard">
+            <article class="mercado-card" aria-labelledby="indices-titulo">
+              <h3 id="indices-titulo" class="mercado-card__titulo">Principais índices</h3>
+              <div class="mercado-lista">
+                <div class="mercado-linha">
+                  <span class="mercado-linha__ticker">IBOVESPA</span>
+                  <span class="mercado-linha__preco">
+                    {% if ibov and ibov.valor is not none %}
+                      {{ ibov.valor | formatar_numero(0) }} pts
+                    {% else %}
+                      —
+                    {% endif %}
+                  </span>
+                  {% if ibov and ibov.variacao is not none %}
+                    {% set ibov_var = ibov.variacao | formatar_variacao %}
+                    <span class="mercado-linha__variacao {% if ibov.variacao > 0 %}mercado-linha__variacao--positiva{% elif ibov.variacao < 0 %}mercado-linha__variacao--negativa{% endif %}"
+                          aria-label="Variação {{ ibov_var }}">{{ ibov_var }}</span>
+                  {% else %}
+                    <span class="mercado-linha__variacao">—</span>
+                  {% endif %}
+                </div>
+
+                <div class="mercado-linha">
+                  <span class="mercado-linha__ticker">DÓLAR</span>
+                  <span class="mercado-linha__preco">
+                    {% if dolar and dolar.valor is not none %}
+                      R$ {{ dolar.valor | formatar_numero(2) }}
+                    {% else %}
+                      —
+                    {% endif %}
+                  </span>
+                  {% if dolar and dolar.variacao is not none %}
+                    {% set dolar_var = dolar.variacao | formatar_variacao %}
+                    <span class="mercado-linha__variacao {% if dolar.variacao > 0 %}mercado-linha__variacao--positiva{% elif dolar.variacao < 0 %}mercado-linha__variacao--negativa{% endif %}"
+                          aria-label="Variação {{ dolar_var }}">{{ dolar_var }}</span>
+                  {% else %}
+                    <span class="mercado-linha__variacao">—</span>
+                  {% endif %}
+                </div>
+              </div>
             </article>
 
-            {# ── Card Dólar ── #}
-            <article class="mercado-card" aria-label="Dólar">
-              <span class="mercado-card__nome">DÓLAR</span>
-
-              {% if dolar and dolar.valor is not none %}
-                <span class="mercado-card__valor">
-                  R$ {{ dolar.valor | formatar_numero(2) }}
-                </span>
+            <article class="mercado-card" aria-labelledby="altas-titulo">
+              <h3 id="altas-titulo" class="mercado-card__titulo">Maiores altas</h3>
+              {% if rankings_mercado.altas %}
+                <div class="mercado-lista">
+                  {% for acao in rankings_mercado.altas %}
+                    <div class="mercado-linha">
+                      <span class="mercado-linha__ticker">{{ acao.ticker }}</span>
+                      <span class="mercado-linha__preco">
+                        {% if acao.preco is not none %}R$ {{ acao.preco | formatar_numero(2) }}{% else %}—{% endif %}
+                      </span>
+                      <span class="mercado-linha__variacao mercado-linha__variacao--positiva">
+                        {{ acao.variacao | formatar_variacao }}
+                      </span>
+                    </div>
+                  {% endfor %}
+                </div>
               {% else %}
-                <span class="mercado-card__valor mercado-card__valor--vazio">—</span>
+                <p class="mercado-card__vazio">Dados indisponíveis</p>
               {% endif %}
-
-              {% if dolar and dolar.variacao is not none %}
-                {% set var_fmt = dolar.variacao | formatar_variacao %}
-                <span class="mercado-card__variacao {% if dolar.variacao > 0 %}mercado-card__variacao--positiva{% elif dolar.variacao < 0 %}mercado-card__variacao--negativa{% endif %}"
-                      aria-label="Variação {{ var_fmt }}">
-                  {{ var_fmt }}
-                </span>
-              {% else %}
-                <span class="mercado-card__variacao">—</span>
-              {% endif %}
-
-              <span class="mercado-card__rotulo">Variação</span>
             </article>
 
+            <article class="mercado-card" aria-labelledby="baixas-titulo">
+              <h3 id="baixas-titulo" class="mercado-card__titulo">Maiores baixas</h3>
+              {% if rankings_mercado.baixas %}
+                <div class="mercado-lista">
+                  {% for acao in rankings_mercado.baixas %}
+                    <div class="mercado-linha">
+                      <span class="mercado-linha__ticker">{{ acao.ticker }}</span>
+                      <span class="mercado-linha__preco">
+                        {% if acao.preco is not none %}R$ {{ acao.preco | formatar_numero(2) }}{% else %}—{% endif %}
+                      </span>
+                      <span class="mercado-linha__variacao mercado-linha__variacao--negativa">
+                        {{ acao.variacao | formatar_variacao }}
+                      </span>
+                    </div>
+                  {% endfor %}
+                </div>
+              {% else %}
+                <p class="mercado-card__vazio">Dados indisponíveis</p>
+              {% endif %}
+            </article>
+
+            <article class="mercado-card" aria-labelledby="negociadas-titulo">
+              <h3 id="negociadas-titulo" class="mercado-card__titulo">Maior volume</h3>
+              {% if rankings_mercado.mais_negociadas %}
+                <div class="mercado-lista">
+                  {% for acao in rankings_mercado.mais_negociadas %}
+                    <div class="mercado-linha">
+                      <span class="mercado-linha__ticker">{{ acao.ticker }}</span>
+                      <span class="mercado-linha__preco">
+                        {% if acao.preco is not none %}R$ {{ acao.preco | formatar_numero(2) }}{% else %}—{% endif %}
+                      </span>
+                      {% if acao.variacao is not none %}
+                        <span class="mercado-linha__variacao {% if acao.variacao > 0 %}mercado-linha__variacao--positiva{% elif acao.variacao < 0 %}mercado-linha__variacao--negativa{% endif %}">
+                          {{ acao.variacao | formatar_variacao }}
+                        </span>
+                      {% else %}
+                        <span class="mercado-linha__variacao">—</span>
+                      {% endif %}
+                    </div>
+                  {% endfor %}
+                </div>
+              {% else %}
+                <p class="mercado-card__vazio">Dados indisponíveis</p>
+              {% endif %}
+            </article>
           </div>
         </div>
       </section>

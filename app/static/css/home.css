@@ -6,7 +6,7 @@
 .home-hero {
   position: relative;
   isolation: isolate;
-  padding: clamp(72px, 10vw, 128px) 24px clamp(80px, 11vw, 144px);
+  padding: clamp(72px, 10vw, 128px) 24px clamp(52px, 7vw, 88px);
   overflow: hidden;
   background:
     radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.1), transparent 42%),
@@ -30,31 +30,6 @@
   width: min(100%, 860px);
   margin: 0 auto;
   text-align: center;
-}
-
-.home-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 20px;
-  padding: 7px 12px;
-  border: 1px solid rgba(37, 99, 235, 0.16);
-  border-radius: 999px;
-  color: #1d4ed8;
-  background: rgba(239, 246, 255, 0.88);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.home-eyebrow::before {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #2563eb;
-  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
-  content: "";
 }
 
 .home-title {
@@ -262,11 +237,6 @@
     padding-top: 52px;
   }
 
-  .home-eyebrow {
-    margin-bottom: 16px;
-    font-size: 0.72rem;
-  }
-
   .home-title {
     font-size: clamp(2rem, 10.5vw, 2.55rem);
   }
@@ -289,20 +259,28 @@
   }
 }
 
-/* ─── Resumo do mercado ───────────────────────────────────────────────────── */
+/* ─── Panorama do mercado ─────────────────────────────────────────────────── */
 
 .home-mercado {
-  padding: clamp(40px, 6vw, 72px) 24px;
-  background: #f8fbff;
+  padding: clamp(32px, 4vw, 52px) 24px clamp(48px, 6vw, 72px);
+  background: #e7f0ff86;
 }
 
 .home-mercado__inner {
-  width: min(100%, 860px);
+  width: min(100%, 1280px);
   margin: 0 auto;
 }
 
+.home-mercado__cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 18px;
+}
+
 .home-mercado__titulo {
-  margin: 0 0 24px;
+  margin: 0;
   color: #344054;
   font-size: 0.78rem;
   font-weight: 700;
@@ -310,118 +288,177 @@
   text-transform: uppercase;
 }
 
-.mercado-grid {
+.mercado-dashboard {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: stretch;
   gap: 16px;
 }
 
 .mercado-card {
-  display: grid;
-  grid-template-areas:
-    "nome  nome"
-    "valor valor"
-    "var   rotulo";
-  grid-template-columns: 1fr auto;
-  align-items: end;
-  row-gap: 6px;
-  padding: 20px 22px 18px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 16px;
-  background: #1a2236;
-  box-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  transition: box-shadow 0.2s ease, transform 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
 }
 
-.mercado-card:hover {
-  box-shadow:
-    0 6px 20px rgba(0, 0, 0, 0.26),
-    inset 0 1px 0 rgba(255, 255, 255, 0.07);
-  transform: translateY(-2px);
-}
-
-.mercado-card__nome {
-  grid-area: nome;
-  color: #8fa3bf;
+.mercado-card__titulo {
+  margin: 0 0 10px;
+  color: #64748b;
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
-.mercado-card__valor {
-  grid-area: valor;
-  color: #f0f4fa;
-  font-size: clamp(1.55rem, 3.2vw, 2rem);
+.mercado-lista {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.mercado-status {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  color: #64748b;
+  font-size: 0.78rem;
+}
+
+.mercado-status__estado {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #475569;
   font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1.15;
+  white-space: nowrap;
 }
 
-.mercado-card__valor--vazio {
-  color: #4a5a72;
+.mercado-status__indicador {
+  flex: 0 0 auto;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #94a3b8;
+  box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.12);
 }
 
-.mercado-card__unidade {
-  color: #6b7f99;
-  font-size: 0.72em;
-  font-weight: 500;
+.mercado-status__estado--aberto .mercado-status__indicador {
+  background: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.12);
 }
 
-.mercado-card__variacao {
-  grid-area: var;
-  align-self: end;
-  color: #8fa3bf;
-  font-size: 0.9rem;
-  font-weight: 600;
-  letter-spacing: 0.01em;
+.mercado-status__estado--fechado .mercado-status__indicador {
+  background: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
 }
 
-.mercado-card__variacao--positiva {
-  color: #34d399;
+.mercado-status__horario {
+  white-space: nowrap;
 }
 
-.mercado-card__variacao--negativa {
-  color: #f87171;
+.mercado-linha {
+  display: grid;
+  grid-template-columns: minmax(52px, 0.72fr) minmax(82px, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 10px 0;
+  border-bottom: 1px solid #eef2f7;
+  font-size: 0.79rem;
+  line-height: 1.25;
 }
 
-.mercado-card__rotulo {
-  grid-area: rotulo;
-  align-self: end;
-  color: #4a5a72;
-  font-size: 0.72rem;
-  font-weight: 500;
+.mercado-linha:last-child {
+  border-bottom: 0;
+}
+
+.mercado-linha__ticker {
+  overflow: hidden;
+  color: #172033;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mercado-linha__preco {
+  overflow: hidden;
+  color: #475569;
+  font-variant-numeric: tabular-nums;
   text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-@media (max-width: 640px) {
+.mercado-linha__variacao {
+  min-width: 50px;
+  color: #64748b;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.mercado-linha__variacao--positiva {
+  color: #15803d;
+}
+
+.mercado-linha__variacao--negativa {
+  color: #dc2626;
+}
+
+.mercado-card__vazio {
+  margin: auto 0;
+  padding: 38px 0;
+  color: #94a3b8;
+  font-size: 0.82rem;
+  text-align: center;
+}
+
+@media (max-width: 1100px) {
+  .mercado-dashboard {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
   .home-mercado {
     padding: 32px 16px 40px;
   }
 
-  .mercado-grid {
+  .home-mercado__cabecalho {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .mercado-status {
+    justify-content: flex-start;
+  }
+
+  .mercado-dashboard {
     grid-template-columns: 1fr;
   }
-
-  .mercado-card {
-    padding: 18px 18px 16px;
-  }
-
-  .mercado-card__valor {
-    font-size: clamp(1.45rem, 8vw, 1.85rem);
-  }
 }
 
-@media (max-width: 420px) {
-  .mercado-card__valor {
-    font-size: clamp(1.3rem, 7.5vw, 1.65rem);
+@media (max-width: 430px) {
+  .mercado-status {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 5px;
   }
-}
 
-@media (prefers-reduced-motion: reduce) {
   .mercado-card {
-    transition: none;
+    padding: 16px;
+  }
+
+  .mercado-linha {
+    grid-template-columns: minmax(50px, 0.7fr) minmax(78px, 1fr) auto;
+    gap: 6px;
   }
 }

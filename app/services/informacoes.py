@@ -1,7 +1,13 @@
 import math
+from datetime import datetime, timezone
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 import pandas as pd
 import yfinance as yf
+
+
+ESTADOS_MERCADO_FECHADO = {'CLOSED', 'POST', 'POSTPOST', 'PRE', 'PREPRE'}
+TIMEZONE_IBOVESPA = 'America/Sao_Paulo'
 
 
 PERIODOS_HISTORICO = {
@@ -39,6 +45,51 @@ def _converter_float(valor):
         return None
 
     return valor_convertido
+
+
+def _normalizar_status_mercado(status_raw):
+    if status_raw == 'REGULAR':
+        return 'aberto'
+
+    if (
+        isinstance(status_raw, str)
+        and status_raw in ESTADOS_MERCADO_FECHADO
+    ):
+        return 'fechado'
+
+    return 'indisponivel'
+
+
+def _obter_timezone_mercado(nome_timezone, fallback=None):
+    for candidato in (nome_timezone, fallback):
+        if not candidato or not isinstance(candidato, str):
+            continue
+
+        try:
+            return ZoneInfo(candidato)
+        except (ZoneInfoNotFoundError, ValueError):
+            continue
+
+    return None
+
+
+def _converter_timestamp_mercado(timestamp, timezone_mercado):
+    if timezone_mercado is None or isinstance(timestamp, bool):
+        return None
+
+    try:
+        timestamp_convertido = float(timestamp)
+    except (TypeError, ValueError):
+        return None
+
+    if not math.isfinite(timestamp_convertido):
+        return None
+
+    try:
+        data_utc = datetime.fromtimestamp(timestamp_convertido, tz=timezone.utc)
+        return data_utc.astimezone(timezone_mercado)
+    except (OverflowError, OSError, ValueError):
+        return None
 
 
 def buscar_historico_ativo(ticker, periodo='6mo'):
@@ -160,7 +211,7 @@ def buscar_ativo(ticker):
     }
 
 
-def _buscar_item_mercado(ticker):
+def _buscar_item_mercado(ticker, incluir_status=False, timezone_fallback=None):
     """Busca cotação de um único ticker para o resumo de mercado.
 
     Retorna um dict com os campos normalizados ou None em caso de qualquer
@@ -182,13 +233,36 @@ def _buscar_item_mercado(ticker):
         moeda = info.get('currency')
         timestamp = info.get('regularMarketTime')
 
-        return {
+        item = {
             'nome': nome,
             'valor': valor,
             'variacao': variacao,
             'moeda': moeda,
             'timestamp': timestamp,
         }
+
+        if incluir_status:
+            status_raw = info.get('marketState')
+            timezone_mercado = _obter_timezone_mercado(
+                info.get('exchangeTimezoneName'),
+                fallback=timezone_fallback,
+            )
+
+            item.update({
+                'status_raw': status_raw,
+                'status': _normalizar_status_mercado(status_raw),
+                'ultima_atualizacao': _converter_timestamp_mercado(
+                    timestamp,
+                    timezone_mercado,
+                ),
+                'timezone': (
+                    timezone_mercado.key
+                    if timezone_mercado is not None
+                    else None
+                ),
+            })
+
+        return item
     except Exception:
         return None
 
@@ -206,6 +280,10 @@ def buscar_resumo_mercado():
         }
     """
     return {
-        'ibovespa': _buscar_item_mercado('^BVSP'),
+        'ibovespa': _buscar_item_mercado(
+            '^BVSP',
+            incluir_status=True,
+            timezone_fallback=TIMEZONE_IBOVESPA,
+        ),
         'dolar': _buscar_item_mercado('USDBRL=X'),
     }
