@@ -226,6 +226,111 @@
         </div>
       </section>
 
+      {% if noticias %}
+        <section class="home-noticias" aria-labelledby="noticias-titulo">
+          <div class="home-noticias__inner">
+            <header class="home-noticias__cabecalho">
+              <div>
+                <h2 id="noticias-titulo" class="home-noticias__titulo">Notícias</h2>
+                <p class="home-noticias__subtitulo">Economia e mercado brasileiro</p>
+              </div>
+            </header>
+
+            <div class="noticias-grid {% if noticias | length == 1 %}noticias-grid--unica{% endif %}">
+              {% set noticia_principal = noticias[0] %}
+              <a
+                class="noticia-card noticia-card--principal"
+                href="{{ noticia_principal.url }}"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Ler notícia: {{ noticia_principal.titulo }}"
+              >
+                {% if noticia_principal.imagem %}
+                  <div class="noticia-card__media">
+                    <img
+                      class="noticia-card__imagem"
+                      src="{{ noticia_principal.imagem }}"
+                      alt=""
+                      width="1170"
+                      height="700"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                {% else %}
+                  <div class="noticia-card__media noticia-card__media--vazia" aria-hidden="true">
+                    <span>Sem imagem</span>
+                  </div>
+                {% endif %}
+
+                <div class="noticia-card__conteudo">
+                  {% if noticia_principal.categorias %}
+                    <span class="noticia-card__categoria">{{ noticia_principal.categorias[0] }}</span>
+                  {% endif %}
+                  <h3 class="noticia-card__titulo">{{ noticia_principal.titulo }}</h3>
+                  {% if noticia_principal.resumo %}
+                    <p class="noticia-card__resumo">{{ noticia_principal.resumo }}</p>
+                  {% endif %}
+                  <div class="noticia-card__meta">
+                    <span>{{ noticia_principal.fonte }}</span>
+                    <span aria-hidden="true">•</span>
+                    <time datetime="{{ noticia_principal.publicado_em.isoformat() }}">
+                      {{ noticia_principal.publicado_em.strftime('%d/%m') }} • {{ noticia_principal.publicado_em.strftime('%H:%M') }}
+                    </time>
+                  </div>
+                </div>
+              </a>
+
+              {% if noticias | length > 1 %}
+                <div class="noticias-secundarias">
+                  {% for noticia in noticias[1:] %}
+                    <a
+                      class="noticia-card noticia-card--secundaria"
+                      href="{{ noticia.url }}"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Ler notícia: {{ noticia.titulo }}"
+                    >
+                      {% if noticia.imagem %}
+                        <div class="noticia-card__media">
+                          <img
+                            class="noticia-card__imagem"
+                            src="{{ noticia.imagem }}"
+                            alt=""
+                            width="1170"
+                            height="700"
+                            loading="lazy"
+                            decoding="async"
+                          />
+                        </div>
+                      {% else %}
+                        <div class="noticia-card__media noticia-card__media--vazia" aria-hidden="true">
+                          <span>Sem imagem</span>
+                        </div>
+                      {% endif %}
+
+                      <div class="noticia-card__conteudo">
+                        {% if noticia.categorias %}
+                          <span class="noticia-card__categoria">{{ noticia.categorias[0] }}</span>
+                        {% endif %}
+                        <h3 class="noticia-card__titulo">{{ noticia.titulo }}</h3>
+                        <div class="noticia-card__meta">
+                          <span>{{ noticia.fonte }}</span>
+                          <span aria-hidden="true">•</span>
+                          <time datetime="{{ noticia.publicado_em.isoformat() }}">
+                            {{ noticia.publicado_em.strftime('%d/%m') }} • {{ noticia.publicado_em.strftime('%H:%M') }}
+                          </time>
+                        </div>
+                      </div>
+                    </a>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </section>
+      {% endif %}
+
     </main>
 
     <script src="/static/js/home.js?v={{ asset_version }}"></script>

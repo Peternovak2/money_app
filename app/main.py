@@ -58,6 +58,7 @@ templates.env.filters['formatar_variacao'] = formatar_variacao
 
 from app.services.auth import obter_usuario_logado
 from app.services.informacoes import buscar_resumo_mercado
+from app.services.noticias import buscar_noticias_home
 from app.services.populares import buscar_rankings_mercado
 
 @app.get('/')
@@ -67,6 +68,7 @@ def home(request: Request):
     # cada ticker falha de forma independente — nunca gera HTTP 500.
     resumo_mercado = buscar_resumo_mercado()
     rankings_mercado = buscar_rankings_mercado()
+    noticias = buscar_noticias_home()
     return templates.TemplateResponse(
         request=request,
         name='index.html',
@@ -75,5 +77,6 @@ def home(request: Request):
             'usuario': usuario,
             'resumo_mercado': resumo_mercado,
             'rankings_mercado': rankings_mercado,
+            'noticias': noticias,
         }
     )
