@@ -1,4 +1,8 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
+from app.services.catalogo import (
+    ErroCatalogoAtivos,
+    buscar_sugestoes,
+)
 from app.services.informacoes import (
     AtivoHistoricoNaoEncontrado,
     ErroConsultaHistorico,
@@ -9,6 +13,27 @@ from app.services.informacoes import (
 from app.services.utils.formatar import formatar_ticker
 
 router = APIRouter()
+
+
+@router.get('/api/ativos/sugestoes')
+def sugestoes_ativos(
+    q: str = Query(min_length=1, max_length=60),
+    limite: int = Query(default=8, ge=1, le=10),
+):
+    if any(not caractere.isprintable() for caractere in q):
+        raise HTTPException(status_code=400, detail='Consulta inválida')
+
+    consulta = q.strip()
+    if not consulta:
+        raise HTTPException(status_code=400, detail='Consulta inválida')
+
+    try:
+        return buscar_sugestoes(consulta, limite)
+    except ErroCatalogoAtivos as erro:
+        raise HTTPException(
+            status_code=503,
+            detail='A busca de ativos está indisponível no momento',
+        ) from erro
 
 
 @router.get('/api/{ticker}')

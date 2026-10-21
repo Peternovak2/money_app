@@ -52,18 +52,39 @@
             <label for="tickerInput" class="home-search__label">Buscar ativo</label>
 
             <div class="home-search__controls">
-              <input
-                type="text"
-                id="tickerInput"
-                class="home-search__field"
-                placeholder="Digite um ticker, ex.: PETR4"
-                autocomplete="off"
-                autocapitalize="characters"
-                spellcheck="false"
-                required
-              />
+              <div class="home-search__input-wrap">
+                <input
+                  type="text"
+                  id="tickerInput"
+                  class="home-search__field"
+                  placeholder="Digite um ticker ou nome, ex.: PETR4 ou Petrobras"
+                  autocomplete="off"
+                  autocapitalize="characters"
+                  spellcheck="false"
+                  maxlength="60"
+                  role="combobox"
+                  aria-autocomplete="list"
+                  aria-haspopup="listbox"
+                  aria-expanded="false"
+                  aria-controls="sugestoesAtivos"
+                  aria-describedby="buscaStatus"
+                  required
+                />
+
+                <div id="painelSugestoes" class="home-search__suggestions" hidden>
+                  <p id="mensagemSugestoes" class="home-search__message" hidden></p>
+                  <div
+                    id="sugestoesAtivos"
+                    class="home-search__list"
+                    role="listbox"
+                    aria-label="Sugestões de ativos"
+                    hidden
+                  ></div>
+                </div>
+              </div>
               <button type="submit" class="home-search__button">Buscar</button>
             </div>
+            <p id="buscaStatus" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
           </form>
 
           <nav class="home-examples" aria-label="Exemplos de busca">
