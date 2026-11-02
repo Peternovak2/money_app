@@ -251,6 +251,7 @@ class CsrfFrontendTestCase(unittest.TestCase):
         for caminho in (
             'app/templates/index.html',
             'app/templates/ativo.html',
+            'app/templates/ranking.html',
             'app/templates/conta.html',
         ):
             with self.subTest(caminho=caminho):

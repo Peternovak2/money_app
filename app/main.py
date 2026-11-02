@@ -46,6 +46,9 @@ app.include_router(auth_router)
 from app.routes.conta import router as conta_router
 app.include_router(conta_router)
 
+from app.routes.mercado import router as mercado_router
+app.include_router(mercado_router)
+
 # Configura a rota para arquivos estáticos (CSS, JS, Imagens)
 app.mount('/static', StaticFiles(directory='app/static'), name='static')
 

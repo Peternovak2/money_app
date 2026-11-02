@@ -117,6 +117,7 @@ class ContaFrontendTestCase(unittest.TestCase):
         for caminho in (
             'app/templates/index.html',
             'app/templates/ativo.html',
+            'app/templates/ranking.html',
         ):
             with self.subTest(caminho=caminho):
                 template = (RAIZ_PROJETO / caminho).read_text(encoding='utf-8')
