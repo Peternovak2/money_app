@@ -1,4 +1,6 @@
 import re
+import threading
+import time
 import unicodedata
 import xml.etree.ElementTree as ET
 from datetime import datetime
@@ -14,6 +16,12 @@ AGENCIA_BRASIL_RSS_URL = 'https://agenciabrasil.ebc.com.br/rss/economia/feed.xml
 AGENCIA_BRASIL_TIMEOUT = 4
 QUANTIDADE_MAXIMA_NOTICIAS = 3
 TAMANHO_MAXIMO_RESUMO = 320
+NOTICIAS_TTL_SEGUNDOS = 10 * 60
+NOTICIAS_RETRY_SEGUNDOS = 30
+
+_cache_lock = threading.Lock()
+_cache_noticias = None
+_cache_expira_em = 0.0
 
 PARAMETROS_RASTREAMENTO = {
     'fbclid',
@@ -222,28 +230,51 @@ def _remover_duplicatas(noticias):
     return resultado
 
 
+def _buscar_noticias_remotas():
+    resposta = requests.get(
+        AGENCIA_BRASIL_RSS_URL,
+        headers={
+            'Accept': 'application/rss+xml, application/xml;q=0.9',
+            'User-Agent': 'Money-App/1.0',
+        },
+        timeout=AGENCIA_BRASIL_TIMEOUT,
+    )
+    resposta.raise_for_status()
+    raiz = ET.fromstring(resposta.content)
+
+    noticias = []
+    for item in raiz.findall('.//item'):
+        noticia = _normalizar_item(item)
+        if noticia is not None:
+            noticias.append(noticia)
+
+    noticias.sort(key=lambda noticia: noticia['publicado_em'], reverse=True)
+    noticias = _remover_duplicatas(noticias)
+    if not noticias:
+        raise ValueError('A Agência Brasil não retornou notícias válidas')
+
+    return noticias[:QUANTIDADE_MAXIMA_NOTICIAS]
+
+
 def buscar_noticias_home():
-    """Busca e normaliza até três notícias de Economia da Agência Brasil."""
-    try:
-        resposta = requests.get(
-            AGENCIA_BRASIL_RSS_URL,
-            headers={
-                'Accept': 'application/rss+xml, application/xml;q=0.9',
-                'User-Agent': 'Money-App/1.0',
-            },
-            timeout=AGENCIA_BRASIL_TIMEOUT,
-        )
-        resposta.raise_for_status()
-        raiz = ET.fromstring(resposta.content)
+    """Retorna notícias recentes com cache e recuperação do último resultado válido."""
+    global _cache_noticias, _cache_expira_em
 
-        noticias = []
-        for item in raiz.findall('.//item'):
-            noticia = _normalizar_item(item)
-            if noticia is not None:
-                noticias.append(noticia)
+    agora = time.monotonic()
+    if agora < _cache_expira_em:
+        return list(_cache_noticias) if _cache_noticias is not None else []
 
-        noticias.sort(key=lambda noticia: noticia['publicado_em'], reverse=True)
-        noticias = _remover_duplicatas(noticias)
-        return noticias[:QUANTIDADE_MAXIMA_NOTICIAS]
-    except Exception:
-        return []
+    with _cache_lock:
+        agora = time.monotonic()
+        if agora < _cache_expira_em:
+            return list(_cache_noticias) if _cache_noticias is not None else []
+
+        try:
+            novas_noticias = _buscar_noticias_remotas()
+        except Exception:
+            _cache_expira_em = agora + NOTICIAS_RETRY_SEGUNDOS
+            return list(_cache_noticias) if _cache_noticias is not None else []
+
+        _cache_noticias = tuple(novas_noticias)
+        _cache_expira_em = agora + NOTICIAS_TTL_SEGUNDOS
+        return list(_cache_noticias)
