@@ -61,7 +61,6 @@ templates.env.filters['formatar_numero'] = formatar_numero
 templates.env.filters['formatar_variacao'] = formatar_variacao
 
 from app.services.auth import obter_usuario_logado
-from app.services.informacoes import buscar_resumo_mercado
 from app.services.noticias import buscar_noticias_home
 from app.services.populares import buscar_rankings_mercado
 
@@ -69,9 +68,6 @@ from app.services.populares import buscar_rankings_mercado
 def home(request: Request):
     usuario = obter_usuario_logado(request)
     csrf_token = obter_token_csrf(request) if usuario else None
-    # buscar_resumo_mercado() captura todas as falhas internamente;
-    # cada ticker falha de forma independente — nunca gera HTTP 500.
-    resumo_mercado = buscar_resumo_mercado()
     rankings_mercado = buscar_rankings_mercado()
     noticias = buscar_noticias_home()
     return templates.TemplateResponse(
@@ -81,7 +77,6 @@ def home(request: Request):
             'asset_version': app.state.asset_version,
             'usuario': usuario,
             'csrf_token': csrf_token,
-            'resumo_mercado': resumo_mercado,
             'rankings_mercado': rankings_mercado,
             'noticias': noticias,
         }

@@ -4,6 +4,8 @@ const painel = document.getElementById("painelSugestoes");
 const lista = document.getElementById("sugestoesAtivos");
 const mensagem = document.getElementById("mensagemSugestoes");
 const status = document.getElementById("buscaStatus");
+const botaoMenu = document.querySelector("[data-home-menu-toggle]");
+const menuPrincipal = document.querySelector("[data-home-menu]");
 
 const ATRASO_BUSCA_MS = 250;
 const LIMITE_SUGESTOES = 8;
@@ -12,6 +14,57 @@ let temporizadorBusca = null;
 let controladorBusca = null;
 let sugestoes = [];
 let indiceAtivo = -1;
+
+function definirMenuAberto(aberto, devolverFoco = false) {
+  if (!botaoMenu || !menuPrincipal) {
+    return;
+  }
+
+  menuPrincipal.dataset.open = String(aberto);
+  botaoMenu.setAttribute("aria-expanded", String(aberto));
+  botaoMenu.setAttribute(
+    "aria-label",
+    aberto ? "Fechar menu principal" : "Abrir menu principal",
+  );
+
+  if (devolverFoco) {
+    botaoMenu.focus();
+  }
+}
+
+if (botaoMenu && menuPrincipal) {
+  botaoMenu.addEventListener("click", () => {
+    definirMenuAberto(botaoMenu.getAttribute("aria-expanded") !== "true");
+  });
+
+  menuPrincipal.addEventListener("click", (event) => {
+    if (event.target.closest("a")) {
+      definirMenuAberto(false);
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && botaoMenu.getAttribute("aria-expanded") === "true") {
+      definirMenuAberto(false, true);
+    }
+  });
+
+  document.addEventListener("pointerdown", (event) => {
+    if (
+      botaoMenu.getAttribute("aria-expanded") === "true" &&
+      !botaoMenu.contains(event.target) &&
+      !menuPrincipal.contains(event.target)
+    ) {
+      definirMenuAberto(false);
+    }
+  });
+
+  window.matchMedia("(min-width: 861px)").addEventListener("change", (event) => {
+    if (event.matches) {
+      definirMenuAberto(false);
+    }
+  });
+}
 
 function anunciar(texto) {
   status.textContent = texto;
