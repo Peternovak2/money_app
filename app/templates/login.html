@@ -13,18 +13,18 @@
     <link rel="stylesheet" href="/static/css/style.css" />
     <link rel="stylesheet" href="/static/css/auth.css" />
   </head>
-  <body>
+  <body class="auth-body">
     <header class="header">
       <div class="container">
-        <a href="/" class="logo" style="text-decoration: none; color: inherit;">Money App</a>
-        <nav class="menu">
+        <a href="/" class="logo" aria-label="Money App - Página inicial">Money App</a>
+        <nav class="menu" aria-label="Conta">
           <a href="/cadastro">Criar conta</a>
         </nav>
       </div>
     </header>
 
     <main class="auth-page">
-      <div class="auth-card">
+      <div class="auth-card auth-card--login">
         <h1 class="auth-titulo">Entrar</h1>
         <p class="auth-subtitulo">Bem-vindo de volta ao Money App.</p>
 
@@ -47,14 +47,23 @@
 
           <div class="auth-campo">
             <label for="senha">Senha</label>
-            <input
-              type="password"
-              id="senha"
-              name="senha"
-              placeholder="Sua senha"
-              required
-              autocomplete="current-password"
-            />
+            <div class="auth-password">
+              <input
+                type="password"
+                id="senha"
+                name="senha"
+                placeholder="Sua senha"
+                required
+                autocomplete="current-password"
+              />
+              <button
+                class="auth-password__toggle"
+                type="button"
+                data-password-toggle
+                aria-controls="senha"
+                aria-pressed="false"
+              >Mostrar</button>
+            </div>
           </div>
 
           <button type="submit" class="auth-btn">Entrar</button>
@@ -65,5 +74,6 @@
         </p>
       </div>
     </main>
+    <script src="/static/js/auth.js"></script>
   </body>
 </html>

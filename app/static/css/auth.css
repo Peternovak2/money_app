@@ -1,11 +1,19 @@
 /* ── Página de autenticação ──────────────────────────────────────────────── */
 
+.auth-body {
+  background: #f7f9fc;
+  color: #14213d;
+}
+
 .auth-page {
   min-height: calc(100vh - 73px);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 40px 24px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.09), transparent 38%),
+    #f7f9fc;
 }
 
 /* ── Cartão central ──────────────────────────────────────────────────────── */
@@ -15,9 +23,17 @@
   max-width: 440px;
   padding: 48px 40px;
   border: 1px solid var(--border);
-  border-radius: 16px;
-  background: var(--background);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 18px 50px rgba(20, 33, 61, 0.09);
+}
+
+.auth-card--login {
+  max-width: 460px;
+}
+
+.auth-card--cadastro {
+  max-width: 780px;
 }
 
 /* ── Cabeçalho do cartão ─────────────────────────────────────────────────── */
@@ -56,6 +72,16 @@
   gap: 20px;
 }
 
+.auth-form--cadastro {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 18px;
+}
+
+.auth-form__submit {
+  grid-column: 1 / -1;
+}
+
 /* ── Campo individual ────────────────────────────────────────────────────── */
 
 .auth-campo {
@@ -84,12 +110,48 @@
 }
 
 .auth-campo input:focus {
-  border-color: #1d00fc;
-  box-shadow: 0 0 0 3px rgba(29, 0, 252, 0.08);
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.13);
 }
 
 .auth-campo input.campo-invalido {
   border-color: #ef4444;
+}
+
+.auth-password {
+  position: relative;
+}
+
+.auth-password input {
+  width: 100%;
+  padding-right: 82px;
+}
+
+.auth-password__toggle {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  padding: 6px 7px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #2563eb;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.auth-password__toggle:hover {
+  background: #e8eef9;
+}
+
+.auth-password__toggle:focus-visible,
+.auth-btn:focus-visible,
+.auth-link a:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.32);
+  outline-offset: 3px;
 }
 
 /* ── Erro inline de campo (JS) ───────────────────────────────────────────── */
@@ -107,7 +169,7 @@
   width: 100%;
   margin-top: 4px;
   padding: 0 24px;
-  background-color: #1d00fc;
+  background-color: #2563eb;
   color: #ffffff;
   font-size: 0.95rem;
   font-weight: 600;
@@ -119,7 +181,7 @@
 }
 
 .auth-btn:hover {
-  background-color: #1500d4;
+  background-color: #1d4ed8;
 }
 
 .auth-btn:active {
@@ -136,13 +198,40 @@
 }
 
 .auth-link a {
-  color: #1d00fc;
+  color: #2563eb;
   font-weight: 500;
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 .auth-link a:hover {
-  color: #1500d4;
+  color: #1d4ed8;
   text-decoration: underline;
+}
+
+@media (max-width: 700px) {
+  .auth-page {
+    align-items: flex-start;
+    padding: 28px 16px 48px;
+  }
+
+  .auth-card {
+    padding: 34px 24px;
+  }
+
+  .auth-form--cadastro {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-form__submit {
+    grid-column: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-campo input,
+  .auth-btn,
+  .auth-link a {
+    transition: none;
+  }
 }

@@ -13,18 +13,18 @@
     <link rel="stylesheet" href="/static/css/style.css" />
     <link rel="stylesheet" href="/static/css/auth.css" />
   </head>
-  <body>
+  <body class="auth-body">
     <header class="header">
       <div class="container">
-        <a href="/" class="logo" style="text-decoration: none; color: inherit;">Money App</a>
-        <nav class="menu">
+        <a href="/" class="logo" aria-label="Money App - Página inicial">Money App</a>
+        <nav class="menu" aria-label="Conta">
           <a href="/login">Entrar</a>
         </nav>
       </div>
     </header>
 
     <main class="auth-page">
-      <div class="auth-card">
+      <div class="auth-card auth-card--cadastro">
         <h1 class="auth-titulo">Criar conta</h1>
         <p class="auth-subtitulo">Consulte dados de ativos da B3.</p>
 
@@ -32,7 +32,7 @@
         <div class="auth-erro" role="alert">{{ erro }}</div>
         {% endif %}
 
-        <form method="POST" action="/cadastro" class="auth-form" id="formCadastro" novalidate>
+        <form method="POST" action="/cadastro" class="auth-form auth-form--cadastro" id="formCadastro" novalidate>
           <div class="auth-campo">
             <label for="nome">Nome</label>
             <input
@@ -80,10 +80,10 @@
               required
               autocomplete="new-password"
             />
-            <span class="auth-campo-erro" id="erroCadastro"></span>
+            <span class="auth-campo-erro" id="erroCadastro" role="status" aria-live="polite"></span>
           </div>
 
-          <button type="submit" class="auth-btn">Criar conta</button>
+          <button type="submit" class="auth-btn auth-form__submit">Criar conta</button>
         </form>
 
         <p class="auth-link">
