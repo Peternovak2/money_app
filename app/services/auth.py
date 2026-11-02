@@ -34,7 +34,7 @@ def buscar_usuario_por_id(user_id: int) -> Usuario | None:
 def obter_usuario_logado(request: Request) -> Usuario | None:
     """Obtém o usuário atual autenticado a partir da sessão, ou None."""
     user_id = request.session.get('user_id')
-    if not user_id:
+    if not isinstance(user_id, int) or isinstance(user_id, bool):
         return None
     return buscar_usuario_por_id(user_id)
 

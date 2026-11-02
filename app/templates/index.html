@@ -20,13 +20,18 @@
 
         <nav class="menu" aria-label="Conta">
           {% if usuario %}
-            <div class="usuario-resumo" title="{{ usuario.nome }}">
+            <a
+              href="/conta"
+              class="usuario-resumo"
+              aria-label="Abrir Minha conta de {{ usuario.nome }}"
+            >
               <span class="usuario-avatar" aria-hidden="true">
                 {{ usuario.nome[:1] | upper }}
               </span>
               <span class="usuario-nome">{{ usuario.nome.split()[0] }}</span>
-            </div>
+            </a>
             <form method="POST" action="/logout" class="form-logout">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
               <button type="submit" class="btn-logout">Sair</button>
             </form>
           {% else %}

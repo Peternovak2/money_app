@@ -3,6 +3,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
 from app.services.auth import autenticar, criar_usuario
+from app.services.security import renovar_token_csrf, validar_token_csrf
 
 router = APIRouter()
 
@@ -68,7 +69,9 @@ def login_post(
             status_code=401,
         )
 
+    request.session.clear()
     request.session['user_id'] = usuario.id
+    renovar_token_csrf(request)
 
     return RedirectResponse(url='/', status_code=303)
 
@@ -76,6 +79,10 @@ def login_post(
 # ── Logout ────────────────────────────────────────────────────────────────────
 
 @router.post('/logout')
-def logout(request: Request):
+def logout(
+    request: Request,
+    csrf_token: str | None = Form(default=None),
+):
+    validar_token_csrf(request, csrf_token)
     request.session.clear()
     return RedirectResponse(url='/', status_code=303)

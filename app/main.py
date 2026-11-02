@@ -2,18 +2,16 @@ from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
-import os
 
 from app.database import criar_tabelas
+from app.services.security import configuracao_cookie_sessao, obter_token_csrf
 
 app = FastAPI(title='Money App')
 app.state.asset_version = 'dev'
 
 # Sessão autenticada via cookie assinado (itsdangerous)
-SECRET_KEY = os.getenv('SECRET_KEY')
-if not SECRET_KEY:
-    raise ValueError("A variável de ambiente SECRET_KEY deve estar definida.")
-app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
+SESSION_CONFIG = configuracao_cookie_sessao()
+app.add_middleware(SessionMiddleware, **SESSION_CONFIG)
 
 @app.on_event("startup")
 def startup_event():
@@ -25,7 +23,7 @@ def startup_event():
 async def no_cache_middleware(request, call_next):
     response = await call_next(request)
 
-    auth_paths = ['/login', '/cadastro', '/logout']
+    auth_paths = ['/login', '/cadastro', '/logout', '/conta']
     is_auth = any(request.url.path.startswith(p) for p in auth_paths)
 
     if request.url.path.startswith('/static') or request.url.path == '/' or request.url.path.startswith('/ativo') or is_auth:
@@ -44,6 +42,9 @@ app.include_router(ativo_router)
 
 from app.routes.auth import router as auth_router
 app.include_router(auth_router)
+
+from app.routes.conta import router as conta_router
+app.include_router(conta_router)
 
 # Configura a rota para arquivos estáticos (CSS, JS, Imagens)
 app.mount('/static', StaticFiles(directory='app/static'), name='static')
@@ -64,6 +65,7 @@ from app.services.populares import buscar_rankings_mercado
 @app.get('/')
 def home(request: Request):
     usuario = obter_usuario_logado(request)
+    csrf_token = obter_token_csrf(request) if usuario else None
     # buscar_resumo_mercado() captura todas as falhas internamente;
     # cada ticker falha de forma independente — nunca gera HTTP 500.
     resumo_mercado = buscar_resumo_mercado()
@@ -75,6 +77,7 @@ def home(request: Request):
         context={
             'asset_version': app.state.asset_version,
             'usuario': usuario,
+            'csrf_token': csrf_token,
             'resumo_mercado': resumo_mercado,
             'rankings_mercado': rankings_mercado,
             'noticias': noticias,

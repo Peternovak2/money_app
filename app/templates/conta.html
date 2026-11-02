@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Minha conta | Money App</title>
+    <link rel="stylesheet" href="/static/css/style.css?v={{ asset_version }}" />
+    <link rel="stylesheet" href="/static/css/conta.css?v={{ asset_version }}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="conta-body">
+    <header class="header conta-header">
+      <div class="container">
+        <a href="/" class="logo" aria-label="Money App - Página inicial">Money App</a>
+
+        <nav class="menu" aria-label="Conta">
+          <a
+            href="/conta"
+            class="usuario-resumo"
+            aria-current="page"
+            aria-label="Minha conta de {{ usuario.nome }}"
+          >
+            <span class="usuario-avatar" aria-hidden="true">
+              {{ usuario.nome[:1] | upper }}
+            </span>
+            <span class="usuario-nome">{{ usuario.nome.split()[0] }}</span>
+          </a>
+          <form method="POST" action="/logout" class="form-logout">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+            <button type="submit" class="btn-logout">Sair</button>
+          </form>
+        </nav>
+      </div>
+    </header>
+
+    <main class="conta-page">
+      <header class="conta-hero">
+        <span class="conta-hero__eyebrow">Área pessoal</span>
+        <h1>Minha conta</h1>
+        <p>Gerencie sua conta e seus investimentos.</p>
+      </header>
+
+      <div class="conta-layout">
+        <aside class="conta-sidebar">
+          <nav class="conta-navegacao" aria-label="Seções da conta">
+            <a
+              class="conta-navegacao__item conta-navegacao__item--ativo"
+              href="#perfil"
+              aria-current="page"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <circle cx="12" cy="8" r="3.5"></circle>
+                <path d="M5.5 20a6.5 6.5 0 0 1 13 0"></path>
+              </svg>
+              <span>Meu perfil</span>
+            </a>
+
+            <div class="conta-navegacao__grupo">
+              <span>Próximos recursos</span>
+              <small>Em planejamento</small>
+            </div>
+
+            <ul class="conta-navegacao__futuros" aria-label="Recursos planejados">
+              <li class="conta-navegacao__item conta-navegacao__item--futuro" aria-disabled="true">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path d="M4 18.5V10m5 8.5V5m5 13.5v-6m5 6V8"></path>
+                </svg>
+                <span>Ativos acompanhados</span>
+              </li>
+              <li class="conta-navegacao__item conta-navegacao__item--futuro" aria-disabled="true">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <rect x="3.5" y="6.5" width="17" height="12" rx="2"></rect>
+                  <path d="M8 6.5V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1.5M3.5 11h17"></path>
+                </svg>
+                <span>Minhas carteiras</span>
+              </li>
+              <li class="conta-navegacao__item conta-navegacao__item--futuro" aria-disabled="true">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path d="m4 17 5-5 3 3 7-8"></path>
+                  <path d="M15 7h4v4"></path>
+                </svg>
+                <span>Análise da carteira</span>
+              </li>
+              <li class="conta-navegacao__item conta-navegacao__item--futuro" aria-disabled="true">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4V21a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1a1.7 1.7 0 0 0 1.9.3A1.7 1.7 0 0 0 10 3v-.2h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9A1.7 1.7 0 0 0 21 10h.2v4H21a1.7 1.7 0 0 0-1.6 1Z"></path>
+                </svg>
+                <span>Configurações</span>
+              </li>
+            </ul>
+          </nav>
+        </aside>
+
+        <section id="perfil" class="conta-perfil" aria-labelledby="perfil-titulo">
+          <header class="conta-perfil__cabecalho">
+            <div class="conta-perfil__avatar" aria-hidden="true">
+              {{ usuario.nome[:1] | upper }}
+            </div>
+            <div>
+              <span class="conta-perfil__rotulo">Perfil pessoal</span>
+              <h2 id="perfil-titulo">{{ usuario.nome }}</h2>
+              <p>{{ usuario.email }}</p>
+            </div>
+          </header>
+
+          <div class="conta-perfil__divisor"></div>
+
+          <div class="conta-perfil__introducao">
+            <div>
+              <h3>Informações da conta</h3>
+              <p>Dados utilizados para identificar seu acesso ao Money App.</p>
+            </div>
+            <span class="conta-perfil__privacidade">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <rect x="5" y="10" width="14" height="10" rx="2"></rect>
+                <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+              </svg>
+              Área privada
+            </span>
+          </div>
+
+          <dl class="conta-dados">
+            <div class="conta-dados__item">
+              <dt>Nome</dt>
+              <dd>{{ usuario.nome }}</dd>
+            </div>
+            <div class="conta-dados__item">
+              <dt>E-mail</dt>
+              <dd>{{ usuario.email }}</dd>
+            </div>
+          </dl>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>
