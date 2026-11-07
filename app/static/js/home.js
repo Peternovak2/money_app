@@ -275,6 +275,7 @@ input.addEventListener("keydown", (event) => {
 document.addEventListener("pointerdown", (event) => {
   if (!form.contains(event.target)) {
     fecharPainel();
+    cancelarBusca();
   }
 });
 
