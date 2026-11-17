@@ -36,6 +36,8 @@ async def no_cache_middleware(request, call_next):
 # Rotas
 from app.routes.api.api import router as api_router
 app.include_router(api_router)
+from app.routes.api.paineis import router as paineis_router
+app.include_router(paineis_router)
 
 from app.routes.ativos import router as ativo_router
 app.include_router(ativo_router)
