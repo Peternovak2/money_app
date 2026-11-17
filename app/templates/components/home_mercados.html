@@ -1,0 +1,52 @@
+{% set categorias = [
+  ('indices', 'Índices'), ('acoes', 'Ações'), ('commodities', 'Commodities'),
+  ('moedas', 'Moedas'), ('etfs', 'ETFs'), ('titulos', 'Títulos'),
+  ('fundos', 'Fundos'), ('cripto', 'Criptomoedas')
+] %}
+<section id="mercados" class="home-section home-markets" aria-labelledby="mercados-titulo" data-markets data-category="indices">
+  <h2 id="mercados-titulo" class="home-section__title">Mercados</h2>
+  <div class="markets-tabs" role="tablist" aria-label="Categorias de mercados" data-market-tabs>
+    {% for chave, nome in categorias %}
+      <button type="button" id="mercado-tab-{{ chave }}" class="markets-tab"
+        role="tab" aria-selected="{{ 'true' if loop.first else 'false' }}"
+        aria-controls="mercado-painel-{{ chave }}" tabindex="{{ '0' if loop.first else '-1' }}"
+        data-category="{{ chave }}">{{ nome }}</button>
+    {% endfor %}
+  </div>
+
+  {% for chave, nome in categorias %}
+    <div id="mercado-painel-{{ chave }}" class="markets-panel" role="tabpanel"
+      aria-labelledby="mercado-tab-{{ chave }}" tabindex="0"{% if not loop.first %} hidden{% endif %}>
+      {% if chave == 'indices' %}
+        <div class="markets-filters" role="group" aria-label="Regiões dos índices" data-market-filters>
+          {% for regiao, rotulo in [
+            ('principais', 'Principais'), ('americas', 'Américas'), ('europa', 'Europa'),
+            ('asia', 'Ásia e Oceania'), ('oriente-medio', 'Oriente Médio'), ('africa', 'África')
+          ] %}
+            <button type="button" class="markets-filter" data-region="{{ regiao }}"
+              aria-pressed="{{ 'true' if loop.first else 'false' }}">{{ rotulo }}</button>
+          {% endfor %}
+        </div>
+        <div class="markets-result" data-market-result data-region="principais" role="status" aria-live="polite" aria-atomic="true">
+          <p data-market-message>Disponível: Ibovespa. Os demais índices ainda não possuem dados integrados.</p>
+          <a href="#indices" data-market-index-link>Consultar o Ibovespa e os índices acompanhados <span aria-hidden="true">→</span></a>
+        </div>
+      {% elif chave == 'acoes' %}
+        <div class="markets-result">
+          <p>Consulte as ações da B3 nos rankings e na pesquisa de ativos.</p>
+          <nav class="markets-links" aria-label="Explorar ações da B3">
+            <a href="/mercado/altas">Maiores altas →</a>
+            <a href="/mercado/baixas">Maiores baixas →</a>
+            <a href="#acoes-destaque">Ações em destaque →</a>
+          </nav>
+        </div>
+      {% else %}
+        <div class="markets-result" data-state="unavailable">
+          <p>Dados desta categoria ainda não disponíveis.</p>
+          <p class="home-data-note">{{ nome }}: integração de dados ainda não implementada.</p>
+        </div>
+      {% endif %}
+    </div>
+  {% endfor %}
+  <noscript><p class="home-data-note">Ative o JavaScript para alternar categorias, regiões e usar a pesquisa. Os links dos rankings continuam disponíveis acima.</p></noscript>
+</section>

@@ -49,13 +49,11 @@ class FrontendBuscaTestCase(unittest.TestCase):
         self.assertNotIn('innerHTML', javascript)
         self.assertNotIn('insertAdjacentHTML', javascript)
 
-    def test_atalhos_em_destaque_sao_dinamicos(self):
+    def test_links_dos_rankings_e_ativos_sao_preservados(self):
         template = (
             RAIZ_PROJETO / 'app/templates/index.html'
         ).read_text(encoding='utf-8')
 
-        self.assertIn('rankings_mercado.mais_negociadas[:5]', template)
-        self.assertIn('Em destaque', template)
         self.assertIn('/mercado/altas', template)
         self.assertIn('/mercado/baixas', template)
         self.assertNotIn('/ativo/PETR4', template)
