@@ -1,0 +1,10 @@
+<a class="financial-asset" href="/ativo/{{ acao.ticker }}">
+  <span class="financial-asset__logo" aria-hidden="true">
+    {{ acao.ticker[:2] }}
+    {% if acao.logo %}<img data-asset-logo src="{{ acao.logo }}" alt="" width="36" height="36" loading="lazy" decoding="async" referrerpolicy="no-referrer" />{% endif %}
+  </span>
+  <span class="financial-asset__text">
+    <strong class="financial-asset__name">{{ acao.nome }}</strong>
+    <span class="financial-asset__ticker">{{ acao.ticker }}</span>
+  </span>
+</a>

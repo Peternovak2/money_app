@@ -1,7 +1,7 @@
 .ativo-body {
   --ativo-bg: #f5f7fb;
   --ativo-surface: #ffffff;
-  --ativo-text: #101828;
+  --ativo-text: var(--text-primary);
   --ativo-muted: #667085;
   --ativo-subtle: #98a2b3;
   --ativo-border: #e4e7ec;
@@ -97,8 +97,8 @@
   background: var(--ativo-surface);
   color: var(--ativo-muted);
   font: inherit;
-  font-size: 0.82rem;
-  font-weight: 600;
+  font-size: var(--type-size-sm);
+  font-weight: var(--type-weight-semibold);
   cursor: pointer;
   box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
   transition: border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
@@ -116,8 +116,8 @@
 }
 
 .ativo-voltar__icone {
-  font-size: 1.05rem;
-  line-height: 1;
+  font-size: var(--type-size-base);
+  line-height: var(--type-leading-solid);
 }
 
 .ativo-hero {
@@ -152,8 +152,8 @@
   border-radius: 7px;
   color: var(--ativo-blue-dark);
   background: var(--ativo-blue-soft);
-  font-size: 0.78rem;
-  font-weight: 700;
+  font-size: var(--type-size-sm);
+  font-weight: var(--type-weight-bold);
   letter-spacing: 0.035em;
 }
 
@@ -161,8 +161,8 @@
   padding-left: 0;
   border-left: 0;
   color: var(--ativo-muted);
-  font-size: 0.77rem;
-  font-weight: 500;
+  font-size: var(--type-size-sm);
+  font-weight: var(--type-weight-medium);
 }
 
 .ativo-body .ativo-classificacao::before {
@@ -175,9 +175,9 @@
   max-width: 920px;
   color: var(--ativo-text);
   font-size: clamp(1.65rem, 3vw, 2.35rem);
-  font-weight: 650;
+  font-weight: var(--type-weight-semibold);
   letter-spacing: -0.04em;
-  line-height: 1.16;
+  line-height: var(--type-leading-tight);
 }
 
 .ativo-metadados {
@@ -186,7 +186,7 @@
   gap: 8px 18px;
   margin: 12px 0 0;
   color: var(--ativo-muted);
-  font-size: 0.83rem;
+  font-size: var(--type-size-sm);
 }
 
 .ativo-metadados span + span {
@@ -214,8 +214,8 @@
   background: var(--ativo-surface);
   box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
   font: inherit;
-  font-size: 0.84rem;
-  font-weight: 600;
+  font-size: var(--type-size-md);
+  font-weight: var(--type-weight-semibold);
   cursor: pointer;
   transition:
     border-color 0.2s ease,
@@ -237,8 +237,8 @@
 }
 
 .botao-acompanhar__icone {
-  font-size: 1.15rem;
-  line-height: 1;
+  font-size: var(--type-size-lg);
+  line-height: var(--type-leading-solid);
 }
 
 .ativo-cotacao {
@@ -248,8 +248,8 @@
 .ativo-body .preco-label {
   margin: 0 0 7px;
   color: var(--ativo-muted);
-  font-size: 0.76rem;
-  font-weight: 600;
+  font-size: var(--type-size-sm);
+  font-weight: var(--type-weight-semibold);
   letter-spacing: 0.02em;
 }
 
@@ -261,7 +261,7 @@
   color: var(--ativo-text);
   font-size: clamp(2.6rem, 5vw, 4rem);
   font-variant-numeric: tabular-nums;
-  font-weight: 650;
+  font-weight: var(--type-weight-semibold);
   letter-spacing: -0.055em;
   line-height: 0.98;
 }
@@ -269,7 +269,7 @@
 .ativo-body .moeda {
   margin-right: 4px;
   color: var(--ativo-muted);
-  font-size: 0.82rem;
+  font-size: var(--type-size-sm);
 }
 
 .ativo-body .variacao_dia {
@@ -278,8 +278,8 @@
   gap: 4px;
   padding: 5px 9px;
   border-radius: 999px;
-  font-size: 0.84rem;
-  font-weight: 700;
+  font-size: var(--type-size-md);
+  font-weight: var(--type-weight-bold);
 }
 
 .ativo-body .variacao_dia--positiva {
@@ -300,7 +300,7 @@
 .ativo-cotacao__nota {
   margin-top: 10px;
   color: var(--ativo-subtle);
-  font-size: 0.72rem;
+  font-size: var(--type-size-xs);
 }
 
 .metricas-rapidas {
@@ -331,19 +331,19 @@
 .desempenho-grid dt {
   margin-bottom: 7px;
   color: var(--ativo-muted);
-  font-size: 0.72rem;
-  font-weight: 500;
-  line-height: 1.35;
+  font-size: var(--type-size-xs);
+  font-weight: var(--type-weight-medium);
+  line-height: var(--type-leading-compact);
 }
 
 .metrica-rapida dd,
 .desempenho-grid dd {
   overflow: hidden;
   color: #1d2939;
-  font-size: 0.9rem;
+  font-size: var(--type-size-md);
   font-variant-numeric: tabular-nums;
-  font-weight: 650;
-  line-height: 1.35;
+  font-weight: var(--type-weight-semibold);
+  line-height: var(--type-leading-compact);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -360,8 +360,8 @@
 .ativo-body .ativo-nav-link {
   min-height: 48px;
   color: var(--ativo-muted);
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: var(--type-size-sm);
+  font-weight: var(--type-weight-semibold);
 }
 
 .ativo-body .ativo-nav-link:hover {
@@ -389,8 +389,8 @@
   display: block;
   margin-bottom: 6px;
   color: var(--ativo-blue);
-  font-size: 0.68rem;
-  font-weight: 700;
+  font-size: var(--type-size-xs);
+  font-weight: var(--type-weight-bold);
   letter-spacing: 0.11em;
   text-transform: uppercase;
 }
@@ -399,16 +399,16 @@
   margin: 0;
   color: var(--ativo-text);
   font-size: clamp(1.25rem, 2vw, 1.55rem);
-  font-weight: 650;
+  font-weight: var(--type-weight-semibold);
   letter-spacing: -0.03em;
-  line-height: 1.2;
+  line-height: var(--type-leading-tight);
 }
 
 .secao-descricao {
   margin-top: 7px;
   color: var(--ativo-muted);
-  font-size: 0.82rem;
-  line-height: 1.5;
+  font-size: var(--type-size-sm);
+  line-height: var(--type-leading-normal);
 }
 
 .grafico-secao {
@@ -437,8 +437,8 @@
   align-items: center;
   gap: 12px;
   color: var(--ativo-muted);
-  font-size: 0.72rem;
-  font-weight: 500;
+  font-size: var(--type-size-xs);
+  font-weight: var(--type-weight-medium);
 }
 
 .grafico-legenda span {
@@ -478,7 +478,7 @@
   border-radius: 6px;
   color: var(--ativo-muted);
   background: transparent;
-  font-size: 0.72rem;
+  font-size: var(--type-size-xs);
   transition:
     color 0.18s ease,
     background-color 0.18s ease,
@@ -506,7 +506,7 @@
 
 .ativo-body .grafico-status {
   color: var(--ativo-muted);
-  font-weight: 500;
+  font-weight: var(--type-weight-medium);
 }
 
 .ativo-body .grafico-conteudo[data-estado="erro"] .grafico-status {
@@ -523,8 +523,8 @@
   border-radius: 999px;
   color: var(--ativo-muted);
   background: #eef2f6;
-  font-size: 0.72rem;
-  font-weight: 600;
+  font-size: var(--type-size-xs);
+  font-weight: var(--type-weight-semibold);
 }
 
 .desempenho-grid {
@@ -543,7 +543,7 @@
 }
 
 .desempenho-grid dd {
-  font-size: 1.05rem;
+  font-size: var(--type-size-base);
 }
 
 .desempenho-grid .desempenho-valor--positivo {
@@ -576,7 +576,7 @@
 .ativo-body .fundamentos-grupo-titulo {
   margin-bottom: 16px;
   color: #344054;
-  font-size: 0.72rem;
+  font-size: var(--type-size-xs);
   letter-spacing: 0.085em;
 }
 
@@ -600,14 +600,14 @@
 
 .fundamentos-lista dt {
   color: var(--ativo-muted);
-  font-size: 0.78rem;
+  font-size: var(--type-size-sm);
 }
 
 .fundamentos-lista dd {
   color: #1d2939;
-  font-size: 0.84rem;
+  font-size: var(--type-size-md);
   font-variant-numeric: tabular-nums;
-  font-weight: 650;
+  font-weight: var(--type-weight-semibold);
   text-align: right;
 }
 
@@ -652,27 +652,27 @@
   border-radius: 10px;
   color: var(--ativo-blue-dark);
   background: var(--ativo-blue-soft);
-  font-size: 1.15rem;
+  font-size: var(--type-size-lg);
 }
 
 .painel-vazio h3 {
   margin-bottom: 5px;
   color: #344054;
-  font-size: 0.88rem;
-  font-weight: 650;
+  font-size: var(--type-size-md);
+  font-weight: var(--type-weight-semibold);
 }
 
 .painel-vazio p {
-  font-size: 0.79rem;
-  line-height: 1.5;
+  font-size: var(--type-size-sm);
+  line-height: var(--type-leading-normal);
 }
 
 .empresa-resumo {
   display: -webkit-box;
   overflow: hidden;
   color: #475467;
-  font-size: 0.82rem;
-  line-height: 1.7;
+  font-size: var(--type-size-sm);
+  line-height: var(--type-leading-relaxed);
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 7;
 }
@@ -694,8 +694,8 @@
   border-radius: 6px;
   color: var(--ativo-muted);
   background: #f9fafb;
-  font-size: 0.68rem;
-  font-weight: 600;
+  font-size: var(--type-size-xs);
+  font-weight: var(--type-weight-semibold);
 }
 
 .empresa-site {
@@ -704,8 +704,8 @@
   gap: 6px;
   margin-top: 20px;
   color: var(--ativo-blue-dark);
-  font-size: 0.78rem;
-  font-weight: 650;
+  font-size: var(--type-size-sm);
+  font-weight: var(--type-weight-semibold);
   text-decoration: none;
 }
 
@@ -884,7 +884,7 @@
 
 @media (max-width: 420px) {
   .ativo-body .valor {
-    font-size: 2.55rem;
+    font-size: var(--type-size-5xl);
   }
 
   .ativo-body .grafico-conteudo {

@@ -18,8 +18,8 @@
   display: block;
   margin-bottom: 8px;
   color: #2563eb;
-  font-size: 0.75rem;
-  font-weight: 700;
+  font-size: var(--type-size-xs);
+  font-weight: var(--type-weight-bold);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -28,16 +28,16 @@
   margin: 0;
   color: #14213d;
   font-size: clamp(2rem, 4vw, 2.75rem);
-  font-weight: 700;
+  font-weight: var(--type-weight-bold);
   letter-spacing: -0.04em;
-  line-height: 1.1;
+  line-height: var(--type-leading-tight);
 }
 
 .conta-hero p {
   margin-top: 10px;
   color: #64748b;
-  font-size: 1rem;
-  line-height: 1.6;
+  font-size: var(--type-size-base);
+  line-height: var(--type-leading-relaxed);
 }
 
 .conta-layout {
@@ -67,8 +67,8 @@
   padding: 11px 12px;
   border-radius: 11px;
   color: #334155;
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: var(--type-size-md);
+  font-weight: var(--type-weight-semibold);
 }
 
 .conta-navegacao__item svg {
@@ -106,16 +106,16 @@
   gap: 12px;
   margin: 16px 10px 6px;
   color: #64748b;
-  font-size: 0.7rem;
-  font-weight: 700;
+  font-size: var(--type-size-xs);
+  font-weight: var(--type-weight-bold);
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
 .conta-navegacao__grupo small {
   color: #94a3b8;
-  font-size: 0.65rem;
-  font-weight: 600;
+  font-size: var(--type-size-xs);
+  font-weight: var(--type-weight-semibold);
   letter-spacing: 0;
   text-transform: none;
 }
@@ -129,7 +129,7 @@
 .conta-navegacao__item--futuro {
   min-height: 44px;
   color: #94a3b8;
-  font-weight: 500;
+  font-weight: var(--type-weight-medium);
   cursor: default;
 }
 
@@ -155,8 +155,8 @@
   border-radius: 22px;
   color: #ffffff;
   background: linear-gradient(145deg, #3b82f6, #1d4ed8);
-  font-size: 1.65rem;
-  font-weight: 700;
+  font-size: var(--type-size-3xl);
+  font-weight: var(--type-weight-bold);
   box-shadow: 0 12px 24px rgba(37, 99, 235, 0.18);
 }
 
@@ -164,24 +164,24 @@
   display: block;
   margin-bottom: 5px;
   color: #2563eb;
-  font-size: 0.75rem;
-  font-weight: 700;
+  font-size: var(--type-size-xs);
+  font-weight: var(--type-weight-bold);
 }
 
 .conta-perfil h2 {
   overflow-wrap: anywhere;
   color: #14213d;
-  font-size: 1.45rem;
-  font-weight: 700;
+  font-size: var(--type-size-2xl);
+  font-weight: var(--type-weight-bold);
   letter-spacing: -0.025em;
-  line-height: 1.25;
+  line-height: var(--type-leading-tight);
 }
 
 .conta-perfil__cabecalho p {
   margin-top: 4px;
   overflow-wrap: anywhere;
   color: #64748b;
-  font-size: 0.875rem;
+  font-size: var(--type-size-md);
 }
 
 .conta-perfil__divisor {
@@ -200,15 +200,15 @@
 
 .conta-perfil__introducao h3 {
   color: #14213d;
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: var(--type-size-base);
+  font-weight: var(--type-weight-bold);
 }
 
 .conta-perfil__introducao p {
   margin-top: 5px;
   color: #64748b;
-  font-size: 0.8125rem;
-  line-height: 1.55;
+  font-size: var(--type-size-sm);
+  line-height: var(--type-leading-normal);
 }
 
 .conta-perfil__privacidade {
@@ -220,8 +220,8 @@
   border-radius: 999px;
   color: #2563eb;
   background: #eff6ff;
-  font-size: 0.72rem;
-  font-weight: 600;
+  font-size: var(--type-size-xs);
+  font-weight: var(--type-weight-semibold);
 }
 
 .conta-perfil__privacidade svg {
@@ -252,8 +252,8 @@
 .conta-dados dt {
   margin-bottom: 8px;
   color: #64748b;
-  font-size: 0.72rem;
-  font-weight: 600;
+  font-size: var(--type-size-xs);
+  font-weight: var(--type-weight-semibold);
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
@@ -262,9 +262,9 @@
   margin: 0;
   overflow-wrap: anywhere;
   color: #14213d;
-  font-size: 0.9rem;
-  font-weight: 600;
-  line-height: 1.45;
+  font-size: var(--type-size-md);
+  font-weight: var(--type-weight-semibold);
+  line-height: var(--type-leading-compact);
 }
 
 @media (max-width: 800px) {
@@ -310,11 +310,11 @@
     height: 56px;
     flex-basis: 56px;
     border-radius: 17px;
-    font-size: 1.25rem;
+    font-size: var(--type-size-xl);
   }
 
   .conta-perfil h2 {
-    font-size: 1.2rem;
+    font-size: var(--type-size-xl);
   }
 
   .conta-perfil__introducao {

@@ -13,9 +13,32 @@ html {
 }
 
 :root {
+  --font-ui: "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --type-size-xs: 0.75rem;
+  --type-size-sm: 0.8125rem;
+  --type-size-md: 0.875rem;
+  --type-size-base: 1rem;
+  --type-size-lg: 1.125rem;
+  --type-size-xl: 1.25rem;
+  --type-size-2xl: 1.5rem;
+  --type-size-3xl: 1.75rem;
+  --type-size-4xl: 2rem;
+  --type-size-5xl: 2.75rem;
+  --type-size-display: 3.5rem;
+  --type-weight-normal: 400;
+  --type-weight-medium: 500;
+  --type-weight-semibold: 600;
+  --type-weight-bold: 700;
+  --type-weight-heavy: 800;
+  --type-leading-solid: 1;
+  --type-leading-tight: 1.25;
+  --type-leading-compact: 1.4;
+  --type-leading-normal: 1.5;
+  --type-leading-relaxed: 1.65;
+
   --background: #ffffff;
 
-  --text-primary: #202124;
+  --text-primary: #0b0f19;
 
   --text-secondary: #5f6368;
 
@@ -31,7 +54,36 @@ body {
 
   color: var(--text-primary);
 
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-ui);
+  font-size: var(--type-size-base);
+  font-weight: var(--type-weight-normal);
+  line-height: var(--type-leading-normal);
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: var(--type-weight-bold);
+  line-height: var(--type-leading-tight);
+}
+
+.valor,
+.variacao_dia,
+.variation,
+.ranking-variation,
+.index-summary__value,
+.index-summary__change {
+  font-variant-numeric: tabular-nums;
 }
 
 .ativo-page {
@@ -51,8 +103,8 @@ body {
   align-items: center;
   margin-bottom: 32px;
   color: var(--text-secondary);
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: var(--type-size-md);
+  font-weight: var(--type-weight-semibold);
   text-decoration: none;
   transition: color 0.2s ease;
 }
@@ -84,8 +136,8 @@ body {
   min-height: 44px;
   border-bottom: 2px solid transparent;
   color: var(--text-secondary);
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: var(--type-size-md);
+  font-weight: var(--type-weight-semibold);
   text-decoration: none;
   white-space: nowrap;
   transition: color 0.2s ease, border-color 0.2s ease;
@@ -117,13 +169,13 @@ body {
 
 .ticker {
   color: #1d4ed8;
-  font-size: 0.875rem;
-  font-weight: 700;
+  font-size: var(--type-size-md);
+  font-weight: var(--type-weight-bold);
 }
 
 .ativo-classificacao {
   color: var(--text-secondary);
-  font-size: 0.8125rem;
+  font-size: var(--type-size-sm);
 }
 
 .ativo-classificacao + .ativo-classificacao {
@@ -134,17 +186,17 @@ body {
 .empresa {
   max-width: 760px;
   color: var(--text-primary);
-  font-size: 1.5rem;
-  font-weight: 600;
-  line-height: 1.3;
+  font-size: var(--type-size-2xl);
+  font-weight: var(--type-weight-semibold);
+  line-height: var(--type-leading-compact);
 }
 
 .preco-label {
   margin-top: 28px;
   margin-bottom: 4px;
   color: var(--text-secondary);
-  font-size: 0.75rem;
-  font-weight: 500;
+  font-size: var(--type-size-xs);
+  font-weight: var(--type-weight-medium);
 }
 
 .preco {
@@ -156,9 +208,9 @@ body {
 
 .valor {
   color: var(--text-primary);
-  font-size: 3.5rem;
-  font-weight: 700;
-  line-height: 1;
+  font-size: var(--type-size-display);
+  font-weight: var(--type-weight-bold);
+  line-height: var(--type-leading-solid);
 }
 
 .valor--indisponivel {
@@ -168,13 +220,13 @@ body {
 .moeda {
   margin-right: 8px;
   color: var(--text-secondary);
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: var(--type-size-md);
+  font-weight: var(--type-weight-semibold);
 }
 
 .variacao_dia {
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: var(--type-size-base);
+  font-weight: var(--type-weight-bold);
   white-space: nowrap;
 }
 
@@ -213,8 +265,8 @@ body {
 .ativo-secao-titulo {
   margin-bottom: 24px;
   color: var(--text-primary);
-  font-size: 1.25rem;
-  font-weight: 600;
+  font-size: var(--type-size-xl);
+  font-weight: var(--type-weight-semibold);
 }
 
 .cards {
@@ -236,16 +288,16 @@ body {
 .card-rotulo {
   margin-bottom: 8px;
   color: var(--text-secondary);
-  font-size: 0.8125rem;
-  font-weight: 500;
+  font-size: var(--type-size-sm);
+  font-weight: var(--type-weight-medium);
 }
 
 .card-valor {
   color: var(--text-primary);
-  font-size: 1.125rem;
+  font-size: var(--type-size-lg);
   font-variant-numeric: tabular-nums;
-  font-weight: 600;
-  line-height: 1.4;
+  font-weight: var(--type-weight-semibold);
+  line-height: var(--type-leading-compact);
   overflow-wrap: anywhere;
 }
 
@@ -264,10 +316,10 @@ body {
 .fundamentos-grupo-titulo {
   margin-bottom: 12px;
   color: #475569;
-  font-size: 0.75rem;
-  font-weight: 700;
+  font-size: var(--type-size-xs);
+  font-weight: var(--type-weight-bold);
   letter-spacing: 0.08em;
-  line-height: 1.4;
+  line-height: var(--type-leading-compact);
   text-transform: uppercase;
 }
 
@@ -297,18 +349,18 @@ body {
 .fundamento-card-rotulo {
   margin-bottom: 6px;
   color: #94a3b8;
-  font-size: 0.75rem;
-  font-weight: 500;
-  line-height: 1.4;
+  font-size: var(--type-size-xs);
+  font-weight: var(--type-weight-medium);
+  line-height: var(--type-leading-compact);
 }
 
 .resumo-card-valor,
 .fundamento-card-valor {
   color: #f8fafc;
-  font-size: 1.0625rem;
+  font-size: var(--type-size-lg);
   font-variant-numeric: tabular-nums;
-  font-weight: 600;
-  line-height: 1.35;
+  font-weight: var(--type-weight-semibold);
+  line-height: var(--type-leading-compact);
   overflow-wrap: anywhere;
 }
 
@@ -351,8 +403,8 @@ body {
   color: var(--text-secondary);
   cursor: pointer;
   font: inherit;
-  font-size: 0.8125rem;
-  font-weight: 600;
+  font-size: var(--type-size-sm);
+  font-weight: var(--type-weight-semibold);
 }
 
 .grafico-periodo:first-child {
@@ -406,8 +458,8 @@ body {
   place-items: center;
   padding: 24px;
   color: #cbd5e1;
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: var(--type-size-md);
+  font-weight: var(--type-weight-semibold);
   text-align: center;
 }
 
@@ -464,7 +516,7 @@ body {
   }
 
   .empresa {
-    font-size: 1.25rem;
+    font-size: var(--type-size-xl);
   }
 
   .preco-label {
@@ -472,7 +524,7 @@ body {
   }
 
   .valor {
-    font-size: 2.75rem;
+    font-size: var(--type-size-5xl);
   }
 
   .cards {
@@ -551,7 +603,7 @@ body {
   color: #555;
 
   font-size: 13px;
-  font-weight: 500;
+  font-weight: var(--type-weight-medium);
   text-decoration: none;
 
   transition:

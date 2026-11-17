@@ -1,7 +1,7 @@
 .ranking-body {
   --ranking-bg: #f7f9fc;
   --ranking-surface: #ffffff;
-  --ranking-text: #14213d;
+  --ranking-text: var(--text-primary);
   --ranking-muted: #64708a;
   --ranking-border: #dfe5f0;
   --ranking-blue: #2563eb;
@@ -85,8 +85,8 @@
   background: rgba(255, 255, 255, 0.9);
   box-shadow: 0 3px 12px rgba(20, 33, 61, 0.05);
   font-family: inherit;
-  font-size: 0.78rem;
-  font-weight: 650;
+  font-size: var(--type-size-sm);
+  font-weight: var(--type-weight-semibold);
   cursor: pointer;
   transition:
     color 0.18s ease,
@@ -123,24 +123,24 @@
   display: block;
   margin-bottom: 7px;
   color: var(--ranking-blue);
-  font-size: 0.68rem;
-  font-weight: 700;
+  font-size: var(--type-size-xs);
+  font-weight: var(--type-weight-bold);
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
 .ranking-hero h1 {
   font-size: clamp(2rem, 4vw, 3.1rem);
-  font-weight: 700;
+  font-weight: var(--type-weight-bold);
   letter-spacing: -0.05em;
-  line-height: 1.08;
+  line-height: var(--type-leading-tight);
 }
 
 .ranking-hero p {
   margin-top: 10px;
   color: var(--ranking-muted);
-  font-size: 0.86rem;
-  line-height: 1.55;
+  font-size: var(--type-size-md);
+  line-height: var(--type-leading-normal);
 }
 
 .ranking-count {
@@ -149,8 +149,8 @@
   border-radius: 999px;
   color: var(--ranking-blue-dark);
   background: var(--ranking-blue-soft);
-  font-size: 0.7rem;
-  font-weight: 650;
+  font-size: var(--type-size-xs);
+  font-weight: var(--type-weight-semibold);
 }
 
 .ranking-panel {
@@ -175,6 +175,7 @@
 .ranking-table th,
 .ranking-table td {
   padding: 13px 16px;
+  vertical-align: middle;
   border-bottom: 1px solid #edf0f6;
   text-align: left;
 }
@@ -182,13 +183,13 @@
 .ranking-table th {
   color: var(--ranking-muted);
   background: #fafbfe;
-  font-size: 0.65rem;
-  font-weight: 600;
+  font-size: var(--type-size-xs);
+  font-weight: var(--type-weight-semibold);
 }
 
 .ranking-table td {
   color: #33415f;
-  font-size: 0.78rem;
+  font-size: var(--type-size-sm);
 }
 
 .ranking-table tbody tr:last-child td {
@@ -214,7 +215,7 @@
 .ranking-ticker,
 .ranking-action a {
   color: var(--ranking-blue);
-  font-weight: 650;
+  font-weight: var(--type-weight-semibold);
   text-decoration: none;
 }
 
@@ -226,7 +227,7 @@
 }
 
 .ranking-variation {
-  font-weight: 700;
+  font-weight: var(--type-weight-bold);
 }
 
 .ranking-variation--altas {
@@ -263,7 +264,7 @@
   justify-content: space-between;
   gap: 20px;
   color: var(--ranking-muted);
-  font-size: 0.76rem;
+  font-size: var(--type-size-sm);
 }
 
 .ranking-page-size {
@@ -290,7 +291,7 @@
 
 .ranking-page-size button {
   padding: 0 12px;
-  font-weight: 650;
+  font-weight: var(--type-weight-semibold);
   cursor: pointer;
 }
 
@@ -324,9 +325,9 @@
   border-radius: 8px;
   color: #43506c;
   background: #ffffff;
-  font-size: 0.76rem;
-  font-weight: 650;
-  line-height: 1;
+  font-size: var(--type-size-sm);
+  font-weight: var(--type-weight-semibold);
+  line-height: var(--type-leading-solid);
   text-decoration: none;
 }
 
@@ -383,20 +384,20 @@ a.ranking-pagination__page:hover {
 
 .ranking-empty h2 {
   color: #33415f;
-  font-size: 0.92rem;
+  font-size: var(--type-size-md);
 }
 
 .ranking-empty p {
   margin-top: 5px;
-  font-size: 0.78rem;
-  line-height: 1.5;
+  font-size: var(--type-size-sm);
+  line-height: var(--type-leading-normal);
 }
 
 .ranking-disclaimer {
   margin-top: 18px;
   color: var(--ranking-muted);
-  font-size: 0.66rem;
-  line-height: 1.5;
+  font-size: var(--type-size-xs);
+  line-height: var(--type-leading-normal);
 }
 
 .ranking-body a:focus-visible,
@@ -407,6 +408,11 @@ a.ranking-pagination__page:hover {
 }
 
 @media (max-width: 680px) {
+  .ranking-table { min-width: 0; }
+  .ranking-table__secondary { display: none; }
+  .ranking-table th, .ranking-table td { padding: 12px 8px; }
+  .ranking-position { width: 40px; }
+
   .ranking-page {
     width: min(100% - 32px, 1240px);
     padding-top: 22px;

@@ -10,13 +10,10 @@
     <title>{{ ranking.titulo }} | Money App</title>
     <link rel="stylesheet" href="/static/css/style.css?v={{ asset_version }}" />
     <link rel="stylesheet" href="/static/css/mercado.css?v={{ asset_version }}" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="stylesheet" href="/static/css/financial-assets.css?v={{ asset_version }}" />
+    {% include 'components/fonts.html' %}
     <script src="/static/js/mercado.js?v={{ asset_version }}" defer></script>
+    <script src="/static/js/asset-logos.js?v={{ asset_version }}" defer></script>
   </head>
   <body class="ranking-body">
     <header class="header ranking-header">
@@ -78,10 +75,10 @@
                 <tr>
                   <th scope="col">Posição</th>
                   <th scope="col">Empresa</th>
-                  <th scope="col">Ticker</th>
-                  <th scope="col" class="ranking-table__number">Último preço</th>
+                  <th scope="col" class="ranking-table__secondary">Ticker</th>
+                  <th scope="col" class="ranking-table__number ranking-table__secondary">Último preço</th>
                   <th scope="col" class="ranking-table__number">Variação</th>
-                  <th scope="col" class="ranking-table__number">Volume</th>
+                  <th scope="col" class="ranking-table__number ranking-table__secondary">Volume</th>
                   <th scope="col"><span class="sr-only">Abrir ativo</span></th>
                 </tr>
               </thead>
@@ -89,9 +86,9 @@
                 {% for acao in ranking.itens %}
                   <tr>
                     <td class="ranking-position">{{ ranking.paginacao.primeira_posicao + loop.index0 }}</td>
-                    <td><strong>{{ acao.nome }}</strong></td>
-                    <td><a class="ranking-ticker" href="/ativo/{{ acao.ticker }}">{{ acao.ticker }}</a></td>
-                    <td class="ranking-table__number">
+                    <td>{% include 'components/financial_asset.html' %}</td>
+                    <td class="ranking-table__secondary"><a class="ranking-ticker" href="/ativo/{{ acao.ticker }}">{{ acao.ticker }}</a></td>
+                    <td class="ranking-table__number ranking-table__secondary">
                       {% if acao.preco is not none %}R$ {{ acao.preco | formatar_numero(2) }}{% else %}—{% endif %}
                     </td>
                     <td class="ranking-table__number">
@@ -103,7 +100,7 @@
                         —
                       {% endif %}
                     </td>
-                    <td class="ranking-table__number">
+                    <td class="ranking-table__number ranking-table__secondary">
                       {% if acao.volume is not none %}{{ acao.volume | formatar_numero(0) }}{% else %}—{% endif %}
                     </td>
                     <td class="ranking-action">

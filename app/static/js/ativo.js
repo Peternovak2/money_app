@@ -211,6 +211,10 @@ if (secaoGrafico) {
     return {
       animation: false,
       backgroundColor: "transparent",
+      textStyle: {
+        fontFamily: getComputedStyle(document.body).fontFamily,
+        fontSize: 12,
+      },
       aria: { enabled: true },
       tooltip: {
         trigger: "axis",
@@ -453,6 +457,8 @@ if (secaoGrafico) {
       grafico.resize();
     }
   };
+
+  document.fonts?.ready.then(redimensionarGrafico);
 
   if ("ResizeObserver" in window) {
     const observador = new ResizeObserver(redimensionarGrafico);
