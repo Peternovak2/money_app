@@ -1,0 +1,64 @@
+<section id="indices" class="home-section home-indices" aria-labelledby="indices-titulo">
+  <h3 id="indices-titulo" class="sr-only">Selecionar índice do gráfico</h3>
+  <div class="indices-rail">
+    <button id="indices-add-toggle" class="indices-add-toggle" type="button" hidden
+      aria-label="Adicionar índices" aria-expanded="false" aria-controls="indices-add-panel" title="Adicionar índices">
+      <span aria-hidden="true">+</span>
+    </button>
+    <div id="indices-carousel" class="indices-grid" role="group" aria-label="Índices do gráfico. Use as setas para navegar e Enter para selecionar." tabindex="0">
+      {% for nome, simbolo, ticker_curto, sigla in [('Ibovespa', '^BVSP', 'IBOV', 'IB')] %}
+        <button type="button" class="index-summary" data-index-symbol="{{ simbolo }}" data-index-name="{{ nome }}" data-index-ticker="{{ ticker_curto }}" aria-pressed="{{ 'true' if loop.first else 'false' }}" aria-controls="dashboard-ibov" tabindex="{{ '0' if loop.first else '-1' }}" title="{{ nome }}">
+          <span class="index-summary__badge" aria-hidden="true">{% if simbolo == '^BVSP' %}{% include 'components/ibovespa_icon.html' %}{% else %}{{ sigla }}{% endif %}</span>
+          <strong class="index-summary__ticker">{{ ticker_curto }}</strong>
+          <span class="sr-only">{{ nome }}</span>
+          <span data-index-value hidden>—</span>
+          <span class="index-summary__change" data-index-change>—</span>
+          <span class="index-summary__direction" data-index-direction aria-hidden="true"></span>
+        </button>
+      {% endfor %}
+    </div>
+    <div class="indices-controls" role="group" aria-label="Navegar pelos índices">
+      <button type="button" data-indices-scroll="-1" hidden disabled aria-label="Índices anteriores" aria-controls="indices-carousel">←</button>
+      <button type="button" data-indices-scroll="1" hidden disabled aria-label="Próximos índices" aria-controls="indices-carousel">→</button>
+    </div>
+  </div>
+  <section id="indices-add-panel" class="indices-picker" aria-labelledby="indices-picker-title" hidden>
+    <div class="indices-picker__header">
+      <div><h4 id="indices-picker-title">Adicionar índices</h4><p>Personalize os mercados que você acompanha</p></div>
+      <button type="button" id="indices-picker-close" aria-label="Fechar painel de índices">×</button>
+    </div>
+    <label class="sr-only" for="indices-picker-search">Buscar índice por nome ou ticker</label>
+    <input id="indices-picker-search" class="indices-picker__search" type="search" placeholder="Buscar índice ou ticker…" autocomplete="off" maxlength="60" />
+    <div class="indices-picker__list" role="group" aria-label="Índices disponíveis">
+      {# Lista controlada. Novos símbolos habilitados devem ter suporte no histórico. #}
+      {% for nome, simbolo, ticker, sigla, disponivel in [
+        ('Ibovespa', '^BVSP', 'IBOV', 'IB', true),
+        ('IBrA', '', 'IBRA', 'BR', false),
+        ('S&P 500', '^GSPC', 'SPX', '500', true),
+        ('Nasdaq 100', '^NDX', 'NDX', '100', true),
+        ('Nikkei 225', '^N225', 'N225', '225', true),
+        ('Shanghai Composite', '000001.SS', 'SSEC', 'SH', true),
+        ('FTSE 100', '^FTSE', 'UKX', 'FT', true),
+        ('Dow Jones', '^DJI', 'DJI', 'DJ', true),
+        ('DAX', '^GDAXI', 'DAX', 'DX', true),
+        ('IFIX', '', 'IFIX', 'FI', false),
+        ('Dólar / USD-BRL', '', 'USD-BRL', 'US', false),
+        ('Small Caps', '', 'SMLL', 'SC', false),
+        ('Mid Large Cap', '', 'MLCX', 'ML', false)
+      ] %}
+        <button class="indices-picker__option" type="button" data-index-option="{{ simbolo }}"
+          data-option-name="{{ nome }}" data-option-ticker="{{ ticker }}" data-option-badge="{{ sigla }}"
+          {% if not disponivel %}disabled{% endif %}>
+          <span class="index-summary__badge" aria-hidden="true">{{ sigla }}</span>
+          <span class="indices-picker__identity"><strong>{{ nome }}</strong><span>{{ ticker }}{% if simbolo %} · {{ simbolo }}{% endif %}</span></span>
+          <span class="indices-picker__action">{{ 'Adicionar' if disponivel else 'Indisponível' }}</span>
+        </button>
+      {% endfor %}
+    </div>
+    <p id="indices-picker-empty" class="indices-picker__empty" role="status" hidden>Nenhum índice encontrado.</p>
+    <p class="indices-picker__note">Históricos: Yahoo Finance. Itens indisponíveis ainda não têm suporte confirmado. Escolhas salvas neste navegador.</p>
+  </section>
+  <p id="indices-picker-status" class="sr-only" role="status" aria-live="polite"></p>
+  <p class="sr-only" id="indice-ibov-contexto">Fonte: Yahoo Finance · Variação do período indicado no gráfico e nos detalhes de cada índice.</p>
+  <noscript><p class="home-data-note">Ative JavaScript para consultar os históricos e selecionar um índice.</p></noscript>
+</section>

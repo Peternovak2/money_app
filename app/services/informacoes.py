@@ -4,6 +4,7 @@ from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 import pandas as pd
 import yfinance as yf
+from yfinance.exceptions import YFTickerMissingError
 
 
 ESTADOS_MERCADO_FECHADO = {'CLOSED', 'POST', 'POSTPOST', 'PRE', 'PREPRE'}
@@ -97,15 +98,19 @@ def buscar_historico_ativo(ticker, periodo='6mo'):
         raise PeriodoHistoricoInvalido('Período histórico inválido')
 
     intervalo = PERIODOS_HISTORICO[periodo]
-    ativo = yf.Ticker(ticker)
-
     try:
+        ativo = yf.Ticker(ticker)
         historico = ativo.history(
             period=periodo,
             interval=intervalo,
             actions=False,
             auto_adjust=False,
+            # Mantém os erros locais à consulta, sem alterar a configuração global.
+            raise_errors=True,
         )
+    except YFTickerMissingError:
+        # Ausência de preços não comprova que o símbolo inexiste.
+        historico = None
     except Exception as erro:
         raise ErroConsultaHistorico('Não foi possível consultar o histórico') from erro
 
@@ -189,12 +194,17 @@ def buscar_ativo(ticker):
         "preco": info.get("currentPrice"),
         "variacao_dia": info.get("regularMarketChangePercent"),
         "abertura": info.get("open"),
+        "fechamento_anterior": info.get("previousClose"),
         "maxima": info.get("dayHigh"),
         "minima": info.get("dayLow"),
         "volume": info.get("volume"),
         "market_cap": info.get("marketCap"),
+        "bolsa": info.get("fullExchangeName") or info.get("exchange"),
+        "pais": info.get("country"),
         "setor": info.get("sector"),
         "industria": info.get("industry"),
+        "resumo_empresa": info.get("longBusinessSummary"),
+        "website": info.get("website"),
         "dividend_yield": info.get("dividendYield"),
         "pe": info.get("trailingPE"),
         "eps": info.get("trailingEps"),

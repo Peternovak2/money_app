@@ -1,4 +1,23 @@
 import math
+import re
+
+
+PADRAO_TICKER_HISTORICO = re.compile(r'[A-Z0-9]{1,20}(?:[.-][A-Z0-9]{1,10})?')
+
+
+def formatar_ticker_historico(ticker: str):
+    if not isinstance(ticker, str) or not ticker.isascii():
+        raise ValueError('Ticker inválido')
+
+    ticker = ticker.upper()
+    # O índice usa o símbolo do Yahoo, sem o sufixo das ações brasileiras.
+    if ticker in {'^BVSP', '^GSPC', '^NDX', '^N225', '^FTSE', '^DJI', '^GDAXI'}:
+        return ticker
+
+    if not PADRAO_TICKER_HISTORICO.fullmatch(ticker):
+        raise ValueError('Ticker inválido')
+
+    return formatar_ticker(ticker)
 
 
 def formatar_ticker(ticker: str):

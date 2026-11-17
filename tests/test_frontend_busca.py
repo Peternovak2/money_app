@@ -49,6 +49,61 @@ class FrontendBuscaTestCase(unittest.TestCase):
         self.assertNotIn('innerHTML', javascript)
         self.assertNotIn('insertAdjacentHTML', javascript)
 
+    def test_links_dos_rankings_e_ativos_sao_preservados(self):
+        template = (
+            RAIZ_PROJETO / 'app/templates/index.html'
+        ).read_text(encoding='utf-8')
+
+        self.assertIn('/mercado/altas', template)
+        self.assertIn('/mercado/baixas', template)
+        self.assertNotIn('/ativo/PETR4', template)
+        self.assertNotIn('/ativo/VALE3', template)
+
+    def test_menu_responsivo_expoe_controle_acessivel(self):
+        parser = ElementosPorIdParser()
+        parser.feed(
+            (RAIZ_PROJETO / 'app/templates/index.html').read_text(encoding='utf-8')
+        )
+
+        tag, botao = parser.elementos['homeMenuToggle']
+        _, menu = parser.elementos['homePrimaryNav']
+
+        self.assertEqual(tag, 'button')
+        self.assertEqual(botao['type'], 'button')
+        self.assertEqual(botao['aria-controls'], 'homePrimaryNav')
+        self.assertEqual(botao['aria-expanded'], 'false')
+        self.assertEqual(menu['data-open'], 'false')
+
+    def test_menu_responsivo_fecha_com_escape_e_atualiza_aria(self):
+        javascript = (
+            RAIZ_PROJETO / 'app/static/js/home.js'
+        ).read_text(encoding='utf-8')
+
+        self.assertIn('event.key === "Escape"', javascript)
+        self.assertIn('setAttribute("aria-expanded"', javascript)
+        self.assertIn('definirMenuAberto(false, true)', javascript)
+        self.assertIn('window.matchMedia("(min-width: 861px)")', javascript)
+
+    def test_template_identifica_noticias_externas_e_colunas_secundarias(self):
+        template = (
+            RAIZ_PROJETO / 'app/templates/index.html'
+        ).read_text(encoding='utf-8')
+
+        self.assertIn('(abre em uma nova aba)', template)
+        self.assertIn('financial-table__mobile-secondary', template)
+        self.assertIn('Atualize a página para tentar novamente.', template)
+
+    def test_css_preserva_desktop_e_define_breakpoints_responsivos(self):
+        css = (
+            RAIZ_PROJETO / 'app/static/css/home.css'
+        ).read_text(encoding='utf-8')
+
+        self.assertIn('@media (max-width: 860px)', css)
+        self.assertIn('.home-primary-nav[data-open="true"]', css)
+        self.assertIn('@media (max-width: 680px)', css)
+        self.assertIn('.financial-table__mobile-secondary', css)
+        self.assertIn('grid-template-columns: repeat(2, minmax(0, 1fr))', css)
+
 
 if __name__ == '__main__':
     unittest.main()

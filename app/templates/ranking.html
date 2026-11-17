@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="{{ ranking.titulo }} entre as ações disponíveis no catálogo público da B3."
+    />
+    <title>{{ ranking.titulo }} | Money App</title>
+    <link rel="stylesheet" href="/static/css/style.css?v={{ asset_version }}" />
+    <link rel="stylesheet" href="/static/css/mercado.css?v={{ asset_version }}" />
+    <link rel="stylesheet" href="/static/css/financial-assets.css?v={{ asset_version }}" />
+    {% include 'components/fonts.html' %}
+    <script src="/static/js/mercado.js?v={{ asset_version }}" defer></script>
+    <script src="/static/js/asset-logos.js?v={{ asset_version }}" defer></script>
+  </head>
+  <body class="ranking-body">
+    <header class="header ranking-header">
+      <div class="container">
+        <a href="/" class="logo" aria-label="Money App - Página inicial">Money App</a>
+
+        <nav class="menu" aria-label="Conta">
+          {% if usuario %}
+            <a
+              href="/conta"
+              class="usuario-resumo"
+              aria-label="Abrir Minha conta de {{ usuario.nome }}"
+            >
+              <span class="usuario-avatar" aria-hidden="true">{{ usuario.nome[:1] | upper }}</span>
+              <span class="usuario-nome">{{ usuario.nome.split()[0] }}</span>
+            </a>
+            <form method="POST" action="/logout" class="form-logout">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+              <button type="submit" class="btn-logout">Sair</button>
+            </form>
+          {% else %}
+            <a href="/login" class="menu-link">Entrar</a>
+            <a href="/cadastro" class="menu-link menu-link--primary">Criar conta</a>
+          {% endif %}
+        </nav>
+      </div>
+    </header>
+
+    <main class="ranking-page">
+      <header class="ranking-hero">
+        <div>
+          <button
+            type="button"
+            class="ranking-back"
+            data-ranking-back
+            data-fallback-url="/"
+            aria-label="Voltar para a página anterior"
+          >
+            <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+              <path d="M15 18 9 12l6-6" />
+              <path d="M9 12h10" />
+            </svg>
+            <span>Voltar</span>
+          </button>
+          <span class="ranking-eyebrow">Mercado em movimento</span>
+          <h1>{{ ranking.titulo }}</h1>
+          <p>{{ ranking.descricao }}</p>
+        </div>
+        {% if ranking.itens %}
+          <span class="ranking-count">{{ ranking.paginacao.total_itens }} ativos</span>
+        {% endif %}
+      </header>
+
+      <section class="ranking-panel" aria-label="{{ ranking.titulo }}">
+        {% if ranking.itens %}
+          <div class="ranking-table-wrap">
+            <table class="ranking-table">
+              <thead>
+                <tr>
+                  <th scope="col">Posição</th>
+                  <th scope="col">Empresa</th>
+                  <th scope="col" class="ranking-table__secondary">Ticker</th>
+                  <th scope="col" class="ranking-table__number ranking-table__secondary">Último preço</th>
+                  <th scope="col" class="ranking-table__number">Variação</th>
+                  <th scope="col" class="ranking-table__number ranking-table__secondary">Volume</th>
+                  <th scope="col"><span class="sr-only">Abrir ativo</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for acao in ranking.itens %}
+                  <tr>
+                    <td class="ranking-position">{{ ranking.paginacao.primeira_posicao + loop.index0 }}</td>
+                    <td>{% include 'components/financial_asset.html' %}</td>
+                    <td class="ranking-table__secondary"><a class="ranking-ticker" href="/ativo/{{ acao.ticker }}">{{ acao.ticker }}</a></td>
+                    <td class="ranking-table__number ranking-table__secondary">
+                      {% if acao.preco is not none %}R$ {{ acao.preco | formatar_numero(2) }}{% else %}—{% endif %}
+                    </td>
+                    <td class="ranking-table__number">
+                      {% if acao.variacao is not none %}
+                        <span class="ranking-variation ranking-variation--{{ ranking.tipo }}">
+                          {{ acao.variacao | formatar_variacao }}
+                        </span>
+                      {% else %}
+                        —
+                      {% endif %}
+                    </td>
+                    <td class="ranking-table__number ranking-table__secondary">
+                      {% if acao.volume is not none %}{{ acao.volume | formatar_numero(0) }}{% else %}—{% endif %}
+                    </td>
+                    <td class="ranking-action">
+                      <a href="/ativo/{{ acao.ticker }}" aria-label="Analisar {{ acao.ticker }}">
+                        Analisar <span aria-hidden="true">→</span>
+                      </a>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+          <footer class="ranking-pagination">
+            <div class="ranking-pagination__summary">
+              <p>
+                Exibindo {{ ranking.paginacao.primeira_posicao }}–{{ ranking.paginacao.ultima_posicao }}
+                de {{ ranking.paginacao.total_itens }} ativos
+              </p>
+
+              <form class="ranking-page-size" method="get">
+                <input type="hidden" name="page" value="1" />
+                <label for="ranking-page-size">Ativos por página</label>
+                <select id="ranking-page-size" name="page_size">
+                  {% for tamanho in (10, 20, 50) %}
+                    <option value="{{ tamanho }}"{% if tamanho == ranking.paginacao.tamanho_pagina %} selected{% endif %}>
+                      {{ tamanho }}
+                    </option>
+                  {% endfor %}
+                </select>
+                <button type="submit">Aplicar</button>
+              </form>
+            </div>
+
+            <nav class="ranking-pagination__nav" aria-label="Paginação do ranking">
+              {% if ranking.paginacao.tem_anterior %}
+                <a
+                  class="ranking-pagination__control"
+                  href="?page={{ ranking.paginacao.pagina - 1 }}&amp;page_size={{ ranking.paginacao.tamanho_pagina }}"
+                  rel="prev"
+                >Anterior</a>
+              {% else %}
+                <span class="ranking-pagination__control is-disabled" aria-disabled="true">Anterior</span>
+              {% endif %}
+
+              <span class="ranking-pagination__pages">
+                {% for numero in ranking.paginacao.paginas %}
+                  {% if numero is none %}
+                    <span class="ranking-pagination__ellipsis" aria-hidden="true">…</span>
+                  {% elif numero == ranking.paginacao.pagina %}
+                    <span class="ranking-pagination__page is-current" aria-current="page">{{ numero }}</span>
+                  {% else %}
+                    <a
+                      class="ranking-pagination__page"
+                      href="?page={{ numero }}&amp;page_size={{ ranking.paginacao.tamanho_pagina }}"
+                      aria-label="Ir para a página {{ numero }}"
+                    >{{ numero }}</a>
+                  {% endif %}
+                {% endfor %}
+              </span>
+
+              {% if ranking.paginacao.tem_proxima %}
+                <a
+                  class="ranking-pagination__control"
+                  href="?page={{ ranking.paginacao.pagina + 1 }}&amp;page_size={{ ranking.paginacao.tamanho_pagina }}"
+                  rel="next"
+                >Próxima</a>
+              {% else %}
+                <span class="ranking-pagination__control is-disabled" aria-disabled="true">Próxima</span>
+              {% endif %}
+            </nav>
+          </footer>
+        {% else %}
+          <div class="ranking-empty" role="status">
+            <span aria-hidden="true">◎</span>
+            <div>
+              <h2>
+                {% if ranking.indisponivel %}Ranking temporariamente indisponível{% else %}Nenhum ativo encontrado{% endif %}
+              </h2>
+              <p>
+                {% if ranking.indisponivel %}
+                  O catálogo de mercado não respondeu. Tente novamente mais tarde.
+                {% else %}
+                  Não há ativos que atendam ao critério deste ranking agora.
+                {% endif %}
+              </p>
+            </div>
+          </div>
+        {% endif %}
+      </section>
+
+      <aside class="ranking-disclaimer" aria-label="Informação sobre os dados">
+        Dados de mercado fornecidos pela Brapi. Conteúdo informativo, sem recomendação de investimento.
+      </aside>
+    </main>
+  </body>
+</html>

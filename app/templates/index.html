@@ -3,357 +3,506 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Busca de Ativos</title>
-    <link rel="stylesheet" href="/static/css/style.css?v={{ asset_version }}" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
+    <meta
+      name="description"
+      content="Pesquise ações da B3 por ticker ou nome e acompanhe dados de mercado."
     />
+    <title>Money App | Análise de ativos da B3</title>
+    <link rel="stylesheet" href="/static/css/style.css?v={{ asset_version }}" />
+    <link rel="stylesheet" href="/static/css/home-mercados.css?v={{ asset_version }}" />
+    <link rel="stylesheet" href="/static/css/financial-assets.css?v={{ asset_version }}" />
+    {% include 'components/fonts.html' %}
+    <script
+      src="https://cdn.jsdelivr.net/npm/echarts@6.1.0/dist/echarts.min.js"
+      defer
+    ></script>
   </head>
-  <body>
-    <header class="header">
-      <div class="container">
-        <a href="/" class="logo" aria-label="Money App - Página inicial">Money App</a>
+  {# Remova home-sidebar-disabled para reativar a sidebar; o menu e sua lógica são preservados. #}
+  <body class="home-body home-sidebar-disabled">
+    <header class="header home-header">
+      <div class="container home-header__inner">
+        <button
+          type="button"
+          id="sidebarToggle"
+          class="sidebar-toggle"
+          aria-label="Expandir barra lateral"
+          aria-pressed="false"
+          title="Expandir barra lateral"
+        >
+          <svg class="home-nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M9 5l7 7-7 7"></path>
+          </svg>
+        </button>
 
-        <nav class="menu" aria-label="Conta">
-          {% if usuario %}
-            <div class="usuario-resumo" title="{{ usuario.nome }}">
-              <span class="usuario-avatar" aria-hidden="true">
-                {{ usuario.nome[:1] | upper }}
-              </span>
-              <span class="usuario-nome">{{ usuario.nome.split()[0] }}</span>
-            </div>
-            <form method="POST" action="/logout" class="form-logout">
-              <button type="submit" class="btn-logout">Sair</button>
-            </form>
-          {% else %}
-            <a href="/login" class="menu-link">Entrar</a>
-            <a href="/cadastro" class="menu-link menu-link--primary">Criar conta</a>
-          {% endif %}
+        <nav
+          id="homePrimaryNav"
+          class="home-primary-nav"
+          aria-label="Navegação principal"
+          data-home-menu
+          data-open="false"
+        >
+          <a class="home-primary-nav__link home-primary-nav__link--active" href="/" aria-current="page" aria-label="Início" title="Início">
+            <svg class="home-nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m3 10 9-7 9 7v11h-7v-7h-4v7H3Z"></path></svg>
+            <span class="home-nav-label">Início</span>
+          </a>
+          <a class="home-primary-nav__link" href="#mercado" aria-label="Mercado" title="Mercado">
+            <svg class="home-nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4v16h16M8 15l4-5 4 2 5-7"></path></svg>
+            <span class="home-nav-label">Mercado</span>
+          </a>
+          <a class="home-primary-nav__link" href="#explorar" aria-label="Explorar" title="Explorar">
+            <svg class="home-nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="m16 8-2 6-6 2 2-6Z"></path></svg>
+            <span class="home-nav-label">Explorar</span>
+          </a>
         </nav>
       </div>
     </header>
 
     <main class="home-page">
-      <section class="home-hero" aria-labelledby="home-title">
-        <div class="home-hero__content">
-          <h1 id="home-title" class="home-title">
-            Pesquise e analise <span class="home-title__accent">ativos da B3</span>
-          </h1>
+      <h1 class="sr-only">Mercado de ações da B3</h1>
+      <div class="home-topbar">
+        <div class="home-topbar__brand-group">
+          <button
+            type="button"
+            id="homeMenuToggle"
+            class="home-menu-toggle"
+            aria-label="Abrir menu principal"
+            aria-controls="homePrimaryNav"
+            aria-expanded="false"
+            data-home-menu-toggle
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M4 7h16M4 12h16M4 17h16"></path>
+            </svg>
+          </button>
 
-          <p class="home-subtitle">
-            Cotações, gráficos e fundamentos em um só lugar.
-          </p>
-
-          <form id="formBusca" class="home-search" role="search">
-            <label for="tickerInput" class="home-search__label">Buscar ativo</label>
-
-            <div class="home-search__controls">
-              <div class="home-search__input-wrap">
-                <input
-                  type="text"
-                  id="tickerInput"
-                  class="home-search__field"
-                  placeholder="Digite um ticker ou nome, ex.: PETR4 ou Petrobras"
-                  autocomplete="off"
-                  autocapitalize="characters"
-                  spellcheck="false"
-                  maxlength="60"
-                  role="combobox"
-                  aria-autocomplete="list"
-                  aria-haspopup="listbox"
-                  aria-expanded="false"
-                  aria-controls="sugestoesAtivos"
-                  aria-describedby="buscaStatus"
-                  required
-                />
-
-                <div id="painelSugestoes" class="home-search__suggestions" hidden>
-                  <p id="mensagemSugestoes" class="home-search__message" hidden></p>
-                  <div
-                    id="sugestoesAtivos"
-                    class="home-search__list"
-                    role="listbox"
-                    aria-label="Sugestões de ativos"
-                    hidden
-                  ></div>
-                </div>
-              </div>
-              <button type="submit" class="home-search__button">Buscar</button>
-            </div>
-            <p id="buscaStatus" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
-          </form>
-
-          <nav class="home-examples" aria-label="Exemplos de busca">
-            <span class="home-examples__label">Exemplos de busca</span>
-            <div class="home-examples__list">
-              <a class="home-examples__link" href="/ativo/VALE3">VALE3</a>
-              <a class="home-examples__link" href="/ativo/PETR4">PETR4</a>
-              <a class="home-examples__link" href="/ativo/ITUB4">ITUB4</a>
-              <a class="home-examples__link" href="/ativo/BBDC4">BBDC4</a>
-              <a class="home-examples__link" href="/ativo/WEGE3">WEGE3</a>
-            </div>
-          </nav>
+          <a href="/" class="logo home-brand" aria-label="Money App - Página inicial" title="Money App">
+            <span class="home-brand__name">Money App</span>
+          </a>
         </div>
-      </section>
 
-      {# ─── Panorama do mercado ───────────────────────────────────────────────── #}
-      {% set ibov = resumo_mercado.ibovespa %}
-      {% set dolar = resumo_mercado.dolar %}
+        <form id="formBusca" class="home-search" role="search" aria-label="Pesquisa de ativos">
+          <label for="tickerInput" class="sr-only">Buscar ativo</label>
+          <div class="home-search__input-wrap">
+            <svg class="home-search__icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z"></path>
+            </svg>
+            <input
+              type="text"
+              id="tickerInput"
+              class="home-search__field"
+              placeholder="Pesquisar ações ou empresas..."
+              autocomplete="off"
+              autocapitalize="characters"
+              spellcheck="false"
+              maxlength="60"
+              role="combobox"
+              aria-autocomplete="list"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+              aria-controls="sugestoesAtivos"
+              aria-describedby="buscaAjuda buscaStatus"
+              required
+            />
 
-      <section class="home-mercado" aria-labelledby="mercado-titulo">
-        <div class="home-mercado__inner">
-          <header class="home-mercado__cabecalho">
-            <h2 id="mercado-titulo" class="home-mercado__titulo">Panorama do mercado</h2>
-
-            <div class="mercado-status" aria-label="Status do mercado">
-              {% if ibov and ibov.status == 'aberto' %}
-                <div class="mercado-status__estado mercado-status__estado--aberto">
-                  <span class="mercado-status__indicador" aria-hidden="true"></span>
-                  <span>Mercado aberto</span>
-                </div>
-              {% elif ibov and ibov.status == 'fechado' %}
-                <div class="mercado-status__estado mercado-status__estado--fechado">
-                  <span class="mercado-status__indicador" aria-hidden="true"></span>
-                  <span>Mercado fechado</span>
-                </div>
-              {% else %}
-                <div class="mercado-status__estado mercado-status__estado--indisponivel">
-                  <span class="mercado-status__indicador" aria-hidden="true"></span>
-                  <span>Status indisponível</span>
-                </div>
-              {% endif %}
-
-              {% if ibov and ibov.ultima_atualizacao %}
-                <time class="mercado-status__horario" datetime="{{ ibov.ultima_atualizacao.isoformat() }}">
-                  Atualizado às {{ ibov.ultima_atualizacao.strftime('%H:%M') }}
-                </time>
-              {% endif %}
-            </div>
-          </header>
-
-          <div class="mercado-dashboard">
-            <article class="mercado-card" aria-labelledby="indices-titulo">
-              <h3 id="indices-titulo" class="mercado-card__titulo">Principais índices</h3>
-              <div class="mercado-lista">
-                <div class="mercado-linha">
-                  <span class="mercado-linha__ticker">IBOVESPA</span>
-                  <span class="mercado-linha__preco">
-                    {% if ibov and ibov.valor is not none %}
-                      {{ ibov.valor | formatar_numero(0) }} pts
-                    {% else %}
-                      —
-                    {% endif %}
-                  </span>
-                  {% if ibov and ibov.variacao is not none %}
-                    {% set ibov_var = ibov.variacao | formatar_variacao %}
-                    <span class="mercado-linha__variacao {% if ibov.variacao > 0 %}mercado-linha__variacao--positiva{% elif ibov.variacao < 0 %}mercado-linha__variacao--negativa{% endif %}"
-                          aria-label="Variação {{ ibov_var }}">{{ ibov_var }}</span>
-                  {% else %}
-                    <span class="mercado-linha__variacao">—</span>
-                  {% endif %}
-                </div>
-
-                <div class="mercado-linha">
-                  <span class="mercado-linha__ticker">DÓLAR</span>
-                  <span class="mercado-linha__preco">
-                    {% if dolar and dolar.valor is not none %}
-                      R$ {{ dolar.valor | formatar_numero(2) }}
-                    {% else %}
-                      —
-                    {% endif %}
-                  </span>
-                  {% if dolar and dolar.variacao is not none %}
-                    {% set dolar_var = dolar.variacao | formatar_variacao %}
-                    <span class="mercado-linha__variacao {% if dolar.variacao > 0 %}mercado-linha__variacao--positiva{% elif dolar.variacao < 0 %}mercado-linha__variacao--negativa{% endif %}"
-                          aria-label="Variação {{ dolar_var }}">{{ dolar_var }}</span>
-                  {% else %}
-                    <span class="mercado-linha__variacao">—</span>
-                  {% endif %}
-                </div>
+            <div id="painelSugestoes" class="home-search__suggestions" hidden>
+              <div class="home-search__heading">
+                <strong>Ativos da B3</strong>
+                <button id="fecharBusca" type="button" class="home-search__close" aria-label="Fechar pesquisa">×</button>
               </div>
-            </article>
-
-            <article class="mercado-card" aria-labelledby="altas-titulo">
-              <h3 id="altas-titulo" class="mercado-card__titulo">Maiores altas</h3>
-              {% if rankings_mercado.altas %}
-                <div class="mercado-lista">
-                  {% for acao in rankings_mercado.altas %}
-                    <div class="mercado-linha">
-                      <span class="mercado-linha__ticker">{{ acao.ticker }}</span>
-                      <span class="mercado-linha__preco">
-                        {% if acao.preco is not none %}R$ {{ acao.preco | formatar_numero(2) }}{% else %}—{% endif %}
-                      </span>
-                      <span class="mercado-linha__variacao mercado-linha__variacao--positiva">
-                        {{ acao.variacao | formatar_variacao }}
-                      </span>
-                    </div>
-                  {% endfor %}
-                </div>
-              {% else %}
-                <p class="mercado-card__vazio">Dados indisponíveis</p>
-              {% endif %}
-            </article>
-
-            <article class="mercado-card" aria-labelledby="baixas-titulo">
-              <h3 id="baixas-titulo" class="mercado-card__titulo">Maiores baixas</h3>
-              {% if rankings_mercado.baixas %}
-                <div class="mercado-lista">
-                  {% for acao in rankings_mercado.baixas %}
-                    <div class="mercado-linha">
-                      <span class="mercado-linha__ticker">{{ acao.ticker }}</span>
-                      <span class="mercado-linha__preco">
-                        {% if acao.preco is not none %}R$ {{ acao.preco | formatar_numero(2) }}{% else %}—{% endif %}
-                      </span>
-                      <span class="mercado-linha__variacao mercado-linha__variacao--negativa">
-                        {{ acao.variacao | formatar_variacao }}
-                      </span>
-                    </div>
-                  {% endfor %}
-                </div>
-              {% else %}
-                <p class="mercado-card__vazio">Dados indisponíveis</p>
-              {% endif %}
-            </article>
-
-            <article class="mercado-card" aria-labelledby="negociadas-titulo">
-              <h3 id="negociadas-titulo" class="mercado-card__titulo">Maior volume</h3>
-              {% if rankings_mercado.mais_negociadas %}
-                <div class="mercado-lista">
-                  {% for acao in rankings_mercado.mais_negociadas %}
-                    <div class="mercado-linha">
-                      <span class="mercado-linha__ticker">{{ acao.ticker }}</span>
-                      <span class="mercado-linha__preco">
-                        {% if acao.preco is not none %}R$ {{ acao.preco | formatar_numero(2) }}{% else %}—{% endif %}
-                      </span>
-                      {% if acao.variacao is not none %}
-                        <span class="mercado-linha__variacao {% if acao.variacao > 0 %}mercado-linha__variacao--positiva{% elif acao.variacao < 0 %}mercado-linha__variacao--negativa{% endif %}">
-                          {{ acao.variacao | formatar_variacao }}
-                        </span>
-                      {% else %}
-                        <span class="mercado-linha__variacao">—</span>
-                      {% endif %}
-                    </div>
-                  {% endfor %}
-                </div>
-              {% else %}
-                <p class="mercado-card__vazio">Dados indisponíveis</p>
-              {% endif %}
-            </article>
+              <div class="home-search__categories" role="group" aria-label="Categorias de ativos">
+                <button type="button" data-search-category="todos" aria-pressed="true">Todos</button>
+                <button type="button" data-search-category="acao" aria-pressed="false">Ações</button>
+              </div>
+              <p id="tituloBusca" class="home-search__section-title">Descobrir ações · por volume</p>
+              <p id="mensagemSugestoes" class="home-search__message" hidden></p>
+              <div id="sugestoesAtivos" class="home-search__list" role="listbox" aria-label="Sugestões de ativos" hidden></div>
+              <p class="home-search__source">Catálogo B3 · Fonte: <a href="https://brapi.dev" target="_blank" rel="noopener noreferrer">Brapi<span class="sr-only"> (abre em nova aba)</span></a></p>
+            </div>
           </div>
-        </div>
-      </section>
+          <button type="submit" class="sr-only home-search__submit">Pesquisar ativo</button>
+          <p id="buscaAjuda" class="sr-only">Pesquise por ticker ou empresa. Use as setas e Enter para escolher um ativo; Escape fecha a pesquisa.</p>
+          <p
+            id="buscaStatus"
+            class="sr-only"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          ></p>
+        </form>
+        <nav class="menu" aria-label="Conta">
+          {% if usuario %}
+            <a
+              href="/conta"
+              class="usuario-resumo"
+              aria-label="Abrir Minha conta de {{ usuario.nome }}"
+              title="Minha conta"
+            >
+              <span class="usuario-avatar" aria-hidden="true">
+                {{ usuario.nome[:1] | upper }}
+              </span>
+              <span class="usuario-nome home-nav-label">{{ usuario.nome.split()[0] }}</span>
+            </a>
+            <form method="POST" action="/logout" class="form-logout">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+              <button type="submit" class="btn-logout" aria-label="Sair" title="Sair">
+                <svg class="home-nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10 4H4v16h6M9 12h12m-5-5 5 5-5 5"></path></svg>
+                <span class="home-nav-label">Sair</span>
+              </button>
+            </form>
+          {% else %}
+            <a href="/login" class="menu-link" aria-label="Entrar" title="Entrar">
+              <svg class="home-nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14 4h6v16h-6M3 12h12m-5-5 5 5-5 5"></path></svg>
+              <span class="home-nav-label">Entrar</span>
+            </a>
+            <a href="/cadastro" class="menu-link menu-link--primary" aria-label="Criar conta" title="Criar conta">
+              <svg class="home-nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="9" cy="8" r="4"></circle><path d="M2 21v-2a7 7 0 0 1 14 0v2m3-14v8m-4-4h8"></path></svg>
+              <span class="home-nav-label">Criar conta</span>
+            </a>
+          {% endif %}
+        </nav>
+      </div>
 
-      {% if noticias %}
-        <section class="home-noticias" aria-labelledby="noticias-titulo">
-          <div class="home-noticias__inner">
-            <header class="home-noticias__cabecalho">
-              <div>
-                <h2 id="noticias-titulo" class="home-noticias__titulo">Notícias</h2>
-                <p class="home-noticias__subtitulo">Economia e mercado brasileiro</p>
-              </div>
-            </header>
+      <div class="home-content">
+        <!-- Panorama: gráfico e índices somente na coluna esquerda. -->
+        <section id="dashboard" class="home-section home-dashboard" aria-labelledby="panorama-titulo">
+          <div class="dashboard-heading">
+            <h2 id="panorama-titulo" class="home-section__title panorama-title">Mercado Hoje</h2>
+            <p id="market-session-status" class="market-session" role="status" data-status="indisponivel" aria-label="Sessão regular de ações da B3: Status indisponível">
+              <span class="market-session__dot" aria-hidden="true"></span>
+              <span data-session-label>Status indisponível</span>
+            </p>
+          </div>
+          <div class="dashboard-grid">
+            <div class="dashboard-left">
 
-            <div class="noticias-grid {% if noticias | length == 1 %}noticias-grid--unica{% endif %}">
-              {% set noticia_principal = noticias[0] %}
-              <a
-                class="noticia-card noticia-card--principal"
-                href="{{ noticia_principal.url }}"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Ler notícia: {{ noticia_principal.titulo }}"
-              >
-                {% if noticia_principal.imagem %}
-                  <div class="noticia-card__media">
-                    <img
-                      class="noticia-card__imagem"
-                      src="{{ noticia_principal.imagem }}"
-                      alt=""
-                      width="1170"
-                      height="700"
-                      loading="lazy"
-                      decoding="async"
-                    />
+              {% include 'components/home_indices.html' %}
+
+            <!-- Coluna esquerda: gráfico do índice selecionado -->
+            <article
+              class="dashboard-chart-card"
+              id="dashboard-ibov"
+              aria-labelledby="dashboard-titulo"
+            >
+              <div class="dashboard-chart-card__header">
+                <div class="dashboard-chart-card__identity">
+                  <span id="dashboard-index-icon" class="dashboard-index-icon" data-header-index="^BVSP" aria-hidden="true">{% include 'components/ibovespa_icon.html' %}<span id="dashboard-index-monogram" class="dashboard-index-monogram">IBOV</span></span>
+                  <div class="dashboard-chart-card__identity-content">
+                  <div class="dashboard-chart-card__title-row">
+                    <h3 id="dashboard-titulo" class="dashboard-chart-card__ticker">Ibovespa</h3>
+                    <span class="dashboard-chart-card__exchange">IBOV</span>
                   </div>
-                {% else %}
-                  <div class="noticia-card__media noticia-card__media--vazia" aria-hidden="true">
-                    <span>Sem imagem</span>
+                  <div class="dashboard-chart-card__quote" id="dashboard-ibov-quote" aria-live="polite" aria-atomic="true">
+                    <span class="dashboard-chart-card__price" id="dashboard-ibov-price">—</span>
+                    <span class="dashboard-chart-card__change" id="dashboard-ibov-change">—</span>
+                    <span class="dashboard-chart-card__period-label" id="dashboard-ibov-period-label" aria-label="Período da variação">6 meses</span>
                   </div>
-                {% endif %}
-
-                <div class="noticia-card__conteudo">
-                  {% if noticia_principal.categorias %}
-                    <span class="noticia-card__categoria">{{ noticia_principal.categorias[0] }}</span>
-                  {% endif %}
-                  <h3 class="noticia-card__titulo">{{ noticia_principal.titulo }}</h3>
-                  {% if noticia_principal.resumo %}
-                    <p class="noticia-card__resumo">{{ noticia_principal.resumo }}</p>
-                  {% endif %}
-                  <div class="noticia-card__meta">
-                    <span>{{ noticia_principal.fonte }}</span>
-                    <span aria-hidden="true">•</span>
-                    <time datetime="{{ noticia_principal.publicado_em.isoformat() }}">
-                      {{ noticia_principal.publicado_em.strftime('%d/%m') }} • {{ noticia_principal.publicado_em.strftime('%H:%M') }}
-                    </time>
+                  <p class="dashboard-chart-card__timestamp" id="dashboard-ibov-timestamp"></p>
                   </div>
                 </div>
-              </a>
+                <div class="dashboard-chart-card__periods" role="group" aria-label="Selecionar período do gráfico">
+                  <button type="button" class="dashboard-period-btn" data-ibov-periodo="1mo">1M</button>
+                  <button type="button" class="dashboard-period-btn" data-ibov-periodo="3mo">3M</button>
+                  <button type="button" class="dashboard-period-btn dashboard-period-btn--active" data-ibov-periodo="6mo" aria-pressed="true">6M</button>
+                  <button type="button" class="dashboard-period-btn" data-ibov-periodo="1y">1A</button>
+                  <button type="button" class="dashboard-period-btn" data-ibov-periodo="5y">5A</button>
+                </div>
+              </div>
 
-              {% if noticias | length > 1 %}
-                <div class="noticias-secundarias">
-                  {% for noticia in noticias[1:] %}
+              <div class="dashboard-chart-card__body" id="dashboard-ibov-body" data-estado="carregando" aria-busy="true">
+                <div class="dashboard-chart-canvas-wrap">
+                  <div id="dashboard-ibov-canvas" class="dashboard-chart-canvas" role="img" aria-label="Gráfico histórico do Ibovespa"></div>
+                </div>
+                <p class="dashboard-chart-status" id="dashboard-ibov-status" role="status" aria-live="polite">Carregando histórico…</p>
+              </div>
+
+              <p class="dashboard-chart-card__source">
+                Fonte: Yahoo Finance · Fechamentos por intervalo do período selecionado
+              </p>
+            </article>
+
+            </div>
+            <section id="noticias" class="dashboard-news" aria-labelledby="noticias-titulo">
+              <header class="home-section__header">
+                <div>
+                  <h2 id="noticias-titulo" class="home-section__title">Economia em destaque</h2>
+                  <p class="home-section__description">Notícias de economia · Agência Brasil.</p>
+                </div>
+                <span class="home-section__source">Até 3 notícias recentes</span>
+              </header>
+
+              {% if noticias %}
+                <div class="news-grid">
+                  {% for noticia in noticias[:4] %}
                     <a
-                      class="noticia-card noticia-card--secundaria"
+                      class="news-card{% if loop.first %} news-card--lead{% endif %}"
                       href="{{ noticia.url }}"
                       target="_blank"
                       rel="noopener noreferrer"
-                      aria-label="Ler notícia: {{ noticia.titulo }}"
+                      aria-label="Ler notícia: {{ noticia.titulo }} (abre em uma nova aba)"
                     >
                       {% if noticia.imagem %}
-                        <div class="noticia-card__media">
+                        <div class="news-card__media">
                           <img
-                            class="noticia-card__imagem"
                             src="{{ noticia.imagem }}"
                             alt=""
-                            width="1170"
-                            height="700"
+                            width="720"
+                            height="400"
                             loading="lazy"
                             decoding="async"
+                            referrerpolicy="no-referrer"
                           />
                         </div>
                       {% else %}
-                        <div class="noticia-card__media noticia-card__media--vazia" aria-hidden="true">
-                          <span>Sem imagem</span>
+                        <div class="news-card__media news-card__media--empty" aria-hidden="true">
+                          <span>Economia</span>
                         </div>
                       {% endif %}
 
-                      <div class="noticia-card__conteudo">
-                        {% if noticia.categorias %}
-                          <span class="noticia-card__categoria">{{ noticia.categorias[0] }}</span>
-                        {% endif %}
-                        <h3 class="noticia-card__titulo">{{ noticia.titulo }}</h3>
-                        <div class="noticia-card__meta">
+                      <div class="news-card__content">
+                        <h3>{{ noticia.titulo }}</h3>
+                        <div class="news-card__meta">
                           <span>{{ noticia.fonte }}</span>
-                          <span aria-hidden="true">•</span>
                           <time datetime="{{ noticia.publicado_em.isoformat() }}">
-                            {{ noticia.publicado_em.strftime('%d/%m') }} • {{ noticia.publicado_em.strftime('%H:%M') }}
+                            {{ noticia.publicado_em.strftime('%d/%m/%Y') }}
                           </time>
                         </div>
                       </div>
                     </a>
                   {% endfor %}
                 </div>
+              {% else %}
+                <div class="home-empty-state home-empty-state--news" role="status">
+                  <span aria-hidden="true">▤</span>
+                  <div>
+                    <strong>Notícias temporariamente indisponíveis</strong>
+                    <p>O feed público não respondeu. Nenhum conteúdo fictício foi exibido. Atualize a página para tentar novamente.</p>
+                  </div>
+                </div>
               {% endif %}
-            </div>
+            </section>
           </div>
         </section>
-      {% endif %}
+        <!-- Fim do dashboard -->
 
+        <section id="mercado" class="home-section dashboard-market" aria-labelledby="mercado-titulo">
+          <header class="home-section__header">
+            <div>
+              <span class="home-section__eyebrow">Pregão</span>
+              <h2 id="mercado-titulo" class="home-section__title">Mercado em movimento</h2>
+              <p class="home-section__description">
+                Ações com as maiores variações no catálogo público da B3.
+              </p>
+            </div>
+          </header>
+
+          <div class="movement-grid">
+            <article class="market-panel" aria-labelledby="altas-titulo">
+              <div class="market-panel__header">
+                <div>
+                  <span class="market-panel__indicator market-panel__indicator--positive" aria-hidden="true">↑</span>
+                  <h3 id="altas-titulo">Ações com maiores altas</h3>
+                </div>
+                <a class="market-panel__all" href="/mercado/altas">Ver todas <span aria-hidden="true">→</span></a>
+              </div>
+
+              {% if rankings_mercado.altas %}
+                <div class="financial-table-wrap">
+                  <table class="financial-table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Ativo</th>
+                        <th scope="col" class="financial-table__number">Preço</th>
+                        <th scope="col" class="financial-table__number">Variação</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for acao in rankings_mercado.altas[:5] %}
+                        <tr>
+                          <td><a class="ticker-link movement-asset" href="/ativo/{{ acao.ticker }}"><span class="movement-avatar" aria-hidden="true">{{ acao.ticker[:2] }}{% if acao.logo %}<img data-movement-logo src="{{ acao.logo }}" alt="" width="32" height="32" loading="lazy" decoding="async" referrerpolicy="no-referrer" />{% endif %}</span><span><strong>{{ acao.ticker }}</strong><span class="movement-company">{{ acao.nome }}</span></span></a></td><td class="financial-table__number financial-table__value">{% if acao.preco is not none %}R$ {{ acao.preco | formatar_numero(2) }}{% else %}—{% endif %}</td>
+                          <td class="financial-table__number">
+                            <span class="variation variation--positive">{{ acao.variacao | formatar_variacao }}</span>
+                          </td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              {% else %}
+                <div class="home-empty-state" role="status">
+                  <span aria-hidden="true">↗</span>
+                  <div>
+                    <strong>Altas indisponíveis</strong>
+                    <p>Não foi possível carregar este ranking agora. Atualize a página para tentar novamente.</p>
+                  </div>
+                </div>
+              {% endif %}
+            </article>
+
+            <article class="market-panel" aria-labelledby="baixas-titulo">
+              <div class="market-panel__header">
+                <div>
+                  <span class="market-panel__indicator market-panel__indicator--negative" aria-hidden="true">↓</span>
+                  <h3 id="baixas-titulo">Ações com maiores baixas</h3>
+                </div>
+                <a class="market-panel__all" href="/mercado/baixas">Ver todas <span aria-hidden="true">→</span></a>
+              </div>
+
+              {% if rankings_mercado.baixas %}
+                <div class="financial-table-wrap">
+                  <table class="financial-table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Ativo</th>
+                        <th scope="col" class="financial-table__number">Preço</th>
+                        <th scope="col" class="financial-table__number">Variação</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for acao in rankings_mercado.baixas[:5] %}
+                        <tr>
+                          <td><a class="ticker-link movement-asset" href="/ativo/{{ acao.ticker }}"><span class="movement-avatar" aria-hidden="true">{{ acao.ticker[:2] }}{% if acao.logo %}<img data-movement-logo src="{{ acao.logo }}" alt="" width="32" height="32" loading="lazy" decoding="async" referrerpolicy="no-referrer" />{% endif %}</span><span><strong>{{ acao.ticker }}</strong><span class="movement-company">{{ acao.nome }}</span></span></a></td><td class="financial-table__number financial-table__value">{% if acao.preco is not none %}R$ {{ acao.preco | formatar_numero(2) }}{% else %}—{% endif %}</td>
+                          <td class="financial-table__number">
+                            <span class="variation variation--negative">{{ acao.variacao | formatar_variacao }}</span>
+                          </td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              {% else %}
+                <div class="home-empty-state" role="status">
+                  <span aria-hidden="true">↘</span>
+                  <div>
+                    <strong>Baixas indisponíveis</strong>
+                    <p>Não foi possível carregar este ranking agora. Atualize a página para tentar novamente.</p>
+                  </div>
+                </div>
+              {% endif %}
+            </article>
+          </div>
+        </section>
+
+        <section id="acoes-destaque" class="home-section" aria-labelledby="destaques-titulo">
+          <header class="home-section__header">
+            <div>
+              <span class="home-section__eyebrow">Liquidez</span>
+              <h2 id="destaques-titulo" class="home-section__title">Ações em destaque</h2>
+              <p class="home-section__description">Ativos com maior volume negociado no catálogo atual.</p>
+            </div>
+          </header>
+
+          <div class="featured-panel">
+            {% if rankings_mercado.mais_negociadas %}
+              <div class="financial-table-wrap">
+                <table class="financial-table financial-table--featured">
+                  <thead>
+                    <tr>
+                      <th scope="col">Empresa</th>
+                      <th scope="col" class="financial-table__mobile-secondary">Ticker</th>
+                      <th scope="col" class="financial-table__number">Último preço</th>
+                      <th scope="col" class="financial-table__number">Variação</th>
+                      <th scope="col" class="financial-table__number financial-table__mobile-secondary">Volume</th>
+                      <th scope="col" class="financial-table__mobile-secondary"><span class="sr-only">Abrir ativo</span></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for acao in rankings_mercado.mais_negociadas %}
+                      <tr>
+                        <td>{% include 'components/financial_asset.html' %}</td>
+                        <td class="financial-table__mobile-secondary"><a class="ticker-link" href="/ativo/{{ acao.ticker }}">{{ acao.ticker }}</a></td>
+                        <td class="financial-table__number financial-table__value">
+                          {% if acao.preco is not none %}R$ {{ acao.preco | formatar_numero(2) }}{% else %}—{% endif %}
+                        </td>
+                        <td class="financial-table__number">
+                          {% if acao.variacao is not none %}
+                            <span class="variation {% if acao.variacao > 0 %}variation--positive{% elif acao.variacao < 0 %}variation--negative{% endif %}">
+                              {{ acao.variacao | formatar_variacao }}
+                            </span>
+                          {% else %}
+                            —
+                          {% endif %}
+                        </td>
+                        <td class="financial-table__number financial-table__value financial-table__mobile-secondary">
+                          {% if acao.volume is not none %}{{ acao.volume | formatar_numero(0) }}{% else %}—{% endif %}
+                        </td>
+                        <td class="financial-table__action financial-table__mobile-secondary">
+                          <a href="/ativo/{{ acao.ticker }}" aria-label="Analisar {{ acao.ticker }}">
+                            Analisar <span aria-hidden="true">→</span>
+                          </a>
+                        </td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            {% else %}
+              <div class="home-empty-state home-empty-state--wide" role="status">
+                <span aria-hidden="true">◎</span>
+                <div>
+                  <strong>Ações em destaque indisponíveis</strong>
+                  <p>O catálogo de mercado não respondeu. A busca por ticker continua disponível. Atualize a página para tentar novamente.</p>
+                </div>
+              </div>
+            {% endif %}
+          </div>
+        </section>
+
+        <section id="explorar" class="home-section" aria-labelledby="explorar-titulo">
+          <header class="home-section__header">
+            <div>
+              <span class="home-section__eyebrow">Descoberta</span>
+              <h2 id="explorar-titulo" class="home-section__title">Explorar o mercado</h2>
+              <p class="home-section__description">Recursos atuais e próximos caminhos de análise.</p>
+            </div>
+          </header>
+
+          <div class="explore-grid">
+            <a class="explore-card explore-card--available" href="#formBusca">
+              <span class="explore-card__icon" aria-hidden="true">▥</span>
+              <span class="explore-card__content">
+                <strong>Ações</strong>
+                <small>Pesquise empresas da B3 por ticker ou nome.</small>
+              </span>
+              <span class="explore-card__arrow" aria-hidden="true">→</span>
+            </a>
+
+            <article class="explore-card">
+              <span class="explore-card__icon" aria-hidden="true">◉</span>
+              <span class="explore-card__content">
+                <strong>ETFs</strong>
+                <small>Catálogo específico ainda não disponível.</small>
+              </span>
+              <span class="explore-card__badge">Em breve</span>
+            </article>
+
+            <article class="explore-card">
+              <span class="explore-card__icon" aria-hidden="true">⌁</span>
+              <span class="explore-card__content">
+                <strong>Índices</strong>
+                <small>Comparação de índices planejada para uma próxima etapa.</small>
+              </span>
+              <span class="explore-card__badge">Em breve</span>
+            </article>
+
+            <article class="explore-card">
+              <span class="explore-card__icon" aria-hidden="true">▦</span>
+              <span class="explore-card__content">
+                <strong>Setores</strong>
+                <small>Visão setorial depende de uma nova fonte de dados.</small>
+              </span>
+              <span class="explore-card__badge">Em breve</span>
+            </article>
+          </div>
+        </section>
+
+
+
+      </div>
     </main>
 
     <script src="/static/js/home.js?v={{ asset_version }}"></script>
+    <script src="/static/js/home-scroll.js?v={{ asset_version }}"></script>
+    <script src="/static/js/asset-logos.js?v={{ asset_version }}"></script>
+    <script src="/static/js/market-session.js?v={{ asset_version }}"></script>
   </body>
 </html>

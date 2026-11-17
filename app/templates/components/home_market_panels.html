@@ -1,0 +1,87 @@
+{% set acompanhamento = carteira_home | default({'estado': 'anonimo' if not usuario else 'indisponivel', 'ativos': []}) %}
+<section id="analise-acompanhamento" class="home-section home-insights" aria-label="Análise setorial e acompanhamento de ativos">
+  <article id="minha-carteira" class="home-insight-panel home-watchlist" aria-labelledby="carteira-titulo">
+    <header class="home-insight-panel__header">
+      <div>
+        <span class="home-section__eyebrow">Seu acompanhamento</span>
+        <h2 id="carteira-titulo" class="home-section__title">Minha carteira</h2>
+        <p class="home-insight-panel__description">Favoritos e ativos monitorados</p>
+      </div>
+    </header>
+    {% if usuario %}
+      <form id="favorite-form" class="home-favorite-form" data-csrf="{{ csrf_token }}">
+        <label for="favorite-ticker">Adicionar por ticker</label>
+        <div><input id="favorite-ticker" maxlength="20" placeholder="Ex.: PETR4" required autocomplete="off" /><button type="submit">Adicionar</button></div>
+      </form>
+      <p id="favorite-feedback" role="status" aria-live="polite"></p>
+    {% endif %}
+    {% if acompanhamento.estado == 'sucesso' %}
+      <div class="watchlist-overview"><strong>{{ acompanhamento.ativos | length }}</strong><span>ativos nesta lista</span></div>
+      <p class="home-data-note">Distribuição por classificação Brapi · contagem de ativos, não capital</p>
+      <div class="watchlist-distribution" aria-hidden="true">{% for grupo in acompanhamento.ativos | groupby('setor', default='Sem classificação') %}<span style="flex: {{ grupo.list | length }}"></span>{% endfor %}</div>
+      <ul class="watchlist-distribution-legend">{% for grupo in acompanhamento.ativos | groupby('setor', default='Sem classificação') %}<li><span>{{ grupo.grouper }}</span><strong>{{ grupo.list | length }} / {{ acompanhamento.ativos | length }}</strong></li>{% endfor %}</ul>
+      <ul class="home-watchlist__list" aria-label="Até quatro ativos favoritos">
+        {% for acao in acompanhamento.ativos[:4] %}
+          <li class="home-watchlist__item">
+            {% include 'components/financial_asset.html' %}
+            <div class="home-watchlist__quote">
+              <span class="home-watchlist__price">{% if acao.preco is not none %}R$ {{ acao.preco | formatar_numero(2) }}{% else %}<span class="sr-only">Preço indisponível</span>—{% endif %}</span>
+              {% if acao.variacao is not none %}
+                <span class="home-watchlist__change{% if acao.variacao > 0 %} variation--positive{% elif acao.variacao < 0 %} variation--negative{% endif %}">{{ acao.variacao | formatar_variacao }}</span>
+              {% else %}<span class="home-watchlist__change">Variação indisponível</span>{% endif %}
+            </div>
+            <button type="button" data-remove-favorite="{{ acao.ticker }}" aria-label="Remover {{ acao.ticker }} dos favoritos">×</button>
+          </li>
+        {% endfor %}
+      </ul>
+      <label for="watchlist-chart-select">Histórico de preço · 1 mês</label>
+      <select id="watchlist-chart-select">{% for acao in acompanhamento.ativos %}<option value="{{ acao.ticker }}">{{ acao.ticker }}</option>{% endfor %}</select>
+      <div id="watchlist-mini-chart" class="home-mini-chart" role="img" aria-label="Histórico do favorito selecionado"></div>
+      <p id="watchlist-chart-status" class="home-data-note" role="status"></p>
+      <p class="home-insight-panel__footnote">Fonte: Brapi · Último dado disponível no catálogo, sujeito a atraso. Não representa posições compradas ou rentabilidade.</p>
+    {% elif acompanhamento.estado == 'anonimo' %}
+      <div class="home-insight-panel__empty">
+        <strong>Acompanhe seus ativos favoritos em um só lugar.</strong>
+        <p>Entre na sua conta para consultar sua lista de acompanhamento.</p>
+        <div class="home-insight-panel__actions"><a href="/login">Entrar</a><a href="/cadastro">Criar conta</a></div>
+      </div>
+    {% elif acompanhamento.estado == 'vazio' %}
+      <div class="home-insight-panel__empty" role="status">
+        <strong>Você ainda não acompanha nenhum ativo.</strong>
+        <p>Sua lista de favoritos está vazia. O acompanhamento salvo no navegador é independente desta lista.</p>
+        <a class="home-insight-panel__link" href="#formBusca">Pesquisar ativos</a>
+      </div>
+    {% else %}
+      <div class="home-insight-panel__empty" role="status">
+        <strong>Acompanhamento temporariamente indisponível</strong>
+        <p>Não foi possível consultar seus favoritos. As demais informações de mercado continuam disponíveis.</p>
+        <a class="home-insight-panel__link" href="#formBusca">Pesquisar ativos</a>
+      </div>
+    {% endif %}
+  </article>
+  <article id="desempenho-setor" class="home-insight-panel" aria-labelledby="setor-titulo" data-sector-state="unavailable">
+    <header class="home-insight-panel__header">
+      <div>
+        <span class="home-section__eyebrow">Visão do mercado</span>
+        <h2 id="setor-titulo" class="home-section__title">Desempenho por setor</h2>
+        <p class="home-insight-panel__description">Uma visão comparativa dos setores da bolsa brasileira.</p>
+      </div>
+      <span class="home-insight-panel__badge">Amostra Money App · 1M</span>
+    </header>
+    <div id="sector-results" role="status">
+      <span class="home-insight-panel__empty-icon" aria-hidden="true">↗</span>
+      <strong>Dados setoriais indisponíveis</strong>
+      <p>A comparação será exibida quando houver uma série histórica e uma metodologia validadas para cada setor.</p>
+    </div>
+    <p id="sector-detail" class="home-data-note"></p>
+    <details class="home-insight-panel__footnote"><summary>Fonte e metodologia</summary><p>Brapi: classificação. Yahoo Finance: preços ajustados. Duas ações por categoria, escolhidas por volume do catálogo atual; pesos iguais na data inicial, mínimo de 15 observações comuns. Datas comparáveis entre setores disponíveis. Amostra exploratória com viés de seleção atual; não é índice oficial nem crescimento econômico. Cache: uma hora.</p></details>
+  </article>
+
+  <article id="cambio-commodities" class="home-insight-panel home-macro" aria-labelledby="macro-title">
+    <header><span class="home-section__eyebrow">Mercado global</span><h2 id="macro-title" class="home-section__title">Câmbio e commodities</h2></header>
+    <div id="macro-usd" class="home-macro__headline" role="status">Carregando USD/BRL…</div>
+    <div id="macro-mini-chart" class="home-mini-chart" role="img" aria-label="Histórico USD/BRL de um mês"></div>
+    <ul id="macro-futures" class="home-watchlist__list" aria-label="Contratos futuros"></ul>
+    <p class="home-insight-panel__footnote">Yahoo Finance · Observações diárias, não PTAX nem tempo real. Variação de 1 mês. Futuros podem apresentar descontinuidades na troca de contratos; não são preços spot. Cache: uma hora.</p>
+  </article>
+</section>

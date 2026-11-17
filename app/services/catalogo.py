@@ -4,7 +4,7 @@ import threading
 import time
 import unicodedata
 from urllib.error import HTTPError, URLError
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlsplit
 from urllib.request import Request, urlopen
 
 
@@ -57,7 +57,7 @@ def _normalizar_acao(item):
     if volume is not None and volume.is_integer():
         volume = int(volume)
 
-    return {
+    acao = {
         'ticker': ticker,
         'nome': nome_bruto.strip(),
         'preco': _numero_finito(item.get('close')),
@@ -65,6 +65,13 @@ def _normalizar_acao(item):
         'volume': volume,
     }
 
+    if isinstance(item.get('sector'), str) and item['sector'].strip():
+        acao['setor'] = item['sector'].strip()
+
+    logo = _logo_busca_permitido(item.get('logo'))
+    if logo:
+        acao['logo'] = logo
+    return acao
 
 def _buscar_lista_brapi():
     parametros = urlencode({
@@ -159,8 +166,9 @@ def _texto_pesquisavel(valor):
     return ' '.join(sem_acentos.casefold().split())
 
 
-def buscar_sugestoes(consulta, limite=8):
+def buscar_sugestoes(consulta, limite=8, categoria='todos'):
     """Pesquisa ticker ou nome, priorizando as correspondências mais fortes."""
+    _validar_categoria_busca(categoria)
     termo = _texto_pesquisavel(consulta.strip())
     if not termo:
         return []
@@ -174,10 +182,12 @@ def buscar_sugestoes(consulta, limite=8):
             prioridade = 0
         elif ticker.startswith(termo):
             prioridade = 1
-        elif nome.startswith(termo):
+        elif termo in ticker:
             prioridade = 2
-        elif termo in nome:
+        elif nome.startswith(termo):
             prioridade = 3
+        elif termo in nome:
+            prioridade = 4
         else:
             continue
 
@@ -185,6 +195,37 @@ def buscar_sugestoes(consulta, limite=8):
 
     correspondencias.sort(key=lambda item: item[:3])
     return [
-        {'ticker': acao['ticker'], 'nome': acao['nome']}
+        _resumo_busca(acao)
         for _, _, _, acao in correspondencias[:limite]
     ]
+
+def _validar_categoria_busca(categoria):
+    if categoria not in ('todos', 'acao'):
+        raise ValueError('Categoria não suportada')
+
+
+def _logo_busca_permitido(logo):
+    if not isinstance(logo, str) or not logo or any(c.isspace() or not c.isprintable() for c in logo):
+        return None
+    try:
+        url = urlsplit(logo)
+        if (url.scheme == 'https' and url.hostname == 'icons.brapi.dev'
+                and url.port in (None, 443) and not url.username and not url.password
+                and not url.query and not url.fragment):
+            return logo
+    except ValueError:
+        pass
+    return None
+
+
+def _resumo_busca(acao):
+    return dict(ticker=acao['ticker'], nome=acao['nome'], tipo='acao',
+                logo_url=_logo_busca_permitido(acao.get('logo')))
+
+
+def buscar_descoberta(limite=8, categoria='todos'):
+    """Descoberta estável por volume, usando o mesmo catálogo em cache dos rankings."""
+    _validar_categoria_busca(categoria)
+    acoes = sorted(obter_catalogo_acoes(),
+                   key=lambda acao: (-(acao.get('volume') or 0), acao['ticker']))
+    return [_resumo_busca(acao) for acao in acoes[:limite]]

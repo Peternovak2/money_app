@@ -1,3 +1,71 @@
+const botaoVoltarAtivo = document.querySelector("[data-ativo-back]");
+
+if (botaoVoltarAtivo) {
+  botaoVoltarAtivo.addEventListener("click", () => {
+    let origemAnteriorInterna = false;
+
+    if (document.referrer) {
+      try {
+        const paginaAnterior = new URL(document.referrer);
+        origemAnteriorInterna = paginaAnterior.origin === window.location.origin;
+      } catch {
+        origemAnteriorInterna = false;
+      }
+    }
+
+    if (origemAnteriorInterna && window.history.length > 1) {
+      window.history.back();
+      return;
+    }
+
+    window.location.assign("/");
+  });
+}
+
+const botaoAcompanhar = document.getElementById("botao-acompanhar");
+
+if (botaoAcompanhar) {
+  const tickerAcompanhado = botaoAcompanhar.dataset.ticker;
+  const chaveAcompanhamento = `money-app:acompanhar:${tickerAcompanhado}`;
+  const iconeAcompanhar = botaoAcompanhar.querySelector(
+    ".botao-acompanhar__icone",
+  );
+  const textoAcompanhar = botaoAcompanhar.querySelector(
+    ".botao-acompanhar__texto",
+  );
+
+  function atualizarBotaoAcompanhar(estaAcompanhando) {
+    botaoAcompanhar.setAttribute("aria-pressed", String(estaAcompanhando));
+    iconeAcompanhar.textContent = estaAcompanhando ? "★" : "☆";
+    textoAcompanhar.textContent = estaAcompanhando
+      ? "Acompanhando"
+      : "Acompanhar";
+  }
+
+  try {
+    atualizarBotaoAcompanhar(localStorage.getItem(chaveAcompanhamento) === "1");
+  } catch {
+    atualizarBotaoAcompanhar(false);
+  }
+
+  botaoAcompanhar.addEventListener("click", () => {
+    const estaAcompanhando = botaoAcompanhar.getAttribute("aria-pressed") === "true";
+    const proximoEstado = !estaAcompanhando;
+
+    try {
+      if (proximoEstado) {
+        localStorage.setItem(chaveAcompanhamento, "1");
+      } else {
+        localStorage.removeItem(chaveAcompanhamento);
+      }
+    } catch {
+      return;
+    }
+
+    atualizarBotaoAcompanhar(proximoEstado);
+  });
+}
+
 const secaoGrafico = document.getElementById("grafico");
 
 if (secaoGrafico) {
@@ -6,6 +74,11 @@ if (secaoGrafico) {
   const conteudoGrafico = document.getElementById("grafico-conteudo");
   const canvasGrafico = document.getElementById("grafico-canvas");
   const statusGrafico = document.getElementById("grafico-status");
+  const desempenhoPeriodo = document.getElementById("desempenho-periodo");
+  const desempenhoVariacao = document.getElementById("desempenho-variacao");
+  const desempenhoMaxima = document.getElementById("desempenho-maxima");
+  const desempenhoMinima = document.getElementById("desempenho-minima");
+  const desempenhoVolume = document.getElementById("desempenho-volume");
   const botoesPeriodo = Array.from(
     secaoGrafico.querySelectorAll("[data-periodo]"),
   );
@@ -17,6 +90,18 @@ if (secaoGrafico) {
   const formatadorVolume = new Intl.NumberFormat("pt-BR", {
     maximumFractionDigits: 0,
   });
+  const formatadorVolumeCompacto = new Intl.NumberFormat("pt-BR", {
+    notation: "compact",
+    maximumFractionDigits: 1,
+  });
+  const rotulosPeriodo = {
+    "1mo": "1 mês",
+    "3mo": "3 meses",
+    "6mo": "6 meses",
+    "1y": "1 ano",
+    "5y": "5 anos",
+    max: "Máximo",
+  };
 
   let periodoCarregado = null;
   let periodoEmCarregamento = null;
@@ -61,6 +146,53 @@ if (secaoGrafico) {
     statusGrafico.textContent = mensagem;
   }
 
+  function atualizarDesempenho(pontos, periodo) {
+    desempenhoPeriodo.textContent = rotulosPeriodo[periodo] || periodo;
+    desempenhoVariacao.textContent = "—";
+    desempenhoMaxima.textContent = "—";
+    desempenhoMinima.textContent = "—";
+    desempenhoVolume.textContent = "—";
+    desempenhoVariacao.classList.remove(
+      "desempenho-valor--positivo",
+      "desempenho-valor--negativo",
+    );
+
+    if (!pontos.length) {
+      return;
+    }
+
+    const primeiroFechamento = pontos[0].close;
+    const ultimoFechamento = pontos[pontos.length - 1].close;
+    const maxima = Math.max(...pontos.map((ponto) => ponto.high));
+    const minima = Math.min(...pontos.map((ponto) => ponto.low));
+    const volumesValidos = pontos
+      .map((ponto) => ponto.volume)
+      .filter((volume) => Number.isFinite(volume));
+
+    if (primeiroFechamento !== 0) {
+      const variacao = ((ultimoFechamento / primeiroFechamento) - 1) * 100;
+      const sinal = variacao > 0 ? "+" : "";
+      desempenhoVariacao.textContent = `${sinal}${formatadorPreco.format(variacao)}%`;
+
+      if (variacao > 0) {
+        desempenhoVariacao.classList.add("desempenho-valor--positivo");
+      } else if (variacao < 0) {
+        desempenhoVariacao.classList.add("desempenho-valor--negativo");
+      }
+    }
+
+    desempenhoMaxima.textContent = formatadorPreco.format(maxima);
+    desempenhoMinima.textContent = formatadorPreco.format(minima);
+
+    if (volumesValidos.length) {
+      const volumeMedio = volumesValidos.reduce(
+        (total, volume) => total + volume,
+        0,
+      ) / volumesValidos.length;
+      desempenhoVolume.textContent = formatadorVolumeCompacto.format(volumeMedio);
+    }
+  }
+
   function criarOpcoes(pontos, periodo) {
     const datas = pontos.map((ponto) => ponto.time);
     const candles = pontos.map((ponto) => [
@@ -72,21 +204,26 @@ if (secaoGrafico) {
     const volumes = pontos.map((ponto) => ({
       value: ponto.volume,
       itemStyle: {
-        color: ponto.close >= ponto.open ? "#22c55e" : "#ef4444",
+        color: ponto.close >= ponto.open ? "#07875c" : "#c93636",
       },
     }));
 
     return {
       animation: false,
       backgroundColor: "transparent",
+      textStyle: {
+        fontFamily: getComputedStyle(document.body).fontFamily,
+        fontSize: 12,
+      },
       aria: { enabled: true },
       tooltip: {
         trigger: "axis",
         confine: true,
         axisPointer: { type: "line" },
         backgroundColor: "#111827",
-        borderColor: "#334155",
+        borderColor: "#1d2939",
         textStyle: { color: "#f8fafc" },
+        extraCssText: "box-shadow: 0 12px 28px rgba(16, 24, 40, 0.22); border-radius: 8px;",
         formatter(parametros) {
           const indice = parametros[0]?.dataIndex;
           const ponto = pontos[indice];
@@ -111,18 +248,19 @@ if (secaoGrafico) {
       },
       axisPointer: {
         link: [{ xAxisIndex: [0, 1] }],
-        label: { backgroundColor: "#334155" },
+        label: { backgroundColor: "#344054" },
+        lineStyle: { color: "#98a2b3", type: "dashed" },
       },
       grid: [
-        { left: 16, right: 64, top: 28, height: "55%" },
-        { left: 16, right: 64, top: "70%", height: "12%" },
+        { left: 18, right: 68, top: 28, height: "58%" },
+        { left: 18, right: 68, top: "73%", height: "11%" },
       ],
       xAxis: [
         {
           type: "category",
           data: datas,
           boundaryGap: true,
-          axisLine: { lineStyle: { color: "#475569" } },
+          axisLine: { lineStyle: { color: "#e4e7ec" } },
           axisTick: { show: false },
           axisLabel: { show: false },
           splitLine: { show: false },
@@ -134,10 +272,10 @@ if (secaoGrafico) {
           gridIndex: 1,
           data: datas,
           boundaryGap: true,
-          axisLine: { lineStyle: { color: "#475569" } },
+          axisLine: { lineStyle: { color: "#e4e7ec" } },
           axisTick: { show: false },
           axisLabel: {
-            color: "#94a3b8",
+            color: "#667085",
             hideOverlap: true,
             formatter(data) {
               return formatarDataEixo(data, periodo);
@@ -155,12 +293,12 @@ if (secaoGrafico) {
           axisLine: { show: false },
           axisTick: { show: false },
           axisLabel: {
-            color: "#94a3b8",
+            color: "#667085",
             formatter(valor) {
               return formatadorPreco.format(valor);
             },
           },
-          splitLine: { lineStyle: { color: "rgba(148, 163, 184, 0.14)" } },
+          splitLine: { lineStyle: { color: "rgba(16, 24, 40, 0.07)" } },
         },
         {
           scale: true,
@@ -170,12 +308,9 @@ if (secaoGrafico) {
           axisLine: { show: false },
           axisTick: { show: false },
           axisLabel: {
-            color: "#94a3b8",
+            color: "#98a2b3",
             formatter(valor) {
-              return Intl.NumberFormat("pt-BR", {
-                notation: "compact",
-                maximumFractionDigits: 1,
-              }).format(valor);
+              return formatadorVolumeCompacto.format(valor);
             },
           },
           splitLine: { show: false },
@@ -196,12 +331,12 @@ if (secaoGrafico) {
           start: 0,
           end: 100,
           showDataShadow: false,
-          borderColor: "#334155",
-          backgroundColor: "#111827",
-          fillerColor: "rgba(59, 130, 246, 0.18)",
-          handleStyle: { color: "#64748b", borderColor: "#94a3b8" },
-          moveHandleStyle: { color: "#64748b" },
-          textStyle: { color: "#94a3b8" },
+          borderColor: "#e4e7ec",
+          backgroundColor: "#f8fafc",
+          fillerColor: "rgba(37, 99, 235, 0.12)",
+          handleStyle: { color: "#ffffff", borderColor: "#94a3b8" },
+          moveHandleStyle: { color: "#98a2b3" },
+          textStyle: { color: "#667085" },
         },
       ],
       series: [
@@ -210,10 +345,10 @@ if (secaoGrafico) {
           type: "candlestick",
           data: candles,
           itemStyle: {
-            color: "#22c55e",
-            color0: "#ef4444",
-            borderColor: "#22c55e",
-            borderColor0: "#ef4444",
+            color: "#07875c",
+            color0: "#c93636",
+            borderColor: "#07875c",
+            borderColor0: "#c93636",
           },
         },
         {
@@ -242,6 +377,7 @@ if (secaoGrafico) {
     }
 
     grafico.setOption(criarOpcoes(pontos, periodo), true);
+    atualizarDesempenho(pontos, periodo);
     requestAnimationFrame(() => grafico.resize());
   }
 
@@ -264,6 +400,7 @@ if (secaoGrafico) {
 
     atualizarPeriodoAtivo(periodo);
     atualizarEstado("carregando", "Carregando histórico...");
+    atualizarDesempenho([], periodo);
 
     const parametros = new URLSearchParams({ periodo });
     const url = `/api/${encodeURIComponent(ticker)}/historico?${parametros}`;
@@ -320,6 +457,8 @@ if (secaoGrafico) {
       grafico.resize();
     }
   };
+
+  document.fonts?.ready.then(redimensionarGrafico);
 
   if ("ResizeObserver" in window) {
     const observador = new ResizeObserver(redimensionarGrafico);

@@ -19,8 +19,8 @@
   gap: 10px;
   flex-shrink: 0;
   color: #f8fafc;
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: var(--type-size-xl);
+  font-weight: var(--type-weight-bold);
   letter-spacing: -0.03em;
   text-decoration: none;
 }
@@ -36,7 +36,7 @@
   border-radius: 10px;
   color: #dbeafe;
   background: rgba(37, 99, 235, 0.18);
-  font-size: 0.95rem;
+  font-size: var(--type-size-base);
   letter-spacing: 0;
 }
 
@@ -51,7 +51,7 @@
 
 .menu a {
   color: #b8c3d9;
-  font-weight: 500;
+  font-weight: var(--type-weight-medium);
   text-decoration: none;
   transition:
     color 0.2s ease,
@@ -94,6 +94,18 @@
   border: 1px solid rgba(148, 163, 184, 0.14);
   border-radius: 999px;
   background: rgba(148, 163, 184, 0.07);
+  text-decoration: none;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.usuario-resumo:hover {
+  border-color: rgba(96, 165, 250, 0.32);
+  background: rgba(96, 165, 250, 0.11);
+}
+
+.usuario-resumo[aria-current="page"] {
+  border-color: rgba(96, 165, 250, 0.4);
+  background: rgba(37, 99, 235, 0.16);
 }
 
 .usuario-avatar {
@@ -107,16 +119,16 @@
   border-radius: 50%;
   color: #dbeafe;
   background: rgba(37, 99, 235, 0.2);
-  font-size: 0.8rem;
-  font-weight: 700;
+  font-size: var(--type-size-sm);
+  font-weight: var(--type-weight-bold);
 }
 
 .usuario-nome {
   min-width: 0;
   overflow: hidden;
   color: #e8eefc;
-  font-size: 0.9rem;
-  font-weight: 600;
+  font-size: var(--type-size-md);
+  font-weight: var(--type-weight-semibold);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -134,8 +146,8 @@
   color: #b8c3d9;
   background: transparent;
   font-family: inherit;
-  font-size: 0.9rem;
-  font-weight: 500;
+  font-size: var(--type-size-md);
+  font-weight: var(--type-weight-medium);
   cursor: pointer;
   transition:
     color 0.2s ease,
@@ -166,13 +178,13 @@
 
   .logo {
     gap: 8px;
-    font-size: 1.05rem;
+    font-size: var(--type-size-base);
   }
 
   .logo::before {
     width: 30px;
     height: 30px;
-    font-size: 0.82rem;
+    font-size: var(--type-size-sm);
   }
 
   .menu {
@@ -182,7 +194,7 @@
   .menu-link,
   .btn-logout {
     padding: 8px 10px;
-    font-size: 0.82rem;
+    font-size: var(--type-size-sm);
   }
 
   .usuario-resumo {
@@ -198,6 +210,6 @@
   }
 
   .usuario-nome {
-    font-size: 0.82rem;
+    font-size: var(--type-size-sm);
   }
 }

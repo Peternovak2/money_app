@@ -4,6 +4,7 @@ from fastapi.templating import Jinja2Templates
 
 from app.services.auth import obter_usuario_logado
 from app.services.informacoes import buscar_ativo
+from app.services.security import obter_token_csrf
 from app.services.utils.formatar import (
     formatar_inteiro,
     formatar_monetario,
@@ -39,13 +40,17 @@ def ativo(request: Request, ticker: str):
             status_code=404
         )
 
+    usuario = obter_usuario_logado(request)
+    csrf_token = obter_token_csrf(request) if usuario else None
+
     return templates.TemplateResponse(
         request=request,
         name='ativo.html',
         context={
             'dados': dados,
             'asset_version': 'dev',
-            'usuario': obter_usuario_logado(request),
+            'usuario': usuario,
+            'csrf_token': csrf_token,
             'ticker_exibicao': ticker_exibicao,
         }
     )

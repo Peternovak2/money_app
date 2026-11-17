@@ -4,13 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/static/css/style.css?v={{ asset_version }}" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="stylesheet" href="/static/css/ativo.css?v={{ asset_version }}" />
+    {% include 'components/fonts.html' %}
     <script
       src="https://cdn.jsdelivr.net/npm/echarts@6.1.0/dist/echarts.min.js"
       defer
@@ -18,20 +13,25 @@
     <script src="/static/js/ativo.js?v={{ asset_version }}" defer></script>
     <title>{{ ticker_exibicao }} | Money App</title>
   </head>
-  <body>
-    <header class="header">
+  <body class="ativo-body">
+    <header class="header header--ativo">
       <div class="container">
         <a href="/" class="logo" aria-label="Money App - Página inicial">Money App</a>
 
         <nav class="menu" aria-label="Conta">
           {% if usuario %}
-            <div class="usuario-resumo" title="{{ usuario.nome }}">
+            <a
+              href="/conta"
+              class="usuario-resumo"
+              aria-label="Abrir Minha conta de {{ usuario.nome }}"
+            >
               <span class="usuario-avatar" aria-hidden="true">
                 {{ usuario.nome[:1] | upper }}
               </span>
               <span class="usuario-nome">{{ usuario.nome.split()[0] }}</span>
-            </div>
+            </a>
             <form method="POST" action="/logout" class="form-logout">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
               <button type="submit" class="btn-logout">Sair</button>
             </form>
           {% else %}
@@ -43,183 +43,158 @@
     </header>
 
     <main class="ativo-page">
-      <section class="ativo-resumo" aria-labelledby="ativo-nome">
-        <a href="/" class="voltar">&larr; Voltar</a>
+      <button class="ativo-voltar" type="button" data-ativo-back>
+        <span class="ativo-voltar__icone" aria-hidden="true">←</span>
+        <span>Voltar</span>
+      </button>
 
-        <div class="ativo-header">
-          <div class="ativo-conteudo">
-            <div class="ativo-metadados">
+      <section id="visao-geral" class="ativo-hero" aria-labelledby="ativo-nome">
+        <div class="ativo-hero__cabecalho">
+          <div class="ativo-identidade">
+            <div class="ativo-identidade__linha">
               <span class="ticker">{{ ticker_exibicao }}</span>
-
-              {% if dados.setor %}
-                <span class="ativo-classificacao">{{ dados.setor }}</span>
+              {% if dados.bolsa %}
+                <span class="ativo-classificacao">{{ dados.bolsa }}</span>
               {% endif %}
-
-              {% if dados.industria and dados.industria != dados.setor %}
-                <span class="ativo-classificacao">{{ dados.industria }}</span>
+              {% if dados.pais %}
+                <span class="ativo-classificacao">{{ dados.pais }}</span>
               {% endif %}
             </div>
 
-            <h1 id="ativo-nome" class="empresa">
-              {{ dados.nome or ticker_exibicao }}
-            </h1>
+            <h1 id="ativo-nome" class="empresa">{{ dados.nome or ticker_exibicao }}</h1>
 
-            <p class="preco-label">Preço atual</p>
-            <div class="preco">
-              {% if dados.preco is not none %}
-                <span class="valor">
-                  {{ "%.2f"|format(dados.preco)|replace(".", ",") }}
-                </span>
-                {% if dados.moeda %}
-                  <span class="moeda">{{ dados.moeda }}</span>
-                {% endif %}
-              {% else %}
-                <span class="valor valor--indisponivel">&mdash;</span>
+            <div class="ativo-metadados">
+              {% if dados.setor %}
+                <span>{{ dados.setor }}</span>
               {% endif %}
-
-              {% if dados.variacao_dia is not none %}
-                {% if dados.variacao_dia > 0 %}
-                  {% set variacao_classe = "variacao_dia--positiva" %}
-                  {% set variacao_sinal = "+" %}
-                {% elif dados.variacao_dia < 0 %}
-                  {% set variacao_classe = "variacao_dia--negativa" %}
-                  {% set variacao_sinal = "" %}
-                {% else %}
-                  {% set variacao_classe = "variacao_dia--neutra" %}
-                  {% set variacao_sinal = "" %}
-                {% endif %}
-
-                <span class="variacao_dia {{ variacao_classe }}">
-                  <span class="sr-only">Variação diária:</span>
-                  {{ variacao_sinal }}{{ "%.2f"|format(dados.variacao_dia)|replace(".", ",") }}%
-                </span>
-              {% else %}
-                <span class="variacao_dia variacao_dia--neutra">
-                  Variação indisponível
-                </span>
+              {% if dados.industria and dados.industria != dados.setor %}
+                <span>{{ dados.industria }}</span>
               {% endif %}
             </div>
           </div>
 
+          <button
+            id="botao-acompanhar"
+            class="botao-acompanhar"
+            type="button"
+            data-ticker="{{ ticker_exibicao }}"
+            aria-pressed="false"
+          >
+            <span class="botao-acompanhar__icone" aria-hidden="true">☆</span>
+            <span class="botao-acompanhar__texto">Acompanhar</span>
+          </button>
         </div>
+
+        <div class="ativo-cotacao">
+          <p class="preco-label">Cotação atual</p>
+          <div class="preco">
+            {% if dados.preco is not none %}
+              <span class="valor">{{ "%.2f"|format(dados.preco)|replace(".", ",") }}</span>
+              {% if dados.moeda %}
+                <span class="moeda">{{ dados.moeda }}</span>
+              {% endif %}
+            {% else %}
+              <span class="valor valor--indisponivel">&mdash;</span>
+            {% endif %}
+
+            {% if dados.variacao_dia is not none %}
+              {% if dados.variacao_dia > 0 %}
+                {% set variacao_classe = "variacao_dia--positiva" %}
+                {% set variacao_sinal = "+" %}
+                {% set variacao_icone = "↑" %}
+              {% elif dados.variacao_dia < 0 %}
+                {% set variacao_classe = "variacao_dia--negativa" %}
+                {% set variacao_sinal = "" %}
+                {% set variacao_icone = "↓" %}
+              {% else %}
+                {% set variacao_classe = "variacao_dia--neutra" %}
+                {% set variacao_sinal = "" %}
+                {% set variacao_icone = "→" %}
+              {% endif %}
+
+              <span class="variacao_dia {{ variacao_classe }}">
+                <span aria-hidden="true">{{ variacao_icone }}</span>
+                <span class="sr-only">Variação diária:</span>
+                {{ variacao_sinal }}{{ "%.2f"|format(dados.variacao_dia)|replace(".", ",") }}%
+              </span>
+            {% else %}
+              <span class="variacao_dia variacao_dia--neutra">Variação indisponível</span>
+            {% endif %}
+          </div>
+          <p class="ativo-cotacao__nota">Dados de mercado sujeitos a atraso.</p>
+        </div>
+
+        <dl class="metricas-rapidas" aria-label="Resumo da negociação">
+          <div class="metrica-rapida">
+            <dt>Abertura</dt>
+            <dd>{{ dados.abertura | formatar_monetario(dados.moeda) }}</dd>
+          </div>
+          <div class="metrica-rapida">
+            <dt>Fechamento anterior</dt>
+            <dd>{{ dados.fechamento_anterior | formatar_monetario(dados.moeda) }}</dd>
+          </div>
+          <div class="metrica-rapida">
+            <dt>Máxima do dia</dt>
+            <dd>{{ dados.maxima | formatar_monetario(dados.moeda) }}</dd>
+          </div>
+          <div class="metrica-rapida">
+            <dt>Mínima do dia</dt>
+            <dd>{{ dados.minima | formatar_monetario(dados.moeda) }}</dd>
+          </div>
+          <div class="metrica-rapida">
+            <dt>Volume</dt>
+            <dd>{{ dados.volume | formatar_inteiro }}</dd>
+          </div>
+          <div class="metrica-rapida">
+            <dt>Valor de mercado</dt>
+            <dd>{{ dados.market_cap | formatar_monetario_compacto(dados.moeda) }}</dd>
+          </div>
+        </dl>
 
         <nav class="ativo-nav" aria-label="Seções do ativo">
           <ul class="ativo-nav-lista">
-            <li><a class="ativo-nav-link" href="#visao-geral">Visão geral</a></li>
             <li><a class="ativo-nav-link" href="#grafico">Gráfico</a></li>
+            <li><a class="ativo-nav-link" href="#desempenho">Desempenho</a></li>
             <li><a class="ativo-nav-link" href="#fundamentos">Fundamentos</a></li>
-            <li><a class="ativo-nav-link" href="#empresa">Empresa</a></li>
             <li><a class="ativo-nav-link" href="#noticias">Notícias</a></li>
+            <li><a class="ativo-nav-link" href="#empresa">Companhia</a></li>
           </ul>
         </nav>
       </section>
 
-      <section id="visao-geral" class="ativo-secao" aria-labelledby="titulo-visao-geral">
-        <h2 id="titulo-visao-geral" class="ativo-secao-titulo">Resumo do mercado</h2>
-
-        <div class="resumo-painel">
-          <div class="resumo-grid">
-            <article class="resumo-card">
-              <h3 class="resumo-card-rotulo">Abertura</h3>
-              <p class="resumo-card-valor">
-                {{ dados.abertura | formatar_monetario(dados.moeda) }}
-              </p>
-            </article>
-
-            <article class="resumo-card">
-              <h3 class="resumo-card-rotulo">Máxima</h3>
-              <p class="resumo-card-valor">
-                {{ dados.maxima | formatar_monetario(dados.moeda) }}
-              </p>
-            </article>
-
-            <article class="resumo-card">
-              <h3 class="resumo-card-rotulo">Mínima</h3>
-              <p class="resumo-card-valor">
-                {{ dados.minima | formatar_monetario(dados.moeda) }}
-              </p>
-            </article>
-
-            <article class="resumo-card">
-              <h3 class="resumo-card-rotulo">Volume</h3>
-              <p class="resumo-card-valor">{{ dados.volume | formatar_inteiro }}</p>
-            </article>
-
-            <article class="resumo-card">
-              <h3 class="resumo-card-rotulo">Valor de mercado</h3>
-              <p class="resumo-card-valor">
-                {{ dados.market_cap | formatar_monetario_compacto(dados.moeda) }}
-              </p>
-            </article>
-          </div>
-        </div>
-      </section>
-
       <section
         id="grafico"
-        class="ativo-secao"
+        class="ativo-secao grafico-secao"
         aria-labelledby="titulo-grafico"
         data-ticker="{{ ticker_exibicao }}"
         data-periodo-inicial="6mo"
       >
-        <div class="grafico-cabecalho">
-          <h2 id="titulo-grafico" class="ativo-secao-titulo">Gráfico</h2>
+        <div class="secao-cabecalho grafico-cabecalho">
+          <div>
+            <span class="secao-sobretitulo">Mercado</span>
+            <h2 id="titulo-grafico" class="ativo-secao-titulo">Evolução do preço</h2>
+            <p class="secao-descricao">Histórico de candles e volume negociado.</p>
+          </div>
 
-          <div class="grafico-periodos" role="group" aria-label="Período do histórico">
-            <button
-              type="button"
-              class="grafico-periodo"
-              data-periodo="1mo"
-              aria-controls="grafico-conteudo"
-              aria-pressed="false"
-            >
-              1M
-            </button>
-            <button
-              type="button"
-              class="grafico-periodo"
-              data-periodo="3mo"
-              aria-controls="grafico-conteudo"
-              aria-pressed="false"
-            >
-              3M
-            </button>
-            <button
-              type="button"
-              class="grafico-periodo grafico-periodo--ativo"
-              data-periodo="6mo"
-              aria-controls="grafico-conteudo"
-              aria-pressed="true"
-            >
-              6M
-            </button>
-            <button
-              type="button"
-              class="grafico-periodo"
-              data-periodo="1y"
-              aria-controls="grafico-conteudo"
-              aria-pressed="false"
-            >
-              1A
-            </button>
-            <button
-              type="button"
-              class="grafico-periodo"
-              data-periodo="5y"
-              aria-controls="grafico-conteudo"
-              aria-pressed="false"
-            >
-              5A
-            </button>
-            <button
-              type="button"
-              class="grafico-periodo"
-              data-periodo="max"
-              aria-controls="grafico-conteudo"
-              aria-pressed="false"
-            >
-              MAX
-            </button>
+          <div class="grafico-toolbar">
+            <div class="grafico-legenda" aria-label="Séries exibidas">
+              <span><i class="grafico-legenda__preco" aria-hidden="true"></i>Preço</span>
+              <span><i class="grafico-legenda__volume" aria-hidden="true"></i>Volume</span>
+            </div>
+
+            <div class="grafico-periodos" role="group" aria-label="Período do histórico">
+              {% for periodo, rotulo in [('1mo', '1M'), ('3mo', '3M'), ('6mo', '6M'), ('1y', '1A'), ('5y', '5A'), ('max', 'MAX')] %}
+                <button
+                  type="button"
+                  class="grafico-periodo{% if periodo == '6mo' %} grafico-periodo--ativo{% endif %}"
+                  data-periodo="{{ periodo }}"
+                  aria-controls="grafico-conteudo"
+                  aria-pressed="{% if periodo == '6mo' %}true{% else %}false{% endif %}"
+                >
+                  {{ rotulo }}
+                </button>
+              {% endfor %}
+            </div>
           </div>
         </div>
 
@@ -247,116 +222,122 @@
         </div>
       </section>
 
-      <section id="fundamentos" class="ativo-secao" aria-labelledby="titulo-fundamentos">
-        <h2 id="titulo-fundamentos" class="ativo-secao-titulo">Fundamentos</h2>
+      <section id="desempenho" class="ativo-secao desempenho-secao" aria-labelledby="titulo-desempenho">
+        <div class="secao-cabecalho">
+          <div>
+            <span class="secao-sobretitulo">Leitura rápida</span>
+            <h2 id="titulo-desempenho" class="ativo-secao-titulo">Desempenho</h2>
+          </div>
+          <span id="desempenho-periodo" class="desempenho-periodo">6 meses</span>
+        </div>
+
+        <dl class="desempenho-grid">
+          <div>
+            <dt>Variação no período</dt>
+            <dd id="desempenho-variacao">—</dd>
+          </div>
+          <div>
+            <dt>Máxima no período</dt>
+            <dd id="desempenho-maxima">—</dd>
+          </div>
+          <div>
+            <dt>Mínima no período</dt>
+            <dd id="desempenho-minima">—</dd>
+          </div>
+          <div>
+            <dt>Volume médio</dt>
+            <dd id="desempenho-volume">—</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section id="fundamentos" class="ativo-secao fundamentos-secao" aria-labelledby="titulo-fundamentos">
+        <div class="secao-cabecalho">
+          <div>
+            <span class="secao-sobretitulo">Saúde financeira</span>
+            <h2 id="titulo-fundamentos" class="ativo-secao-titulo">Fundamentos da empresa</h2>
+            <p class="secao-descricao">Indicadores essenciais organizados para comparação rápida.</p>
+          </div>
+        </div>
 
         <div class="fundamentos-painel">
           <section class="fundamentos-grupo" aria-labelledby="titulo-valuation">
-            <h3 id="titulo-valuation" class="fundamentos-grupo-titulo">Valuação</h3>
-
-            <div class="fundamentos-grid">
-              <article class="fundamento-card">
-                <h4 class="fundamento-card-rotulo">P/L</h4>
-                <p class="fundamento-card-valor">{{ dados.pe | formatar_numero }}</p>
-              </article>
-
-              <article class="fundamento-card">
-                <h4 class="fundamento-card-rotulo">P/VP</h4>
-                <p class="fundamento-card-valor">{{ dados.pvp | formatar_numero }}</p>
-              </article>
-
-              <article class="fundamento-card">
-                <h4 class="fundamento-card-rotulo">EV/EBITDA</h4>
-                <p class="fundamento-card-valor">{{ dados.ev_ebitda | formatar_numero }}</p>
-              </article>
-            </div>
+            <h3 id="titulo-valuation" class="fundamentos-grupo-titulo">Valuation</h3>
+            <dl class="fundamentos-lista">
+              <div><dt>P/L</dt><dd>{{ dados.pe | formatar_numero }}</dd></div>
+              <div><dt>P/VP</dt><dd>{{ dados.pvp | formatar_numero }}</dd></div>
+              <div><dt>EV/EBITDA</dt><dd>{{ dados.ev_ebitda | formatar_numero }}</dd></div>
+            </dl>
           </section>
 
           <section class="fundamentos-grupo" aria-labelledby="titulo-rentabilidade">
-            <h3 id="titulo-rentabilidade" class="fundamentos-grupo-titulo">
-              Rentabilidade
-            </h3>
-
-            <div class="fundamentos-grid">
-              <article class="fundamento-card">
-                <h4 class="fundamento-card-rotulo">Lucro por ação</h4>
-                <p class="fundamento-card-valor">
-                  {{ dados.eps | formatar_monetario(dados.moeda) }}
-                </p>
-              </article>
-
-              <article class="fundamento-card">
-                <h4 class="fundamento-card-rotulo">ROE</h4>
-                <p class="fundamento-card-valor">{{ dados.roe | formatar_percentual }}</p>
-              </article>
-
-              <article class="fundamento-card">
-                <h4 class="fundamento-card-rotulo">Margem líquida</h4>
-                <p class="fundamento-card-valor">
-                  {{ dados.margem_liquida | formatar_percentual }}
-                </p>
-              </article>
-            </div>
+            <h3 id="titulo-rentabilidade" class="fundamentos-grupo-titulo">Rentabilidade</h3>
+            <dl class="fundamentos-lista">
+              <div><dt>Lucro por ação</dt><dd>{{ dados.eps | formatar_monetario(dados.moeda) }}</dd></div>
+              <div><dt>ROE</dt><dd>{{ dados.roe | formatar_percentual }}</dd></div>
+              <div><dt>Margem líquida</dt><dd>{{ dados.margem_liquida | formatar_percentual }}</dd></div>
+              <div><dt>Dividend Yield</dt><dd>{{ dados.dividend_yield | formatar_percentual }}</dd></div>
+            </dl>
           </section>
 
-          <section class="fundamentos-grupo" aria-labelledby="titulo-dividendos">
-            <h3 id="titulo-dividendos" class="fundamentos-grupo-titulo">Dividendos</h3>
-
-            <div class="fundamentos-grid">
-              <article class="fundamento-card">
-                <h4 class="fundamento-card-rotulo">Dividend Yield</h4>
-                <p class="fundamento-card-valor">
-                  {{ dados.dividend_yield | formatar_percentual }}
-                </p>
-              </article>
-            </div>
-          </section>
-
-          <section class="fundamentos-grupo" aria-labelledby="titulo-estrutura-financeira">
-            <h3 id="titulo-estrutura-financeira" class="fundamentos-grupo-titulo">
-              Estrutura financeira
-            </h3>
-
-            <div class="fundamentos-grid fundamentos-grid--estrutura">
-              <article class="fundamento-card">
-                <h4 class="fundamento-card-rotulo">Caixa total</h4>
-                <p class="fundamento-card-valor">
-                  {{ dados.caixa_total | formatar_monetario_compacto(dados.moeda_financeira) }}
-                </p>
-              </article>
-
-              <article class="fundamento-card">
-                <h4 class="fundamento-card-rotulo">Dívida total</h4>
-                <p class="fundamento-card-valor">
-                  {{ dados.divida_total | formatar_monetario_compacto(dados.moeda_financeira) }}
-                </p>
-              </article>
-
-              <article class="fundamento-card">
-                <h4 class="fundamento-card-rotulo">Liquidez corrente</h4>
-                <p class="fundamento-card-valor">
-                  {{ dados.liquidez_corrente | formatar_numero }}
-                </p>
-              </article>
-
-              <article class="fundamento-card">
-                <h4 class="fundamento-card-rotulo">Dívida total / EBITDA</h4>
-                <p class="fundamento-card-valor">
-                  {{ dados.divida_total_ebitda | formatar_numero }}
-                </p>
-              </article>
-            </div>
+          <section class="fundamentos-grupo" aria-labelledby="titulo-solidez">
+            <h3 id="titulo-solidez" class="fundamentos-grupo-titulo">Solidez financeira</h3>
+            <dl class="fundamentos-lista">
+              <div><dt>Caixa total</dt><dd>{{ dados.caixa_total | formatar_monetario_compacto(dados.moeda_financeira) }}</dd></div>
+              <div><dt>Dívida total</dt><dd>{{ dados.divida_total | formatar_monetario_compacto(dados.moeda_financeira) }}</dd></div>
+              <div><dt>Liquidez corrente</dt><dd>{{ dados.liquidez_corrente | formatar_numero }}</dd></div>
+              <div><dt>Dívida / EBITDA</dt><dd>{{ dados.divida_total_ebitda | formatar_numero }}</dd></div>
+            </dl>
           </section>
         </div>
       </section>
 
-      <section id="empresa" class="ativo-secao" aria-labelledby="titulo-empresa">
-        <h2 id="titulo-empresa" class="ativo-secao-titulo">Empresa</h2>
-      </section>
+      <div class="ativo-rodape-grid">
+        <section id="noticias" class="ativo-secao painel-editorial" aria-labelledby="titulo-noticias">
+          <div class="secao-cabecalho">
+            <div>
+              <span class="secao-sobretitulo">Em contexto</span>
+              <h2 id="titulo-noticias" class="ativo-secao-titulo">Últimas notícias</h2>
+            </div>
+          </div>
+          <div class="painel-vazio">
+            <span class="painel-vazio__icone" aria-hidden="true">↗</span>
+            <div>
+              <h3>Cobertura do ativo em breve</h3>
+              <p>As notícias específicas de {{ ticker_exibicao }} ainda não estão disponíveis.</p>
+            </div>
+          </div>
+        </section>
 
-      <section id="noticias" class="ativo-secao" aria-labelledby="titulo-noticias">
-        <h2 id="titulo-noticias" class="ativo-secao-titulo">Notícias</h2>
-      </section>
+        <section id="empresa" class="ativo-secao painel-editorial" aria-labelledby="titulo-empresa">
+          <div class="secao-cabecalho">
+            <div>
+              <span class="secao-sobretitulo">Perfil corporativo</span>
+              <h2 id="titulo-empresa" class="ativo-secao-titulo">Sobre a companhia</h2>
+            </div>
+          </div>
+
+          {% if dados.resumo_empresa %}
+            <p class="empresa-resumo">{{ dados.resumo_empresa }}</p>
+          {% else %}
+            <p class="empresa-resumo empresa-resumo--vazio">
+              Informações institucionais detalhadas não estão disponíveis para este ativo.
+            </p>
+          {% endif %}
+
+          <div class="empresa-tags">
+            {% if dados.setor %}<span>{{ dados.setor }}</span>{% endif %}
+            {% if dados.industria and dados.industria != dados.setor %}<span>{{ dados.industria }}</span>{% endif %}
+            {% if dados.pais %}<span>{{ dados.pais }}</span>{% endif %}
+          </div>
+
+          {% if dados.website and (dados.website.startswith("https://") or dados.website.startswith("http://")) %}
+            <a class="empresa-site" href="{{ dados.website }}" target="_blank" rel="noopener noreferrer">
+              Visitar site institucional <span aria-hidden="true">↗</span>
+            </a>
+          {% endif %}
+        </section>
+      </div>
     </main>
   </body>
 </html>
