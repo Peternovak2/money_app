@@ -39,6 +39,15 @@ class CatalogoTestCase(unittest.TestCase):
         self.assertIsNone(catalogo._normalizar_acao({**item, 'stock': 'PETR4F'}))
         self.assertIsNone(catalogo._normalizar_acao({**item, 'type': 'fund'}))
 
+    def test_logotipos_aceitam_somente_urls_https_sem_credenciais(self):
+        item = dict(type='stock', subType='stock', stock='PETR4', name='Petrobras')
+        for logo in ('https://icons.brapi.dev/icons/PETR4.svg', 'https://example.org/logo.svg', 'http://example.org/logo.png',
+                     'javascript:alert(1)', '//example.org/logo.png',
+                     'https://user:senha@example.org/logo.png', 'https://[', None):
+            with self.subTest(logo=logo):
+                resultado = catalogo._normalizar_acao({**item, 'logo': logo})
+                self.assertEqual(resultado.get('logo'),
+                                 logo if logo == 'https://icons.brapi.dev/icons/PETR4.svg' else None)
     def test_reutiliza_catalogo_durante_o_ttl(self):
         acoes = ({'ticker': 'PETR4', 'nome': 'Petrobras'},)
 
@@ -131,7 +140,7 @@ class CatalogoTestCase(unittest.TestCase):
         with patch.object(catalogo, 'obter_catalogo_acoes', return_value=acoes):
             resultado = catalogo.buscar_sugestoes('são', limite=1)
 
-        self.assertEqual(resultado, [{'ticker': 'ABCD3', 'nome': 'Sao Carlos'}])
+        self.assertEqual(resultado, [dict(ticker='ABCD3', nome='Sao Carlos', tipo='acao', logo_url=None)])
 
 
 if __name__ == '__main__':
